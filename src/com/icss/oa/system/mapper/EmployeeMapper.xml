@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.system.dao.EmployeeMapper">
+
+	<!-- 整个employee表的映射 -->
+	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Employee">
+		<id column="emp_id" property="empId" jdbcType="INTEGER" />
+		<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		<result column="emp_login_name" property="empLoginName"
+			jdbcType="VARCHAR" />
+		<result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+		<result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
+		<result column="emp_birthday" property="empBirthday" jdbcType="DATE" />
+		<result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
+		<result column="emp_sal" property="empSal" jdbcType="INTEGER" />
+		<result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
+		<result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+
+		<!-- 多对一映射必须写在resultMap最后面 -->
+		<!-- 部门映射 -->
+		<association property="dept" javaType="com.icss.oa.system.pojo.Department">
+			<id column="dept_id" property="deptId" jdbcType="INTEGER" />
+			<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+		</association>
+
+		<!-- 职务映射 -->
+		<association property="job" javaType="com.icss.oa.system.pojo.Job">
+			<id column="job_id" property="jobId" jdbcType="INTEGER" />
+			<result column="job_name" property="jobName" jdbcType="VARCHAR" />
+		</association>
+
+	</resultMap>
+
+	<!-- 头像映射 -->
+	<resultMap id="ResultMapWithBLOBs" type="com.icss.oa.system.pojo.Employee"
+		extends="BaseResultMap">
+		<result column="emp_photo" property="empPhoto" jdbcType="LONGVARCHAR" />
+	</resultMap>
+
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.icss.oa.system.pojo.Employee">
+		insert into employee (emp_id,
+		emp_name, emp_login_name, emp_pwd, emp_sex,
+		emp_birthday,
+		emp_phone,
+		emp_sal, emp_email, emp_info, emp_dept_id, emp_job_id)
+		values(default, #{empName,jdbcType=VARCHAR},
+		#{empLoginName,jdbcType=VARCHAR},
+		#{empPwd,jdbcType=VARCHAR},
+		#{empSex,jdbcType=VARCHAR}, #{empBirthday,jdbcType=DATE},
+		#{empPhone,jdbcType=VARCHAR}, #{empSal,jdbcType=INTEGER},
+		#{empEmail,jdbcType=VARCHAR},
+		#{empInfo,jdbcType=VARCHAR},
+		#{dept.deptId,jdbcType=INTEGER}, #{job.jobId,jdbcType=INTEGER})
+	</insert>
+
+	<delete id="delete">
+	  delete from employee where emp_name = #{empName}
+	</delete>
+
+	<!-- 根据条件获得总记录数 -->
+	<select id="getCountByCondition" parameterType="com.icss.oa.system.pojo.Employee"
+		resultType="java.lang.Integer">
+		select count(*)
+		from employee
+		<!-- 动态sql语句 -->
+		<where>
+			<if test="deptId != null">
+				and dept_id = #{deptId,jdbcType=INTEGER}
+			</if>
+			<if test="jobId != null">
+				and job_id = #{jobId,jdbcType=INTEGER}
+			</if>
+			<if test="empSex != null and empSex != '' ">
+			    and emp_sex = #{empSex}
+			</if>
+			<if test="empName != null and empName != '' ">
+			<!-- and emp_name = #{empName,jdbcType=VARCHAR} -->	
+				and emp_name like concat('%',#{empName,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+	</select>
+	
+	<!-- 使用mysql的instr函数判断是否包含数据,模糊查询 -->
+	<select id="queryByCondition" parameterType="com.icss.oa.system.pojo.Employee"
+		resultMap="BaseResultMap">
+		SELECT *
+		FROM employee e
+		LEFT OUTER JOIN department d
+		ON e.`emp_dept_id`
+		= d.`dept_id`
+		LEFT OUTER JOIN job j ON
+		e.`emp_job_id` = j.`job_id`
+		<where>
+		    <if test="empName !=null and empName!='' ">
+		        and instr(emp_name,#{empName,jdbcType=VARCHAR})!=0
+		    </if>
+		    
+		    <if test="empSex !=null and empSex!='' ">
+		        and instr(emp_sex,#{empSex,jdbcType=VARCHAR})!=0
+		    </if>
+		    
+			<if test="deptId != null">
+				and e.dept_id = #{deptId,jdbcType=INTEGER}
+			</if>
+			<if test="jobId != null">
+				and e.job_id = #{jobId,jdbcType=INTEGER}
+			</if>
+			
+		</where>
+		LIMIT #{start}, #{pageSize}
+	</select>
+	
+	<update id="update" parameterType="com.icss.oa.system.pojo.Employee">
+	  update employee set emp_name=#{empName}, emp_login_name=#{empLoginName},
+	   emp_pwd=#{empPwd}, emp_sex=#{empSex},
+		emp_birthday=#{empBirthday},
+		emp_phone=#{empPhone},
+		emp_sal=#{empSal}, emp_email=#{empEmail}, emp_info=#{empInfo}, 
+		emp_dept_id=#{dept.deptId}, emp_job_id=#{job.jobId}
+		where emp_id=#{empId}
+	</update>
+
+</mapper>

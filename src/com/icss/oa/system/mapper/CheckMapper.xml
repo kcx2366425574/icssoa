@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.system.dao.CheckMapper">
+
+	<!-- 查询结果集映射 -->
+	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Check">
+		<id column="check_id" property="checkId" jdbcType="INTEGER" />
+		<result column="check_time" property="checkTime" jdbcType="VARCHAR" />
+		<association property="employee" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="employee_id" property="empId" jdbcType="INTEGER" />
+			<result column="employee_name" property="empName" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.system.pojo.Check">
+		insert into check values
+		(default,#{checkEmpId},#{checkTime})
+	</insert>
+
+	
+	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from check where check_id=#{checkId}
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select * from check order by check_id
+		LIMIT #{start},#{pageSize}
+	</select>
+
+</mapper>

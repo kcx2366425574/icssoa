@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.system.dao.NoticeMapper">
+
+	<!-- 结果集映射 -->
+	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Notice">
+		<id column="notice_id" property="noticeId" jdbcType="INTEGER" />
+		<result column="notice_name" property="noticeName" jdbcType="VARCHAR" />
+		<result column="notice_info" property="noticeInfo" jdbcType="VARCHAR" />
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="emp_id" property="empId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.system.pojo.Notice">
+		insert into Notice (notice_id,
+		notice_name, notice_info,
+		notice_emp_id)
+		values (default,
+		#{noticeName,jdbcType=VARCHAR},
+		#{noticeInfo,jdbcType=VARCHAR},
+		#{emp.empId,jdbcType=INTEGER})
+	</insert>
+
+	<update id="update" parameterType="com.icss.oa.system.pojo.Notice">
+		update notice
+		set notice_name =
+		#{noticeName,jdbcType=VARCHAR},
+		notice_info =
+		#{noticeInfo,jdbcType=INTEGER},
+		notice_emp_id =
+		#{emp.emp_id,jdbcType=INTEGER}
+		where notice_id = #{noticeId,jdbcType=INTEGER}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from notice
+		where notice_id =
+		#{noticeId,jdbcType=INTEGER}
+	</delete>
+		
+	<select id="queryById" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select *		
+		from notice
+		where notice_id = #{noticeId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT *
+		FROM	notice
+		where	notice_name=#{noticeName}
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap" >
+		select *		
+		from notice n
+		LEFT OUTER JOIN employee e ON n.`motice_emp_id`=e.`emp_id`
+		LIMIT #{start},#{pageSize}	
+	</select>
+
+</mapper>

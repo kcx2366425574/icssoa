@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title>修改员工</title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>
+		<div class="container">
+
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="queryEmployee.html">员工管理</a></li>
+				<li>修改员工</li>
+			</ol>
+
+			<h3 class="page-header">
+				修改员工
+			</h3>
+
+			<form class="form-horizontal col-md-10">
+				<div class="form-group">
+					<label for="" class="col-md-2">员工名称:</label>
+					<div class="col-md-2">
+						<input type="text" id="empName" name="empName" placeholder="请输入员工名称" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工性别:</label>
+					<div class="col-md-2">
+						<select name="selectSex" value="selectSex" class="form-control">
+                           <option value="男">男</option>
+                           <option value="男">女</option>
+                       </select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工出生日期:</label>
+					<div class="col-md-4">
+						<input type="text" id="empBirthday" name="empBirthday" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工介绍:</label>
+					<div class="col-md-10">
+						<input type="text" id="empInfo" name="empInfo" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工联系电话:</label>
+					<div class="col-md-4">
+						<input type="text" id="empPhone" name="empPhone" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工邮箱</label>
+					<div class="col-md-4">
+						<input type="text" id="empEail" name="empEmail" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工部门</label>
+					<div class="col-md-4">
+						<select name="selectSex" value="selectSex" class="form-control">
+                           <option value="行政部">行政部</option>
+                           <option value="技术部">技术部</option>
+                           <option value="开发部">开发部</option>
+                           <option value="市场营销部">市场营销部</option>
+                           <option value="财务部">财务部</option>
+                      </select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工职务</label>
+					<div class="col-md-4">
+						<!--添加模糊查询，防止输入不规范-->
+						<input type="text" id="empJob" name="empJob" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">员工薪资</label>
+					<div class="col-md-4">
+						<input type="text" id="empSal" name="empSal" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();" />
+					</div>
+					<div class="col-md-4">
+						<input type="button" value="增加" class="btn btn-primary btn-block" />
+					</div>
+				</div>
+			</form>
+			
+		</div>
+		
+
+
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	</body>
+</html>

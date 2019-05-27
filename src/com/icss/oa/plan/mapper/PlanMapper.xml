@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.plan.dao.PlanMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.plan.pojo.Plan">
+		<id column="plan_id" property="planId" jdbcType="INTEGER" />
+		<result column="plan_name" property="planName" jdbcType="VARCHAR" />
+		<result column="plan_time" property="planTime" jdbcType="DATE" />
+		<result column="plan_info" property="planInfo" jdbcType="VARCHAR" />
+
+		<association property="dept" javaType="com.icss.oa.system.pojo.Department">
+			<id column="dept_id" property="deptId" jdbcType="INTEGER" />
+			<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	
+	
+	<insert id="insert" parameterType="com.icss.oa.plan.pojo.Plan">
+	    insert into plan values(default,#{planName,jdbcType=VARCHAR},#{planTime},#{planInfo,jdbcType=VARCHAR},#{dept.deptId})
+	</insert>
+	
+	<select id="queryByTime" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    select p.*,de.dept_name from plan p INNER JOIN department de on p.dept_id=de.dept_id 
+	    <where>
+	      <if test="planTime != null and planTime !='' ">
+	          and plan_time like #{planTime}
+	      </if>
+	      <if test="planName != null and planName !='' ">
+	          and instr(plan_name,#{planName,jdbcType=VARCHAR})!=0
+	      </if>
+	      
+	      <if test="deptName != null and deptName !='' ">
+	          and instr(dept_name,#{deptName,jdbcType=VARCHAR})!=0
+	      </if>
+	    </where>
+	</select>
+	
+	
+	<delete id="delete" parameterType="java.lang.String">
+	    delete from plan where plan_name=#{planName,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="update" parameterType="com.icss.oa.plan.pojo.Plan">
+	    update plan set plan_name=#{planName},plan_time=#{planTime},
+	    plan_info=#{planInfo},dept_id=#{dept.deptId}
+	</update>
+</mapper>
