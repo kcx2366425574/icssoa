@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.card.dao.TeamMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.card.pojo.Team">
+		<id column="team_id" property="teamId" jdbcType="INTEGER" />
+		<result column="team_name" property="teamName" jdbcType="VARCHAR" />
+		<result column="team_num" property="teamNum" jdbcType="INTEGER" />
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.card.pojo.Team">
+		insert into team (team_id,
+		team_name, team_num)
+		values (default, #{teamName,jdbcType=VARCHAR}, 0)
+	</insert>
+
+	<delete id="delete" parameterType="java.lang.String">
+		delete from team
+		where
+		team_name = #{teamName,jdbcType=VARCHAR}
+	</delete>
+
+	<update id="update" parameterType="com.icss.oa.card.pojo.Team">
+		update team
+		set team_name = #{teamName,jdbcType=VARCHAR}
+		where team_id = #{teamId,jdbcType=INTEGER}
+	</update>
+	
+	<select id="queryByName" resultMap="BaseResultMap">
+		select *
+		from team
+		where team_name = #{teamName,jdbcType=VARCHAR} 
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap">
+		select *
+		from team order by team_id
+	</select>
+
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.card.dao.CardMapper">
+
+	<resultMap id="BaseResultMap" type="com.icss.oa.card.pojo.Card">
+		<id column="card_id" property="cardId" jdbcType="INTEGER" />
+		<result column="card_name" property="cardName" jdbcType="VARCHAR" />
+		<result column="card_sex" property="cardSex" jdbcType="VARCHAR" />
+		<result column="card_phone" property="cardPhone" jdbcType="VARCHAR" />
+		<result column="card_career" property="cardCareer" jdbcType="VARCHAR" />
+		<result column="card_address" property="cardAddress" jdbcType="VARCHAR" />
+		<result column="card_email" property="cardEmail" jdbcType="VARCHAR" />
+		<result column="card_intro" property="cardIntro" jdbcType="VARCHAR" />
+
+		<!-- 多对一映射必须写在resultMap最后面 -->
+		<association property="team" javaType="com.icss.oa.card.pojo.Team">
+			<id column="team_id" property="teamId" jdbcType="INTEGER" />
+			<result column="team_name" property="teamName" jdbcType="VARCHAR" />
+			<result column="team_num" property="teamNum" jdbcType="INTEGER" />
+		</association>
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.card.pojo.Card">
+		insert into card (card_id,
+		card_name, card_sex,
+		card_phone, card_career, card_address,
+		card_email,
+		card_intro, card_team_id)
+		values (default,
+		#{cardName,jdbcType=VARCHAR},
+		#{cardSex,jdbcType=VARCHAR},
+		#{cardPhone,jdbcType=VARCHAR}, #{cardCareer,jdbcType=VARCHAR},
+		#{cardAddress,jdbcType=VARCHAR},
+		#{cardEmail,jdbcType=VARCHAR},
+		#{cardIntro,jdbcType=VARCHAR},
+		#{team.teamId,jdbcType=INTEGER})
+	</insert>
+
+	<update id="upTeamNum" parameterType="com.icss.oa.card.pojo.Card">
+		UPDATE team
+		SET team_num =
+		team_num + 1
+		WHERE team_id = #{teamId, jdbcType=INTEGER}
+	</update>
+
+	<update id="lowTeamNum" parameterType="com.icss.oa.card.pojo.Card">
+		UPDATE team
+		SET team_num =
+		team_num - 1
+		WHERE team_id = #{teamId, jdbcType=INTEGER}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.String">
+		delete from card
+		where
+		card_name = #{cardName,jdbcType=VARCHAR}
+	</delete>
+
+	<select id="queryTeamIdByName" resultType="java.lang.Integer">
+		SELECT card_team_id
+		FROM card
+		WHERE card_name = #{cardName,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryTeamIdById" resultType="java.lang.Integer">
+		SELECT card_team_id
+		FROM card
+		WHERE card_id = #{cardId,jdbcType=INTEGER}
+	</select>
+
+	<update id="update" parameterType="com.icss.oa.card.pojo.Card">
+		update card
+		set card_name =
+		#{cardName,jdbcType=VARCHAR},
+		card_sex = #{cardSex,jdbcType=VARCHAR},
+		card_phone = #{cardPhone,jdbcType=VARCHAR},
+		card_career = #{cardCareer,jdbcType=VARCHAR},
+		card_address = #{cardAddress,jdbcType=VARCHAR},
+		card_email = #{cardEmail,jdbcType=VARCHAR},
+		card_intro = #{cardIntro,jdbcType=VARCHAR},
+		card_team_id = #{team.teamId,jdbcType=INTEGER}
+		where card_id = #{cardId,jdbcType=INTEGER}
+	</update>
+
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from card
+	</select>
+	
+	<select id="getCountByCondition" resultType="java.lang.Integer">
+		select count(*)
+		from card
+		<where>
+			<if test="teamName != null and teamName != '' ">
+				and team_name = #{teamName, jdbcType=VARCHAR}
+			</if>
+			<if test="cardName != null and cardName != '' ">
+				and instr (card_name, #{cardName, jdbcType=VARCHAR}) != 0
+			</if>
+			<if test="cardSex != null and cardSex != '' ">
+				and card_sex = #{cardSex, jdbcType=VARCHAR}
+			</if>
+			<if test="cardIntro != null and cardIntro != '' ">
+				and instr (card_intro, #{cardIntro, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+		LIMIT #{start}, #{pageSize}
+	</select>
+
+	<!-- 使用mysql的instr函数判断是否包含数据 -->
+	<select id="queryByCondition" resultMap="BaseResultMap">
+		SELECT *
+		FROM card c
+		LEFT OUTER JOIN team t ON c.`card_team_id` =
+		t.`team_id`
+		<where>
+			<if test="teamName != null and teamName != '' ">
+				and team_name = #{teamName, jdbcType=VARCHAR}
+			</if>
+			<if test="cardName != null and cardName != '' ">
+				and instr (card_name, #{cardName, jdbcType=VARCHAR}) != 0
+			</if>
+			<if test="cardSex != null and cardSex != '' ">
+				and card_sex = #{cardSex, jdbcType=VARCHAR}
+			</if>
+			<if test="cardIntro != null and cardIntro != '' ">
+				and instr (card_intro, #{cardIntro, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+		LIMIT #{start}, #{pageSize}
+	</select>
+
+	<!-- 动态形成in后面列表 
+	<select id="queryByNames" resultMap="BaseResultMap"> 
+		select * from card 
+		<where> 
+			<if test="names.length > 0"> 
+				card_name in 
+				<foreach collection="names" index="i" item="cardName" open="(" close=")" separator=","> 
+					#{cardName} 
+				</foreach> 
+			</if> 
+		</where> 
+	</select> 
+	-->
+
+</mapper>
