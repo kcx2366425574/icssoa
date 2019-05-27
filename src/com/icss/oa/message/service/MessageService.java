@@ -6,11 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.icss.oa.common.Pager;
 import com.icss.oa.message.dao.MessageMapper;
 import com.icss.oa.message.pojo.Message;
+import com.icss.oa.system.pojo.Employee;
 
 /**
- * ÔÚÏßĞÅÏ¢ÒµÎñ²ã
+ * åœ¨çº¿ä¿¡æ¯ä¸šåŠ¡å±‚
  * @author bhl
  *
  */
@@ -21,53 +24,84 @@ public class MessageService {
 	@Autowired
 	private MessageMapper mapper;
 	
-	//Ìí¼ÓĞÅÏ¢
+	//æ·»åŠ ä¿¡æ¯
 	public void addMes(Message mes){
 		mapper.insert(mes);
 	}
 	
-	//É¾³ıĞÅÏ¢
+	//åˆ é™¤ä¿¡æ¯
 	public void deleteMes(Integer mesId) {
 		mapper.delete(mesId);
 	}
 	
-	//ĞŞ¸ÄĞÅÏ¢
+	//ä¿®æ”¹ä¿¡æ¯
 	public void updateMes(Message mes) {
 		mapper.update(mes);
 	}
 	
-	//¸ù¾İid²éÑ¯ĞÅÏ¢
+	//æ ¹æ®idæŸ¥è¯¢ä¿¡æ¯
+	@Transactional(readOnly = true)
 	public Message queryMesById(Integer mesId) {
 		return mapper.queryById(mesId);
 	}
 	
-	//²éÑ¯È«²¿ĞÅÏ¢
+	//æŸ¥è¯¢å…¨éƒ¨ä¿¡æ¯
+	@Transactional(readOnly = true)
 	public List<Message> queryMesByPage(HashMap<String, Integer> map) {
 		return mapper.queryByPage(map);
 	}
 	
-	//¸ù¾İ·¢ËÍÊ±¼ä²éÑ¯ĞÅÏ¢
+	//æ ¹æ®å‘é€æ—¶é—´æŸ¥è¯¢ä¿¡æ¯
+	@Transactional(readOnly = true)
 	public List<Message> queryMesSendDate(Date mesSendDate) {
 		return mapper.queryBySendDate(mesSendDate);
 	}
 	
-	//¸ù¾İÊÕ¼şÈËÓÊÏä²éÑ¯ĞÅÏ¢
+	//æ ¹æ®æ”¶ä»¶äººé‚®ç®±æŸ¥è¯¢ä¿¡æ¯
+	@Transactional(readOnly = true)
 	public List<Message> queryByReciverEmail(String mesEmail) {
 		return mapper.queryByReciverEmail(mesEmail);
 	}
 	
-	//¸ù¾İÈÕÆÚ½øĞĞÄ£ºı²éÑ¯
+	//æ ¹æ®æ—¥æœŸè¿›è¡Œæ¨¡ç³ŠæŸ¥è¯¢
+	@Transactional(readOnly = true)
 	public List<Message> queryByDateCondition(Integer start, Integer pageSize, String mesSendDate) {
 		return mapper.queryByDateCondition(start, pageSize, mesSendDate);
 	}
 	
-	//¸ù¾İÊÕ¼şÈËÓÊÏä½øĞĞÄ£ºı²éÑ¯
+	//æ ¹æ®æ”¶ä»¶äººé‚®ç®±è¿›è¡Œæ¨¡ç³ŠæŸ¥è¯¢
+	@Transactional(readOnly = true)
 	public List<Message> queryByReciverCondition(Integer start, Integer pageSize, String mesEmail) {
 		return mapper.queryByReciverCondition(start, pageSize, mesEmail);
 	}
 	
-	//¸ù¾İÌâÄ¿Ä£ºı²éÑ¯
+	//æ ¹æ®é¢˜ç›®æ¨¡ç³ŠæŸ¥è¯¢
+	@Transactional(readOnly = true)
 	public List<Message> queryByTitleCondition(Integer start, Integer pageSize, String mesTitle) {
 		return mapper.queryByTitleCondition(start, pageSize, mesTitle);
 	}
+	
+	//æŸ¥è¯¢å…¨éƒ¨ä¿¡æ¯
+	@Transactional(readOnly = true)
+	public List<Message> queryMes() {
+		return mapper.query();
+	}
+	
+	/**
+	 * è¿”å›ä¿¡æ¯æ€»è®°å½•æ•°
+	 */
+	@Transactional(readOnly=true)
+	public int getMesCount() {
+		return mapper.getCount();
+	}
+	
+	/**
+	 * åˆ†é¡µæŸ¥è¯¢ä¿¡æ¯
+	 */
+	@Transactional(readOnly=true)
+	public List<Message> queryMesByPage(Pager pager) {
+		
+		return mapper.queryByPage1(pager.getStart(), pager.getPageSize());
+	}
+
 }

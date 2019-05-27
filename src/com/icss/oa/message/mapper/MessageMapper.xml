@@ -5,8 +5,10 @@
 	<!-- 结果集映射 -->
 	<resultMap id="BaseResultMap" type="com.icss.oa.message.pojo.Message">
 		<id column="mes_id" property="mesId" jdbcType="INTEGER" />
-		<result column="mes_send_confirm" property="mesSendConfirm" jdbcType="VARCHAR" />
-		<result column="mes_read_confirm" property="mesReadConfirm" jdbcType="VARCHAR" />
+		<result column="mes_send_confirm" property="mesSendConfirm"
+			jdbcType="VARCHAR" />
+		<result column="mes_read_confirm" property="mesReadConfirm"
+			jdbcType="VARCHAR" />
 		<result column="mes_send_date" property="mesSendDate" jdbcType="TIMESTAMP" />
 		<result column="mes_info" property="mesInfo" jdbcType="VARCHAR" />
 		<result column="mes_title" property="mesTitle" jdbcType="VARCHAR" />
@@ -16,7 +18,7 @@
 			<result column="sender_name" property="empName" jdbcType="VARCHAR" />
 			<result column="sender_email" property="empEmail" jdbcType="VARCHAR" />
 		</association>
-		
+
 		<association property="mesReciver" javaType="com.icss.oa.system.pojo.Employee">
 			<id column="mes_reciver" property="empId" jdbcType="INTEGER" />
 			<result column="reciver_name" property="empName" jdbcType="VARCHAR" />
@@ -29,16 +31,17 @@
 	<insert id="insert" parameterType="com.icss.oa.message.pojo.Message">
 		insert into message
 		values(default, #{mesTitle}, #{mesSendConfirm},
-			  #{mesReadConfirm}, #{mesSendDate}, #{mesInfo},
-			  #{mesSender.empId},#{mesReciver.empId})
+		#{mesReadConfirm}, #{mesSendDate}, #{mesInfo},
+		#{mesSender.empId},#{mesReciver.empId})
 	</insert>
-	
+
 	<!-- 修改信息，在草稿箱才可以用到，发件箱不可以用到 -->
 	<update id="update" parameterType="com.icss.oa.message.pojo.Message">
 		update message set mes_title =
 		#{mesTitle},
 		mes_sender = #{mesSender.empId},
-		mes_reciver = #{mesReciver.empId},
+		mes_reciver =
+		#{mesReciver.empId},
 		mes_send_confirm = #{mesSendConfirm},
 		mes_read_confirm =
 		#{mesReadConfirm},
@@ -55,63 +58,73 @@
 	</delete>
 
 	<!-- 根据id查询信息 -->
-	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-			   e1.emp_email sender_email, e2.emp_email reciver_email
-		FROM message m 
+	<select id="queryById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
 		LEFT OUTER JOIN employee as e1
-		ON m.`mes_sender` = e1.`emp_id` 
+		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id` 
+		ON m.`mes_reciver` = e2.`emp_id`
 		WHERE mes_id=#{mesId}
 	</select>
 
 	<!-- 简单的查询，把查询结果分页 -->
-	<select id="queryByPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-				e1.emp_email sender_email, e2.emp_email reciver_email
-		FROM message m 
+	<select id="queryByPage" resultMap="BaseResultMap"
+		parameterType="java.util.HashMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
 		LEFT OUTER JOIN employee as e1
-		ON m.`mes_sender` = e1.`emp_id` 
+		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id` 
+		ON m.`mes_reciver` = e2.`emp_id`
 		LIMIT
 		#{start}, #{pageSize}
 	</select>
-	
+
 	<!-- 根据日期进行查询 -->
-	<select id="queryBySendDate" resultMap="BaseResultMap" parameterType="java.util.Date">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-			   e1.emp_email sender_email, e2.emp_email reciver_email
-		FROM message m 
+	<select id="queryBySendDate" resultMap="BaseResultMap"
+		parameterType="java.util.Date">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
 		LEFT OUTER JOIN employee as e1
-		ON m.`mes_sender` = e1.`emp_id` 
+		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id` 
+		ON m.`mes_reciver` = e2.`emp_id`
 		WHERE mes_send_date=#{mesSendDate}
 	</select>
-	
+
 	<!-- 根据收件人的邮箱查询信息 -->
-	<select id="queryByReciverEmail" resultMap="BaseResultMap" parameterType="java.lang.String">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-			   e1.emp_email sender_email, e2.emp_email reciver_email
-		FROM message m 
+	<select id="queryByReciverEmail" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
 		LEFT OUTER JOIN employee as e1
-		ON m.`mes_sender` = e1.`emp_id` 
+		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id` 
+		ON m.`mes_reciver` = e2.`emp_id`
 		WHERE e2.`emp_email`=#{mesEmail}
 	</select>
-	
+
 	<!-- 根据日期进行模糊查询 -->
-	<select id="queryByDateCondition" parameterType="com.icss.oa.message.pojo.Message" resultMap="BaseResultMap">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-			   e1.emp_email sender_email, e2.emp_email reciver_email
-		FROM message m 
+	<select id="queryByDateCondition" parameterType="com.icss.oa.message.pojo.Message"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
 		LEFT OUTER JOIN employee as e1
-		ON m.`mes_sender` = e1.`emp_id` 
+		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id` 
+		ON m.`mes_reciver` = e2.`emp_id`
 		<where>
 			<if test="mesSendDate != null and mesSendDate != '' ">
 				and mes_send_date like concat('%', #{mesSendDate}, '%')
@@ -119,39 +132,58 @@
 		</where>
 		LIMIT #{start}, #{pageSize}
 	</select>
-	
+
 	<!-- 根据收件人邮箱进行模糊查询 -->
-	<select id="queryByReciverCondition" parameterType="com.icss.oa.message.pojo.Message" resultMap="BaseResultMap">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-			   e1.emp_email sender_email, e2.emp_email reciver_email
-		FROM message m 
+	<select id="queryByReciverCondition" parameterType="com.icss.oa.message.pojo.Message"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
 		LEFT OUTER JOIN employee as e1
-		ON m.`mes_sender` = e1.`emp_id` 
+		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id` 
+		ON m.`mes_reciver` = e2.`emp_id`
 		<where>
 			<if test="empEmail != null and empEmail != '' ">
-				and e2.`emp_email` like concat('%',#{empEmail,jdbcType=VARCHAR},'%')
+				and e2.`emp_email` like
+				concat('%',#{empEmail,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
 		LIMIT #{start}, #{pageSize}
 	</select>
-	
+
 	<!-- 根据题目进行模糊查询 -->
-	<select id="queryByTitleCondition" parameterType="com.icss.oa.message.pojo.Message" resultMap="BaseResultMap">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-			   e1.emp_email sender_email, e2.emp_email reciver_email
-		FROM message m 
+	<select id="queryByTitleCondition" parameterType="com.icss.oa.message.pojo.Message"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
 		LEFT OUTER JOIN employee as e1
-		ON m.`mes_sender` = e1.`emp_id` 
+		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id` 
+		ON m.`mes_reciver` = e2.`emp_id`
 		<where>
 			<if test="mesTitle != null and mesTitle != '' ">
-				and mes_title like concat('%',#{mesTitle,jdbcType=VARCHAR},'%')
+				and mes_title like
+				concat('%',#{mesTitle,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
 		LIMIT #{start}, #{pageSize}
-		</select>
+	</select>
+
+	<!-- 查询全部信息 -->
+	<select id="query" resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id
+		mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name
+		reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email
+		FROM message m
+		LEFT OUTER JOIN employee as e1
+		ON m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2
+		ON m.`mes_reciver` = e2.`emp_id`
+	</select>
 
 </mapper>

@@ -1,6 +1,6 @@
 package com.icss.oa.system.pojo;
 
-import java.util.Date;
+import java.sql.Date;
 
 
 
@@ -15,7 +15,7 @@ public class Employee {
 	private String empPwd;
 	
 	private String empSex;
-	
+
 	private Date empBirthday;
 	
 	private String empPhone;

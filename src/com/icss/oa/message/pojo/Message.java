@@ -5,7 +5,7 @@ import java.util.Date;
 import com.icss.oa.system.pojo.Employee;
 
 /**
- * ÔÚÏßĞÅÏ¢ÊµÌåÀà
+ * åœ¨çº¿ä¿¡æ¯å®ä½“ç±»
  * @author bhl
  */
 

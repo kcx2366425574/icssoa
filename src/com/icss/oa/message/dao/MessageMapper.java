@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.icss.oa.message.pojo.Message;
 
 /**
- * ÔÚÏßĞÅÏ¢dao²ã
+ * åœ¨çº¿ä¿¡æ¯daoå±‚
  * 
  * @author bhl
  *
@@ -24,19 +24,25 @@ public interface MessageMapper {
 
 	Message queryById(Integer mesId);
 
-	List<Message> queryByPage(HashMap<String, Integer> map); //²éÑ¯È«²¿ĞÅÏ¢£¬½øĞĞ·ÖÒ³
+	List<Message> queryByPage(HashMap<String, Integer> map); //æŸ¥è¯¢å…¨éƒ¨ä¿¡æ¯ï¼Œè¿›è¡Œåˆ†é¡µ
+	
+	List<Message> queryByPage1(@Param("start") Integer start, @Param("pageSize") Integer pageSize);
 
-	List<Message> queryBySendDate(Date mesSendDate); //¸ù¾İÈÕÆÚ²éÑ¯ĞÅÏ¢
+	List<Message> queryBySendDate(Date mesSendDate); //æ ¹æ®æ—¥æœŸæŸ¥è¯¢ä¿¡æ¯
 
-	List<Message> queryByReciverEmail(String mesEmail); //¸ù¾İÊÕ¼şÈËµÄÓÊÏä²éÑ¯ĞÅÏ¢
+	List<Message> queryByReciverEmail(String mesEmail); //æ ¹æ®æ”¶ä»¶äººçš„é‚®ç®±æŸ¥è¯¢ä¿¡æ¯
 
 	List<Message> queryByDateCondition(@Param("start") Integer start, @Param("pageSize") Integer pageSize,
-			@Param("mesSendDate") String mesSendDate); //¸ù¾İÈÕÆÚ½øĞĞÄ£ºı²éÑ¯
+			@Param("mesSendDate") String mesSendDate); //æ ¹æ®æ—¥æœŸè¿›è¡Œæ¨¡ç³ŠæŸ¥è¯¢
 
 	List<Message> queryByReciverCondition(@Param("start") Integer start, @Param("pageSize") Integer pageSize,
-			@Param("empEmail") String empEmail); //¸ù¾İÊÕ¼şÈËÓÊÏä½øĞĞÄ£ºı²éÑ¯
+			@Param("empEmail") String empEmail); //æ ¹æ®æ”¶ä»¶äººé‚®ç®±è¿›è¡Œæ¨¡ç³ŠæŸ¥è¯¢
 	
 	List<Message> queryByTitleCondition(@Param("start") Integer start, @Param("pageSize") Integer pageSize,
-			@Param("mesTitle") String mesTitle); //¸ù¾İ·¢ËÍÌâÄ¿½øĞĞÄ£ºı²éÑ¯
+			@Param("mesTitle") String mesTitle); //æ ¹æ®å‘é€é¢˜ç›®è¿›è¡Œæ¨¡ç³ŠæŸ¥è¯¢
+	
+	List<Message> query();
+	
+	int getCount(); //è·å¾—æ€»æ•°
 	
 }
