@@ -11,7 +11,7 @@ public class Folder {
 
     private Double folSize;
 
-    private Integer folSuperFol;
+    private Folder folSuperFol;
 
     private String folDescription;
 
@@ -53,11 +53,11 @@ public class Folder {
 		this.folSize = folSize;
 	}
 
-	public Integer getFolSuperFol() {
+	public Folder getFolSuperFol() {
 		return folSuperFol;
 	}
 
-	public void setFolSuperFol(Integer folSuperFol) {
+	public void setFolSuperFol(Folder folSuperFol) {
 		this.folSuperFol = folSuperFol;
 	}
 
@@ -105,7 +105,7 @@ public class Folder {
 		super();
 	}
 
-	public Folder(Integer folId, String folName, Double folSize, Integer folSuperFol, String folDescription,
+	public Folder(Integer folId, String folName, Double folSize, Folder folSuperFol, String folDescription,
 			String folState, Date folUpdateDate, Date folCreateDate, Employee folEmp) {
 		super();
 		this.folId = folId;
@@ -119,7 +119,7 @@ public class Folder {
 		this.folEmp = folEmp;
 	}
 
-	public Folder(String folName, Double folSize, Integer folSuperFol, String folDescription, String folState,
+	public Folder(String folName, Double folSize, Folder folSuperFol, String folDescription, String folState,
 			Date folUpdateDate, Date folCreateDate, Employee folEmp) {
 		super();
 		this.folName = folName;

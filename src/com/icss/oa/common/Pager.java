@@ -1,19 +1,17 @@
 package com.icss.oa.common;
 
-/*
- * ¹²Í¬µÄ·ÖÒ³¹¦ÄÜ
- */
+
 public class Pager {
 
-	private int recordCount; //×Ü¼ÇÂ¼Êı
+	private int recordCount; //æ€»è®°å½•æ•°
 	
-	private int pageSize = 10; //Ã¿Ò³¶àÉÙÌõ
+	private int pageSize = 10; //æ¯é¡µè®°å½•æ•°
 	
-	private int pageCount; //¹²¼¸Ò³
+	private int pageCount; //æ€»é¡µæ•°
 	
-	private int pageNum; //µ±Ç°Ò³Âë
+	private int pageNum; //å½“å‰é¡µç 
 	
-	private int start; //µ±Ç°¼ÇÂ¼Ò³ÆğÊ¼ÏÂ±ê
+	private int start; //å½“å‰é¡µèµ·å§‹è®°å½•ä¸‹æ ‡
 	
 	public Pager(int recordCount, int pageSize, int pageNum){
 		
@@ -21,22 +19,21 @@ public class Pager {
 		this.pageSize = pageSize;
 		this.pageNum = pageNum;
 		
-		//¼ÆËã¹²¼¸Ò³
+		
 		this.pageCount = this.recordCount / this.pageSize;
 		if (this.recordCount % this.pageSize != 0){
 			this.pageCount ++;
 		}
 		
-		//¼ÆËãÒ³Âë
+		if (this.pageNum > this.pageCount){
+			this.pageNum = this.pageCount;
+		}
 		if (this.pageNum < 1){
 			this.pageNum = 1;
 		}
 		
-		if (this.pageNum > this.pageCount){
-			this.pageNum = this.pageCount;
-		}
 		
-		//µ±Ç°ÆğÊ¼ÏÂ±ê
+		
 		this.start = (this.pageNum - 1 ) * this.pageSize;
 	}
 
@@ -80,11 +77,5 @@ public class Pager {
 		this.start = start;
 	}
 	
-	public static void main(String[] args){
-		
-		Pager pager = new Pager(6, 2, 1);
-		System.out.println("pageCount" + pager.getPageCount());
-		System.out.println(pager.getStart());
-	}
 	
 }

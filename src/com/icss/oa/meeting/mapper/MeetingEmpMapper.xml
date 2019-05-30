@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.meeting.dao.MeetingEmpMapper" >
+  <resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.MeetingEmp" >
+    <id column="meeting_emp_id" property="meetingEmpId" jdbcType="INTEGER" />
+    <result column="meeting" property="meeting" jdbcType="INTEGER" />
+    <result column="emp" property="emp" jdbcType="INTEGER" />
+  		
+		<association property="meeting"
+			javaType="com.icss.oa.meeting.pojo.Meeting">
+			<id column="meeting_id" property="meetingId" jdbcType="INTEGER" />
+		    <result column="meeting_startTime" property="startTime"
+			jdbcType="TIMESTAMP" />
+		    <result column="meeting_endTime" property="endTime" jdbcType="TIMESTAMP" />
+		    <result column="meeting_promoter" property="promoter" jdbcType="INTEGER" />
+		    <result column="meeting_room" property="meetingRoom" jdbcType="INTEGER" />
+		    <result column="meeting_theme" property="meetingTheme"
+			jdbcType="VARCHAR" />
+		    <result column="meeting_state" property="meetingState"
+			jdbcType="VARCHAR" />
+		</association>
+		
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
+				<id column="emp_id" property="empId" jdbcType="INTEGER" />
+		        <result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		        <result column="emp_login_name" property="empLoginName" jdbcType="VARCHAR" />
+		        <result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+		        <result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
+		        <result column="emp_birthday" property="empBirthday" jdbcType="DATE" />
+		        <result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
+		        <result column="emp_sal" property="empSal" jdbcType="INTEGER" />
+		        <result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
+		        <result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+		</association>
+
+	
+	</resultMap>
+
+
+	<!-- 插入记录 -->
+	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.MeetingEmp">
+		insert into meeting_emp
+		(meeting_emp_id, meeting, emp
+		)
+		values (default,
+		#{meeting.meetingId,jdbcType=INTEGER}, #{emp.empId,jdbcType=INTEGER}
+		)
+	</insert>
+
+	<!-- 删除记录 -->
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from meeting_emp
+		where
+		meeting_emp_id = #{meetingEmpId,jdbcType=INTEGER}
+	</delete>
+
+	<!-- 查询会议数据数量 -->
+	<select id="getMeetingEmpCount" resultType="java.lang.Integer" >
+	    SELECT COUNT(*)
+        FROM meeting_emp 
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="queryByPage" resultMap="BaseResultMap">
+		SELECT *
+		FROM
+		meeting_emp me
+		LEFT OUTER JOIN employee ON
+		employee.`emp_id`=me.`emp`
+		LEFT OUTER JOIN meeting ON
+		meeting.`meeting_id`=me.`meeting`
+		LIMIT
+		#{start},#{pageSize}
+	</select>
+
+	<!-- 使用mysql的concat函数动态查询参会人员 -->
+	<select id="queryByCondition" resultMap="BaseResultMap">
+		SELECT *
+		FROM
+		meeting_emp me
+		<where>
+			<if test="meetingEmpId != null ">
+				and meeting_emp_id=#{meetingEmpId,jdbcType=INTEGER}
+			</if>
+			<if test="meetingId != null ">
+				and meeting=#{meetingId,jdbcType=INTEGER}
+			</if>
+			<if test="empId!= null ">
+				and emp=#{empId,jdbcType=INTEGER}
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}
+	</select>
+
+</mapper>

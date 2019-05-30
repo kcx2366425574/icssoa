@@ -8,11 +8,11 @@ public interface TeamMapper {
 
 	void insert(String teamName);
 
-	void delete(String teamName);
+	void delete(Integer teamId);
 	
 	void update(Team team);
 	
-	Team queryByName(String teamName);
+	Team queryById(Integer teamId);
 	
 	List<Team> query();
 }

@@ -10,8 +10,8 @@
 	</resultMap>
 
 	<insert id="insert" parameterType="com.icss.oa.system.pojo.Department">
-		insert into department values
-		(default,#{deptName},#{deptInfo})
+		insert into department (dept_id,dept_name, dept_info) values
+		(default,#{deptName,jdbcType=VARCHAR},#{deptInfo,jdbcType=VARCHAR})
 	</insert>
 
 	<update id="update" parameterType="Department">
@@ -29,9 +29,13 @@
 		select * from department where dept_id=#{deptId}
 	</select>
 	
-	<select id="query" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+	<select id="query" resultMap="BaseResultMap">
 		select * from department order by dept_id
 		LIMIT #{start},#{pageSize}	
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from department
 	</select>
 
 </mapper>

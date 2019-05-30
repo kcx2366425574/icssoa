@@ -34,11 +34,11 @@ public class TestCardMapper {
 	// 删除数据
 	@Test
 	public void testDelete() {
-		String[] names = {"qqq", "www"};
-		for (String name : names) {
-			int id = mapper.queryTeamIdByName(name);
-			mapper.delete(name);
-			mapper.lowTeamNum(id);
+		Integer[] ids = {36, 37};
+		for (Integer id : ids) {
+			int id0 = mapper.queryTeamIdById(id);
+			mapper.delete(id);
+			mapper.lowTeamNum(id0);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class TestCardMapper {
 	//条件获取记录数
 	@Test
 	public void testGetCountByCondition() {
-		int count = mapper.getCountByCondition(0, 5, null, null, "男", "Java");
+		int count = mapper.getCountByCondition(null, null, "男", "Java");
 		System.out.println(count);
 	}
 

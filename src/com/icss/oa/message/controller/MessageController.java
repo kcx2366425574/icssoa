@@ -1,5 +1,6 @@
 package com.icss.oa.message.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.icss.oa.common.Pager;
 import com.icss.oa.message.pojo.Message;
 import com.icss.oa.message.service.MessageService;
 
@@ -30,21 +32,8 @@ public class MessageController {
 	 * @param dept
 	 */
 	@RequestMapping("/mes/addMes")
-	public void add(HttpServletRequest request, HttpServletResponse response, Message Message) {
+	public void addMes(HttpServletRequest request, HttpServletResponse response, Message Message) {
 		service.addMes(Message);
-	}
-
-	/**
-	 * 查询职务
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping("/mes/queryMes")
-	@ResponseBody
-	public List<Message> query(HttpServletRequest request, HttpServletResponse response) {
-		return service.queryMes();
 	}
 
 	/**
@@ -70,34 +59,49 @@ public class MessageController {
 	public void update(HttpServletRequest request, HttpServletResponse response, Message Message) {
 		service.updateMes(Message);
 	}
-
+	
 	/**
-	 * 通过id查询职务
-	 * 
+	 * 分页查询信息,简单查询然后进行分页
 	 * @param request
 	 * @param response
+	 * @param emp
+	 * @param pageNum
+	 * @param pageSize
 	 * @return
 	 */
-	@RequestMapping("/mes/queryMesById")
+	@RequestMapping("/mes/queryByPage")
 	@ResponseBody
-	public Message queryMesById(HttpServletRequest request, HttpServletResponse response, Integer mesId) {
-		return service.queryMesById(mesId);
-	}
+	public HashMap<String, Object> queryByPage(HttpServletRequest request, HttpServletResponse response, Message mes, Integer pageNum, Integer pageSize) {
 
-	/**
-	 * 通过题目进行模糊查询
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping("/mes/queryByTitleCondition")
-	@ResponseBody
-	public List<Message> queryByTitleCondition(HttpServletRequest request, HttpServletResponse response, Integer s,
-			Integer pageSize, String mesTitle) {
-		return service.queryByTitleCondition(s, pageSize, mesTitle);
+		Pager pager = new Pager(service.getMesCount(), pageSize, pageNum);
+	
+		List<Message> list = service.queryByPage(pageNum, pageSize);
+		
+		//在Map集合中存储分页数据和员工数据
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
+		
+		return map;
 	}
 	
-	
+	@RequestMapping("/mes/queryByCondition")
+	@ResponseBody
+	public HashMap<String, Object> queryByCondition(HttpServletRequest request, HttpServletResponse response, 
+			Integer start, Integer pageSize,
+			String mesSendDate, String empEmail, String mesTitle
+			) {
+		
+		Pager pager = new Pager(service.getMesCount(), pageSize, start);
+		
+		List<Message> list = service.queryMesByCondition(start, pageSize, mesSendDate, empEmail, mesTitle);
+		
+		//在Map集合中存储分页数据和员工数据
+				HashMap<String, Object> map = new HashMap<>();
+				map.put("pager", pager);
+				map.put("list", list);
+		
+		return map;
+	}
 
 }

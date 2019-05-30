@@ -1,17 +1,14 @@
 package com.icss.oa.system.service;
 
-import java.util.HashMap;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.icss.oa.system.dao.NoticeMapper;
 import com.icss.oa.system.pojo.Notice;
 
 /**
- * 公告业务
+ * 锟斤拷锟斤拷业锟斤拷
  * @author Administrator
  *
  */
@@ -24,43 +21,49 @@ public class NoticeService {
 	private NoticeMapper mapper;
 	
 	/**
-	 * 增加公告
+	 * 鎻掑叆鍏憡
 	 */
 	public void addNotice(Notice notice){
 		mapper.insert(notice);
 	}
 	
 	/**
-	 * 删除公告
+	 * 鍒犻櫎鍏憡
 	 */
-	public void deleteNotice(Notice notice){
-		mapper.delete(notice.getNoticeId());
+	public void deleteNotice(Integer noticeId){
+		mapper.delete(noticeId);
 	}
 	
 	/**
-	 * 更新公告
+	 * 鏇存柊鍏憡
 	 */
 	public void updateNotice(Notice notice){
 		mapper.update(notice);
 	}
 	
 	/**
-	 * id查询公告
+	 * id鏌ヨ鍏憡
 	 */
 	public Notice queryById(int id){
 		return mapper.queryById(id);
 	}
 	
 	/**
-	 * name查询公告
+	 * 鍚嶇О鏌ヨ鍏憡
 	 */
 	public Notice queryByName(String name){
 		return mapper.queryByName(name);
 	}
 	/**
-	 * 分页查询公告
+	 * 鍒嗛〉鏌ヨ鍏憡
 	 */
-	public List<Notice> query(int start,int pageSize){
-		return query(start,pageSize);
+	public List<Notice> queryNotice(int start,int pageSize){
+		return mapper.query(start,pageSize);
 	}
+
+	public int getNoticeCount() {
+		return mapper.getCount();
+	}
+	
+	
 }

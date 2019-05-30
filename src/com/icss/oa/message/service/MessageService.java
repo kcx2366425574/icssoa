@@ -1,16 +1,13 @@
 package com.icss.oa.message.service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.icss.oa.common.Pager;
 import com.icss.oa.message.dao.MessageMapper;
 import com.icss.oa.message.pojo.Message;
-import com.icss.oa.system.pojo.Employee;
 
 /**
  * 在线信息业务层
@@ -39,52 +36,15 @@ public class MessageService {
 		mapper.update(mes);
 	}
 	
-	//根据id查询信息
-	@Transactional(readOnly = true)
-	public Message queryMesById(Integer mesId) {
-		return mapper.queryById(mesId);
-	}
-	
 	//查询全部信息
 	@Transactional(readOnly = true)
 	public List<Message> queryMesByPage(HashMap<String, Integer> map) {
 		return mapper.queryByPage(map);
 	}
 	
-	//根据发送时间查询信息
 	@Transactional(readOnly = true)
-	public List<Message> queryMesSendDate(Date mesSendDate) {
-		return mapper.queryBySendDate(mesSendDate);
-	}
-	
-	//根据收件人邮箱查询信息
-	@Transactional(readOnly = true)
-	public List<Message> queryByReciverEmail(String mesEmail) {
-		return mapper.queryByReciverEmail(mesEmail);
-	}
-	
-	//根据日期进行模糊查询
-	@Transactional(readOnly = true)
-	public List<Message> queryByDateCondition(Integer start, Integer pageSize, String mesSendDate) {
-		return mapper.queryByDateCondition(start, pageSize, mesSendDate);
-	}
-	
-	//根据收件人邮箱进行模糊查询
-	@Transactional(readOnly = true)
-	public List<Message> queryByReciverCondition(Integer start, Integer pageSize, String mesEmail) {
-		return mapper.queryByReciverCondition(start, pageSize, mesEmail);
-	}
-	
-	//根据题目模糊查询
-	@Transactional(readOnly = true)
-	public List<Message> queryByTitleCondition(Integer start, Integer pageSize, String mesTitle) {
-		return mapper.queryByTitleCondition(start, pageSize, mesTitle);
-	}
-	
-	//查询全部信息
-	@Transactional(readOnly = true)
-	public List<Message> queryMes() {
-		return mapper.query();
+	public List<Message> queryByPage(Integer start, Integer pageSize) {
+		return mapper.queryByPage1(start, pageSize);
 	}
 	
 	/**
@@ -100,8 +60,13 @@ public class MessageService {
 	 */
 	@Transactional(readOnly=true)
 	public List<Message> queryMesByPage(Pager pager) {
-		
 		return mapper.queryByPage1(pager.getStart(), pager.getPageSize());
+	}
+	
+	//全部的模糊查询
+	@Transactional(readOnly=true)
+	public List<Message> queryMesByCondition(Integer start, Integer pageSize, String mesSendDate, String empEmail, String mesTitle) {
+		return mapper.queryByCondition(start, pageSize, mesSendDate, empEmail, mesTitle);
 	}
 
 }

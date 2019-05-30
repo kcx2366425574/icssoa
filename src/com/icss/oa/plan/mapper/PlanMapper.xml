@@ -18,7 +18,7 @@
 	    insert into plan values(default,#{planName,jdbcType=VARCHAR},#{planTime},#{planInfo,jdbcType=VARCHAR},#{dept.deptId})
 	</insert>
 	
-	<select id="queryByTime" parameterType="java.lang.String" resultMap="BaseResultMap">
+	<select id="queryByCondition" parameterType="java.lang.String" resultMap="BaseResultMap">
 	    select p.*,de.dept_name from plan p INNER JOIN department de on p.dept_id=de.dept_id 
 	    <where>
 	      <if test="planTime != null and planTime !='' ">
@@ -28,12 +28,28 @@
 	          and instr(plan_name,#{planName,jdbcType=VARCHAR})!=0
 	      </if>
 	      
-	      <if test="deptName != null and deptName !='' ">
-	          and instr(dept_name,#{deptName,jdbcType=VARCHAR})!=0
+	      <if test="deptId != null and deptId !='' ">
+	          and instr(dept_id,#{deptId,jdbcType=VARCHAR})!=0
+	      </if>
+	    </where>
+	    LIMIT #{start}, #{pageSize}
+	</select>
+	
+	<select id="getQueryCount" resultType="java.lang.Integer">
+	   select COUNT(*) from plan p INNER JOIN department de on p.dept_id=de.dept_id 
+	    <where>
+	      <if test="planTime != null and planTime !='' ">
+	          and plan_time like #{planTime}
+	      </if>
+	      <if test="planName != null and planName !='' ">
+	          and instr(plan_name,#{planName,jdbcType=VARCHAR})!=0
+	      </if>
+	      
+	      <if test="deptId != null and deptId !='' ">
+	          and instr(dept_id,#{deptId,jdbcType=VARCHAR})!=0
 	      </if>
 	    </where>
 	</select>
-	
 	
 	<delete id="delete" parameterType="java.lang.String">
 	    delete from plan where plan_name=#{planName,jdbcType=VARCHAR}

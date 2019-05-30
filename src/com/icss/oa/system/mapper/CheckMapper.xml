@@ -5,26 +5,40 @@
 	<!-- 查询结果集映射 -->
 	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Check">
 		<id column="check_id" property="checkId" jdbcType="INTEGER" />
-		<result column="check_time" property="checkTime" jdbcType="VARCHAR" />
-		<association property="employee" javaType="com.icss.oa.system.pojo.Employee">
+		<result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
 			<id column="employee_id" property="empId" jdbcType="INTEGER" />
 			<result column="employee_name" property="empName" jdbcType="VARCHAR" />
 		</association>
 	</resultMap>
 
 	<insert id="insert" parameterType="com.icss.oa.system.pojo.Check">
-		insert into check values
-		(default,#{checkEmpId},#{checkTime})
+		insert into checks (check_id,check_emp_id,check_time)
+		values(default,#{emp.empId},#{checkTime})
 	</insert>
 
 	
-	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-		select * from check where check_id=#{checkId}
+	<select id="queryByEmpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * 
+		from checks
+		where check_emp_id=#{checkEmpId}
+		LIMIT #{start},#{pageSize}
 	</select>
 	
-	<select id="query" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-		select * from check order by check_id
+	<select id="query" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from checks 
+		order by check_id
 		LIMIT #{start},#{pageSize}
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from checks
+	</select>
+	
+	<select id="getECount" resultType="java.lang.Integer">
+		select count(*) 
+		from checks
+		where check_emp_id=#{checkId}
 	</select>
 
 </mapper>

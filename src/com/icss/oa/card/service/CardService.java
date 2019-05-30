@@ -29,11 +29,11 @@ public class CardService {
 	}
 	
 	//删除数据
-	public void deleteCard(String[] names) {
-		for (String name : names) {
-			int id = mapper.queryTeamIdByName(name);
-			mapper.delete(name);
-			mapper.lowTeamNum(id);
+	public void deleteCard(Integer[] ids) {
+		for (Integer id : ids) {
+			int id0 = mapper.queryTeamIdById(id);
+			mapper.delete(id);
+			mapper.lowTeamNum(id0);
 		}
 	}
 		
@@ -46,14 +46,9 @@ public class CardService {
 		mapper.lowTeamNum(id0);
 	}
 	
-	//获取名片总记录数
-	public Integer getCardCount() {
-		return mapper.getCount();
-	}
-	
 	//条件获取记录数
-	public Integer getCardCountByCondition(Pager page, String teamName, String cardName, String cardSex, String cardIntro) {
-		return mapper.getCountByCondition(page.getStart(), page.getPageSize(), teamName, cardName, cardSex, cardIntro);
+	public Integer getCardCountByCondition(String teamName, String cardName, String cardSex, String cardIntro) {
+		return mapper.getCountByCondition(teamName, cardName, cardSex, cardIntro);
 	}
 	
 	//条件查询(分页、分组名称、姓名、性别、介绍)

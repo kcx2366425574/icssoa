@@ -12,6 +12,14 @@ public class Notice {
 	}
 	
 
+	public Notice(String noticeName, String noticeInfo, Employee emp) {
+		super();
+		this.noticeName = noticeName;
+		this.noticeInfo = noticeInfo;
+		this.emp = emp;
+	}
+
+
 	public Notice(int noticeId, String noticeName, String noticeInfo, Employee emp) {
 		super();
 		this.noticeId = noticeId;
@@ -52,7 +60,11 @@ public class Notice {
 	public void setEmp(Employee emp) {
 		this.emp = emp;
 	}
-
+	
+	@Override
+	public String toString() {
+		return "notice [noticeId=" + noticeId + ", noticeName=" + noticeName + ",noticeInfo="+noticeInfo+"]";
+	}
 	
 	
 	

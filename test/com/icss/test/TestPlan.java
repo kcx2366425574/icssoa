@@ -26,18 +26,24 @@ public class TestPlan {
 	//插入plan
 	public void testInsert() {
 		Department dept = new Department();
-		dept.setDeptId(3);
-		Plan plan = new Plan("星期四的计划", Date.valueOf("2019-03-22"), "写完测试类", dept);
+		dept.setDeptId(2);
+		Plan plan = new Plan("放松", Date.valueOf("2019-05-27"), "这周五出去郊游", dept);
         mapper.insert(plan);
 	}
 	
 	@Test
 	//查询时间，将年月日封装成一个string
-	public void testTime(){
-		List<Plan> list=mapper.queryByCondition("%05%","计划","技术部");
+	public void queryByCondition(){
+		List<Plan> list=mapper.queryByCondition(0,5,"%05%","",null);
         for (Plan plan : list) {
 			System.out.println(plan);
 		}
+	}
+	
+	@Test
+	public void testQueryCount(){
+		int count = mapper.getQueryCount("%08%","",null);
+		System.out.println(count);
 	}
 	
 	@Test 

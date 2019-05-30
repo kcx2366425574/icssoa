@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.meeting.dao.MeetingMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.Meeting">
+		<id column="meeting_id" property="meetingId" jdbcType="INTEGER" />
+		<result column="meeting_startTime" property="startTime"
+			jdbcType="TIMESTAMP" />
+		<result column="meeting_endTime" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="meeting_promoter" property="promoter" jdbcType="INTEGER" />
+		<result column="meeting_room" property="meetingRoom" jdbcType="INTEGER" />
+		<result column="meeting_theme" property="meetingTheme"
+			jdbcType="VARCHAR" />
+		<result column="meeting_state" property="meetingState"
+			jdbcType="VARCHAR" />
+
+		<association property="meetingRoom"
+			javaType="com.icss.oa.meeting.pojo.MeetingRoom">
+			<id column="meeting_room_id" property="meetingRoomId" jdbcType="INTEGER" />
+			<result column="meeting_room_name" property="meetingRoomName"
+				jdbcType="VARCHAR" />
+			<result column="meeting_room_state" property="meetingRoomState"
+				jdbcType="VARCHAR" />
+			<result column="meeting_room_location" property="meetingRoomLocation"
+				jdbcType="VARCHAR" />
+			<result column="meeting_room_size" property="meetingRoomSize"
+				jdbcType="INTEGER" />
+			<result column="meeting_room_condition" property="meetingRoomCondition"
+				jdbcType="VARCHAR" />
+		</association>
+
+		<association property="promoter" javaType="com.icss.oa.system.pojo.Employee">
+				<id column="emp_id" property="empId" jdbcType="INTEGER" />
+		        <result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		        <result column="emp_login_name" property="empLoginName"
+			jdbcType="VARCHAR" />
+		        <result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+		        <result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
+		        <result column="emp_birthday" property="empBirthday" jdbcType="DATE" />
+		        <result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
+		        <result column="emp_sal" property="empSal" jdbcType="INTEGER" />
+		        <result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
+		        <result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		meeting_id, meeting_startTime, meeting_endTime,
+		meeting_promoter, meeting_room,
+		meeting_theme,
+		meeting_state
+	</sql>
+
+	<!-- 增加新会议 -->
+	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.Meeting">
+		insert into meeting
+		(meeting_id, meeting_startTime, meeting_endTime,
+		meeting_promoter,
+		meeting_room, meeting_theme,
+		meeting_state)
+		values (default,
+		#{startTime,jdbcType=TIMESTAMP},
+		#{endTime,jdbcType=TIMESTAMP},
+		#{promoter.empId,jdbcType=INTEGER},
+		#{meetingRoom.meetingRoomId,jdbcType=INTEGER},
+		#{meetingTheme,jdbcType=VARCHAR},
+		#{meetingState,jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 删除会议 -->
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from meeting
+		where
+		meeting_id = #{meetingId,jdbcType=INTEGER}
+	</delete>
+	
+
+	<!-- 修改会议信息 -->
+	<update id="update" parameterType="com.icss.oa.meeting.pojo.Meeting">
+		update meeting
+		set
+		meeting_startTime = #{startTime,jdbcType=TIMESTAMP},
+		meeting_endTime =
+		#{endTime,jdbcType=TIMESTAMP},
+		meeting_promoter =
+		#{promoter.empId,jdbcType=INTEGER},
+		meeting_room =
+		#{meetingRoom.meetingRoomId,jdbcType=INTEGER},
+		meeting_theme =
+		#{meetingTheme,jdbcType=VARCHAR},
+		meeting_state =
+		#{meetingState,jdbcType=VARCHAR}
+		where meeting_id =
+		#{meetingId,jdbcType=INTEGER}
+	</update>
+
+	<!-- 修改会议室状态 -->
+	<update id="updateMeetingState" parameterType="com.icss.oa.meeting.pojo.Meeting">
+		update meeting
+		set
+		meeting_state=#{meetingState,jdbcType=VARCHAR}
+		where
+		meeting_id=#{meetingId,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 查询会议数据数量 -->
+	<select id="getMeetingCount" resultType="java.lang.Integer" >
+	    SELECT COUNT(*)
+        FROM meeting m
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="queryByPage2" resultMap="BaseResultMap">
+		SELECT m.`meeting_id`,m.`meeting_startTime`
+		,m.`meeting_endTime`,m.`meeting_promoter`,m.`meeting_theme`,m.`meeting_state`,e.`emp_name`,mr.`meeting_room_name`,mr.`meeting_room_location`
+		FROM meeting m
+		LEFT OUTER JOIN employee e ON
+		m.`meeting_promoter`=e.`emp_id`
+		LEFT OUTER JOIN meeting_room mr ON
+		m.`meeting_room`=mr.`meeting_room_id`
+		order by m.meeting_id
+		LIMIT
+		#{start},#{pageSize}
+	</select>
+
+	<!-- 根据会议编号查询会议信息 -->
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from meeting
+		where meeting_id = #{meetingId,jdbcType=INTEGER}
+	</select>
+
+	<!-- 查询全部会议数据的SQL语句操作 -->
+	<select id="query" resultMap="BaseResultMap">
+		select * from meeting order by
+		meeting_id
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="queryByPage" resultMap="BaseResultMap"
+		parameterType="java.util.HashMap">
+		select * from meeting order by meeting_id
+		LIMIT
+		#{start},#{pageSize}
+	</select>
+
+	<!-- 使用mysql的instr函数判断是否包含数据,模糊查询 -->
+	<select id="queryByCondition" parameterType="com.icss.oa.meeting.pojo.Meeting"
+		resultMap="BaseResultMap">
+		SELECT m.`meeting_id`,m.`meeting_startTime`
+		,m.`meeting_endTime`,m.`meeting_promoter`,m.`meeting_theme`,m.`meeting_state`,e.`emp_name`,mr.`meeting_room_name`,mr.`meeting_room_location`
+		FROM meeting m
+		LEFT OUTER JOIN employee e ON
+		m.`meeting_promoter`=e.`emp_id`
+		LEFT OUTER JOIN meeting_room mr ON
+		m.`meeting_room`=mr.`meeting_room_id`
+		<where>
+			<if test="meetingId != null and meetingId !='' ">
+				and meeting_id=#{meetingId,jdbcType=INTEGER}
+			</if>
+			<if test="empName != null and empName!='' ">
+				and instr(emp_name,#{empName,jdbcType=VARCHAR})!=0
+			</if>
+			<if test="meetingState != null and meetingState != '' ">
+				and meeting_state LIKE
+				CONCAT('%',#{meetingState,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="startTime != null and startTime != '' ">
+				and meeting_startTime LIKE #{startTime}
+			</if>
+			<if test="meetingTheme != null and meetingTheme != '' ">
+				and meeting_theme LIKE
+				CONCAT('%',#{meetingTheme,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomName != null and meetingRoomName != '' ">
+				and meeting_room_name LIKE
+				CONCAT('%',#{meetingRoomName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomLocation != null and meetingRoomLocation != '' ">
+				and meeting_room_location LIKE
+				CONCAT('%',#{meetingRoomLocation,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}
+	</select>
+
+
+
+</mapper>

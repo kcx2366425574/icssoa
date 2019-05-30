@@ -52,8 +52,8 @@ public class TeamController {
 	 * @param team
 	 */
 	@RequestMapping("/team/delete")
-	public void delete(HttpServletRequest request,HttpServletResponse response,String teamName) {
-		service.deleteTeam(teamName);
+	public void delete(HttpServletRequest request,HttpServletResponse response,Integer teamId) {
+		service.deleteTeam(teamId);
 	}
 	
 	/**
@@ -69,15 +69,15 @@ public class TeamController {
 
 	
 	/**
-	 * 通过name查询分组
+	 * 通过id查询分组
 	 * @param request
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("/team/queryByName")
+	@RequestMapping("/team/queryById")
 	@ResponseBody
-	public Team queryByName(HttpServletRequest request,HttpServletResponse response,String teamName) {
-		return service.queryTeamByName(teamName);
+	public Team queryById(HttpServletRequest request,HttpServletResponse response,Integer teamId) {
+		return service.queryTeamById(teamId);
 	}
 	
 }

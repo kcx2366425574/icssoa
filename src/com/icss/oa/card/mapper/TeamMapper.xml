@@ -13,10 +13,10 @@
 		values (default, #{teamName,jdbcType=VARCHAR}, 0)
 	</insert>
 
-	<delete id="delete" parameterType="java.lang.String">
+	<delete id="delete" parameterType="java.lang.Integer">
 		delete from team
 		where
-		team_name = #{teamName,jdbcType=VARCHAR}
+		team_id = #{teamId,jdbcType=INTEGER}
 	</delete>
 
 	<update id="update" parameterType="com.icss.oa.card.pojo.Team">
@@ -25,10 +25,10 @@
 		where team_id = #{teamId,jdbcType=INTEGER}
 	</update>
 	
-	<select id="queryByName" resultMap="BaseResultMap">
+	<select id="queryById" resultMap="BaseResultMap">
 		select *
 		from team
-		where team_name = #{teamName,jdbcType=VARCHAR} 
+		where team_id = #{teamId,jdbcType=INTEGER} 
 	</select>
 	
 	<select id="query" resultMap="BaseResultMap">

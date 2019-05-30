@@ -38,8 +38,8 @@ public class TestCardService {
 	//删除数据
 	@Test
 	public void testDeleteCard() {
-		String[] names = {"www", "sss"};
-		service.deleteCard(names);
+		Integer[] ids = {38, 39};
+		service.deleteCard(ids);
 	}
 	
 	//修改数据
@@ -55,15 +55,14 @@ public class TestCardService {
 	//条件获取记录数
 	@Test
 	public void testGetCardCountByCondition() {
-		Pager page = new Pager(service.getCardCount(), 5, 0);
-		int count = service.getCardCountByCondition(page, null, null, "女", null);
+		int count = service.getCardCountByCondition(null, null, "女", null);
 		System.out.println(count);
 	}
 	
-	//条件查询
+	//条件查询 (分页、分组名称、姓名、性别、介绍)
 	@Test
 	public void testQueryCardByCondition() {
-		Pager page = new Pager(service.getCardCount(), 5, 0);
+		Pager page = new Pager(service.getCardCountByCondition(null, null, null, "Java"), 5, 0);
 		List<Card> list = service.queryCardByCondition(page, null, null, null, "Java");
 		for(Card card : list) {
 			System.out.println(card);

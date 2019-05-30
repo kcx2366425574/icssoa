@@ -30,7 +30,7 @@
 		notice_info =
 		#{noticeInfo,jdbcType=INTEGER},
 		notice_emp_id =
-		#{emp.emp_id,jdbcType=INTEGER}
+		#{emp.empId,jdbcType=INTEGER}
 		where notice_id = #{noticeId,jdbcType=INTEGER}
 	</update>
 
@@ -56,8 +56,12 @@
 	<select id="query" resultMap="BaseResultMap" >
 		select *		
 		from notice n
-		LEFT OUTER JOIN employee e ON n.`motice_emp_id`=e.`emp_id`
+		LEFT OUTER JOIN employee e ON n.`notice_emp_id`=e.`emp_id`
 		LIMIT #{start},#{pageSize}	
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from notice
 	</select>
 
 </mapper>

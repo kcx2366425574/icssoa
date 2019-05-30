@@ -4,10 +4,15 @@
 		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
 		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
 		<meta charset="UTF-8">
+		<title></title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
-		<title>员工查询</title>
+		<style>
+			.pagination {
+				margin-top: 0!important;
+			}			
+		</style>
 	</head>
-	<body>
+	<body>		
 		<div class="container">
 			
 			<ol class="breadcrumb">
@@ -24,9 +29,9 @@
 			<div class="row" style="margin-bottom: 20px;">
 				<div class="col-md-12">
 	            	<div class="input-group">                	
-	                	<input type="text" class="form-control" id="keywords" name="keywords" placeholder="请输入员工姓名关键字">
+	                	<input type="text" class="form-control" id="keywords" name="keywords" placeholder="请输入部门关键字">
 	                    <span class="input-group-btn">
-	                    	<button type="button" class="btn btn-primary">普通搜索</button>
+	                    	<button type="button" class="btn btn-primary">全文搜索</button>
 	                    </span>
 	                </div>            
 	            </div>
@@ -36,48 +41,149 @@
 				<thead>
 					<tr>
 						<th>员工编号</th>
-						<th>员工姓名</th>
-						<th>员工性别</th>
-						<th>员工出生日期</th>
-						<th>员工自我介绍</th>
-						<th>员工联系电话</th>
-						<th>员工邮箱</th>
-						<th>员工所在部门</th>
-						<th>员工职务</th>
+						<th>姓名</th>
+						<th>性别</th>
+						<th>电话</th>
+						<th>邮箱</th>
+						<th>部门</th>
+						<th>职务</th>
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>1</td>
-						<td>赵毅</td>
-						<td>男</td>
-						<td>1980-07-15</td>
-						<td>有三年从业经验，啊啊啊啊啊啊啊啊啊啊啊啊阿啊</td>
-						<td>13812345678</td>
-						<td>zhaoyi@icss.com</td>
-						<td>开发部</td>
-						<td>专员</td>
+					<!--v-for循环遍历数据绑定到画面-->
+					<tr v-for="(emp,index) in empData">
+						<td>{{emp.empId}}</td>
+						<td>{{emp.empName}}</td>
+						<td>{{emp.empSex}}</td>
+						<td>{{emp.empPhone}}</td>
+						<td>{{emp.empEmail}}</td>
+						<td>{{emp.dept==null?'':emp.dept.deptName}}</td>
+						<td>{{emp.job.jobName}}</td>
 						<td>
-							<input type="button" value="修改" class="btn btn-info btn-sm" />
-							<input type="button" value="删除" class="btn btn-danger btn-sm"/>
+							<div class="dropdown">				
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									操作
+									<span class="caret"></span>
+								</button>				
+								<ul class="dropdown-menu">
+									<li><a href="#">修改/详细</a></li>
+									<li><a href="#">删除</a></li>
+									<li><a href="#">XXX</a></li>
+									<li><a href="#">XXX</a></li>
+								</ul>				
+							</div>
 						</td>
-					</tr>
-					
+					</tr>					
 				</tbody>
 			</table>	
 			
 			<div class="row">
+				<div class="col-sm-4">
+					<div>
+						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条，
+						共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<nav>
+			        	<ul class="pagination pull-right">
+			        		<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
+			                <li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
+			                
+			                <li :class="{active:item==pager.pageNum}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
+			                			                
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>			                
+			        	</ul>
+			        </nav>
+				</div>				
+			</div>			
+			
+			<div class="row">
 				<div class="col-md-offset-8 col-md-4">
-					<a href="AddEmployee.html" class="btn btn-primary btn-block">增加新员工</a>
+					<a href="AddEmp.html" class="btn btn-primary btn-block">增加新员工</a>
 				</div>
 			</div>
 			
 		</div>	
 		
+		
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+		
+		<script>	
+			
+			var v = new Vue({
+				el:'.container', //应用vue数据的范围
+				data:{  //数据模型
+					empData:[], //员工数据集合
+					pager:{},   //分页信息
+					pageBtn:[]  //分页按钮
+					
+				},
+				methods:{ //定义方法
+					query:function(pageNum) {	 //查询					
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/employee/query";
+						
+						//请求参数
+						var params = {
+							pageNum:pageNum,
+							pageSize:10
+						}
+						
+						$.ajax({
+							type:"POST", //请求类型get post
+							url: url, //请求url地址
+							async:true, //true默认表示异步请求
+							dataType:'json', //响应的数据类型
+							data:params     //请求参数
+						})
+						.done(function(data,status,xhr){ //请求成功回调函数
+							//把响应的数据赋值给vue数据模型中的变量
+							v.empData = data.list;	
+							v.pager = data.pager;
+							
+							//生成分页按钮
+							var start = v.pager.pageNum - 2;
+							var end = v.pager.pageNum + 2;
+							
+							if (v.pager.pageNum < 3) {
+								start = 1;
+								end = 5;
+							}
+							
+							if (end > v.pager.pageCount) {
+								end = v.pager.pageCount;								
+							}
+							
+							if (v.pager.pageCount < 5) {
+								start = 1;
+								end = v.pager.pageCount;
+							}
+							
+							v.pageBtn = [];//初始化清空
+							
+							for (var i = start;i <= end;i ++) {
+								v.pageBtn.push(i);
+							}						
+							
+						})
+						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+							alert(errorStatus + ',' + errorText);				
+						});							
+					}
+				}
+			});				
+			
+//			调用查询方法
+			v.query(1);		
+			
+		</script>
 		
 	</body>
 </html>

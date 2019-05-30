@@ -27,8 +27,8 @@ public class TeamService {
 	}
 	
 	//删除数据
-	public void deleteTeam(String teamName) {
-		mapper.delete(teamName);
+	public void deleteTeam(Integer teamId) {
+		mapper.delete(teamId);
 	}
 	
 	//修改数据
@@ -38,8 +38,8 @@ public class TeamService {
 	
 	//通过name查询数据
 	@Transactional(readOnly = true)
-	public Team queryTeamByName(String teamName) {
-		return mapper.queryByName(teamName);
+	public Team queryTeamById(Integer teamId) {
+		return mapper.queryById(teamId);
 	}
 	
 	//查询全部数据

@@ -69,13 +69,6 @@ public class TestMessageMapper {
 	}
 
 	@Test
-	//根据id进行查询
-	public void testQueryById() {
-		Message mes = mapper.queryById(11);
-		System.out.println(mes);
-	}
-
-	@Test
 	//全部查询然后进行分页
 	public void testQueryByPage() {
 		
@@ -91,67 +84,23 @@ public class TestMessageMapper {
 	}
 	
 	@Test
-	//根据发送时间进行查询
-	public void testQueryBySendDate() throws ParseException {
+	// 不使用hashMap的方法
+	public void testQueryByPage1() {
 
-		List<Message> list = mapper.queryBySendDate(inform("1998-2-19 00:00:00"));
-
-		for (Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-	
-	@Test
-	//根据收件人邮箱进行查询
-	public void queryByReciverEmail() {
-
-		List<Message> list = mapper.queryByReciverEmail("44441");
+		List<Message> list = mapper.queryByPage1(0, 2);
 
 		for (Message mes : list) {
 			System.out.println(mes);
 		}
 	}
-	
+
 	@Test
-	//根据发送时间进行模糊查询
-	public void testQueryByDateCondition() {
-
-		List<Message> list = mapper.queryByDateCondition(0, 3, "1998-02-19%");
-
-		for (Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-	
-	@Test
-	//根据收件人邮箱进行模糊查询
-	public void testQueryByReciverCondition() {
-
-		List<Message> list = mapper.queryByReciverCondition(0,1,"44");
-
-		for (Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-	
-	@Test
-	//根据题目进行模糊查询
-	public void testQueryByTitleCondition() {
-
-		List<Message> list = mapper.queryByTitleCondition(0, 3, "ni");
-
-		for (Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-	
-	@Test
-	//查询全部
-	public void testQuery() {
+	//全部的模糊查询
+	public void testQueryByCondition() {
 		
-		List<Message> list = mapper.query();
+		List<Message> list = mapper.queryByCondition(0, 2, "1998-02-19%", "44", "n");
 		
-		for(Message mes : list) {
+		for (Message mes : list) {
 			System.out.println(mes);
 		}
 	}

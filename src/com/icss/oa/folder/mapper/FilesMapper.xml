@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.folder.dao.FilesMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.folder.pojo.Files">
+		<id column="file_id" property="fileId" jdbcType="INTEGER" />
+		<result column="file_name" property="fileName" jdbcType="VARCHAR" />
+		<result column="file_size" property="fileSize" jdbcType="INTEGER" />
+		<result column="file_state" property="fileState" jdbcType="VARCHAR" />
+		<result column="file_create_date" property="fileCreateDate"
+			jdbcType="DATE" />
+		<result column="file_update_date" property="fileUpdateDate"
+			jdbcType="DATE" />
+		<association property="fileSuperFolder" javaType="com.icss.oa.folder.pojo.Folder">
+			<id column="fol_id" property="folId" jdbcType="INTEGER" />
+			<result column="fol_name" property="folName" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.icss.oa.folder.pojo.Files"
+		extends="BaseResultMap">
+		<result column="file_info" property="fileInfo" jdbcType="LONGVARBINARY" />
+	</resultMap>
+	<insert id="insert" parameterType="com.icss.oa.folder.pojo.Files">
+		insert into files (file_id,
+		file_name, file_size,
+		file_super_folder, file_state, file_create_date,
+		file_update_date, file_info)
+		values (default,
+		#{fileName,jdbcType=VARCHAR},
+		#{fileSize,jdbcType=INTEGER},
+		#{fileSuperFolder.folId,jdbcType=INTEGER},
+		#{fileState,jdbcType=VARCHAR}, #{fileCreateDate,jdbcType=DATE},
+		#{fileUpdateDate,jdbcType=DATE}, #{fileInfo,jdbcType=LONGVARBINARY})
+	</insert>
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from files
+		where file_id
+		= #{fileId,jdbcType=INTEGER}
+	</delete>
+	<update id="update" parameterType="com.icss.oa.folder.pojo.Files">
+		update files
+		set
+		file_name =
+		#{fileName,jdbcType=VARCHAR},
+		file_size =
+		#{fileSize,jdbcType=INTEGER},
+		file_super_folder =
+		#{fileSuperFolder.folId,jdbcType=INTEGER},
+		file_state =
+		#{fileState,jdbcType=VARCHAR},
+		file_create_date =
+		#{fileCreateDate,jdbcType=DATE},
+		file_update_date =
+		#{fileUpdateDate,jdbcType=DATE}
+		where file_id =
+		#{fileId,jdbcType=INTEGER}
+	</update>
+	<select id="queryById" resultMap="ResultMapWithBLOBs"
+		parameterType="java.lang.Integer">
+		SELECT fi.*,fo.fol_id
+		FROM files fi
+		LEFT OUTER JOIN folder fo ON fi.file_super_folder=fo.fol_id
+		where file_id
+		=
+		#{fileId,jdbcType=INTEGER}
+	</select>
+	<select id="queryByPage" resultMap="BaseResultMap">
+		SELECT
+		fi.*,fo.fol_id
+		FROM files fi
+		LEFT OUTER JOIN folder
+		fo ON fi.file_super_folder=fo.fol_id
+		LIMIT
+		#{start},#{pageSize}
+	</select>
+	<select id="queryByCondition" resultMap="BaseResultMap">
+		SELECT fi.*,fo.fol_id
+		FROM files fi
+		LEFT OUTER JOIN
+		folder
+		fo ON fi.file_super_folder=fo.fol_id
+		<where>
+			<if test="folId!=null">
+				and file_super_folder=#{folId,jdbcType=INTEGER}
+			</if>
+
+			<if test="fileName!=null and fileName!='' ">
+				and instr(file_name,#{fileName,jdbcType=VARCHAR})!=0
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}
+	</select>
+	<select id="queryByIds" resultMap="BaseResultMap">
+		SELECT fi.*,fo.fol_id
+		FROM files fi
+		LEFT OUTER JOIN
+		folder
+		fo ON fi.file_super_folder=fo.fol_id
+		<where>
+			<if test="ids.length>0">
+				file_id in
+				<foreach collection="ids" index="i" item="fileId" open="("
+					close=")" separator=",">
+					#{fileId}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from files
+	</select>
+		<select id="getCountByCondition" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM FILES fi INNER JOIN folder f ON
+		fi.file_super_folder=f.fol_id
+		<where>
+			<if test="folId!=null">
+				and file_super_folder=#{folId,jdbcType=INTEGER}
+			</if>
+
+			<if test="fileName!=null and fileName!='' ">
+				and instr(file_name,#{fileName,jdbcType=VARCHAR})!=0
+			</if>
+		</where>
+	</select>
+</mapper>

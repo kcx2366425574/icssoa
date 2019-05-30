@@ -50,5 +50,9 @@
 		LIMIT #{start},#{pageSize}		
 	</select>
 	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from job
+	</select>
+	
 
 </mapper>

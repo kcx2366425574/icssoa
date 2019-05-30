@@ -5,10 +5,12 @@ package com.icss.oa.plan.service;
  */
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.icss.oa.common.Pager;
 import com.icss.oa.plan.dao.PlanMapper;
 import com.icss.oa.plan.pojo.Plan;
 
@@ -34,8 +36,15 @@ public class PlanService {
 		mapper.update(plan);
 	}
 	
+	//得到条件查询总记录数
+	public int getCount(String planTime, String planName,Integer deptId){
+		return mapper.getQueryCount(planTime, planName, deptId);
+	}
+	
+	
 	//查询部门计划
-	public List<Plan> queryPlan(String planTime,String planName,String deptName){
-		return mapper.queryByCondition(planTime, planName, deptName);
+	@Transactional(readOnly=true)
+	public List<Plan> queryPlan(Pager pager,String planTime,String planName,Integer deptId){
+		return mapper.queryByCondition(pager.getStart(),pager.getPageSize(),planTime, planName, deptId);
 	}
 }

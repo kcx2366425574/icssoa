@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.schedule.dao.ScheduleMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.schedule.pojo.Schedule">
+		<id column="sch_id" property="schId" jdbcType="INTEGER" />
+		<result column="sch_name" property="schName" jdbcType="VARCHAR" />
+		<result column="sch_info" property="schInfo" jdbcType="VARCHAR" />
+		<result column="sch_grant_date" property="schGrantDate"
+			jdbcType="DATE" />
+		<result column="sch_start_date" property="schStartDate"
+			jdbcType="DATE" />
+		<result column="sch_end_date" property="schEndDate" jdbcType="DATE" />
+		<association property="schGranter" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="empa" property="empId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		</association>
+		<association property="schGrantee" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="empb" property="empId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	<insert id="insert" parameterType="com.icss.oa.schedule.pojo.Schedule">
+		insert into schedule (sch_id,
+		sch_name, sch_info,
+		sch_grant_date, sch_start_date, sch_end_date,
+		sch_granter, sch_grantee)
+		values (default,
+		#{schName,jdbcType=VARCHAR},
+		#{schInfo,jdbcType=VARCHAR},
+		#{schGrantDate,jdbcType=DATE},
+		#{schStartDate,jdbcType=DATE},
+		#{schEndDate,jdbcType=DATE},
+		#{schGranter.empId,jdbcType=INTEGER},
+		#{schGrantee.empId,jdbcType=INTEGER})
+	</insert>
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from
+		schedule
+		where
+		sch_id = #{schId,jdbcType=INTEGER}
+	</delete>
+
+	<update id="update" parameterType="com.icss.oa.schedule.pojo.Schedule">
+		update schedule
+		set sch_name =
+		#{schName,jdbcType=VARCHAR},
+		sch_info =
+		#{schInfo,jdbcType=VARCHAR},
+		sch_grant_date =
+		#{schGrantDate,jdbcType=DATE},
+		sch_start_date =
+		#{schStartDate,jdbcType=DATE},
+		sch_end_date =
+		#{schEndDate,jdbcType=DATE},
+		sch_granter =
+		#{schGranter.empId,jdbcType=INTEGER},
+		sch_grantee =
+		#{schGrantee.empId,jdbcType=INTEGER}
+		where sch_id =
+		#{schId,jdbcType=INTEGER}
+	</update>
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from schedule
+	</select>
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT
+		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
+		empa,em.emp_id empb
+		FROM schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		where sch_id = #{schId,jdbcType=INTEGER}
+	</select>
+	<select id="queryByPage" resultMap="BaseResultMap">
+		SELECT
+		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
+		empa,em.emp_id empb
+		FROM schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		LIMIT
+		#{start},#{pageSize}
+	</select>
+
+	<select id="queryByCondition" resultMap="BaseResultMap">
+		SELECT
+		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
+		empa,em.emp_id empb
+		FROM schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		<where>
+			<if test="empId!=null">
+				and sch_granter=#{empId,jdbcType=INTEGER}
+			</if>
+			<if test="empId!=null">
+				and sch_grantee=#{empId,jdbcType=INTEGER}
+			</if>
+			<if test="schName!=null and schName!='' ">
+				and instr(sch_name,#{schName,jdbcType=VARCHAR})!=0
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}
+	</select>
+	<select id="queryByIds" resultMap="BaseResultMap">
+		SELECT
+		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
+		empa,em.emp_id empb
+		FROM schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		<where>
+			<if test="ids.length>0">
+				sch_id in
+				<foreach collection="ids" index="i" item="schId" open="("
+					close=")" separator=",">
+					#{schId}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="getCountByCondition" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM SCHEDULE SCH INNER JOIN employee e1 ON
+		sch.sch_grantee=e1.emp_id
+		INNER JOIN employee e2 ON sch.sch_granter=e2.emp_id
+		<where>
+			<if test="empId!=null">
+				and sch_grantee=#{empId,jdbcType=INTEGER}
+			</if>
+			<if test="empId!=null">
+				and sch_granter=#{empId,jdbcType=INTEGER}
+			</if>
+
+			<if test="schName!=null and schName!='' ">
+				and instr(sch_name,#{schName,jdbcType=VARCHAR})!=0
+			</if>
+		</where>
+	</select>
+</mapper>

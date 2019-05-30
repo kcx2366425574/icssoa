@@ -1,17 +1,24 @@
 package com.icss.oa.system.pojo;
 
+import java.util.Date;
+
 public class Check {
 	
 	private int checkId;
-	private int checkEmpId;
-	private String checkTime;
+	private Employee emp;
+	private Date checkTime;
 	public Check() {
 		// TODO Auto-generated constructor stub
 	}
-	public Check(int checkId, int checkEmpId, String checkTime) {
+	public Check(Employee emp, Date checkTime) {
+		super();
+		this.emp = emp;
+		this.checkTime = checkTime;
+	}
+	public Check(int checkId, Employee emp, Date checkTime) {
 		super();
 		this.checkId = checkId;
-		this.checkEmpId = checkEmpId;
+		this.emp = emp;
 		this.checkTime = checkTime;
 	}
 	public int getCheckId() {
@@ -20,18 +27,21 @@ public class Check {
 	public void setCheckId(int checkId) {
 		this.checkId = checkId;
 	}
-	public int getCheckEmpId() {
-		return checkEmpId;
+	public Employee getEmp() {
+		return emp;
 	}
-	public void setCheckEmpId(int checkEmpId) {
-		this.checkEmpId = checkEmpId;
+	public void setEmp(Employee emp) {
+		this.emp = emp;
 	}
-	public String getCheckTime() {
+	public Date getCheckTime() {
 		return checkTime;
 	}
-	public void setCheckTime(String checkTime) {
+	public void setCheckTime(Date checkTime) {
 		this.checkTime = checkTime;
 	}
+	@Override
+	public String toString() {
+		return "check [checkId=" + checkId +  ",checkTime="+checkTime.toString()+"]";
+	}
 	
-
 }

@@ -2,6 +2,8 @@ package com.icss.oa.message.pojo;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.icss.oa.system.pojo.Employee;
 
 /**
@@ -17,6 +19,7 @@ public class Message {
 	//private Integer mesReciver;
 	private String mesSendConfirm;
 	private String mesReadConfirm;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date mesSendDate;
 	private String mesInfo;
 	private Employee mesSender;

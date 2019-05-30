@@ -69,13 +69,6 @@ public class TestMessageService {
 	}
 
 	@Test
-	//根据id查询信息
-	public void testQueryMesById() {
-		Message mes = service.queryMesById(11);
-		System.out.println(mes);
-	}
-
-	@Test
 	//查询全部信息，然后进行分页
 	public void testQueryMesByPage() {
 		
@@ -91,57 +84,14 @@ public class TestMessageService {
 	}
 	
 	@Test
-	//根据发送时间查询信息
-	public void testQueryMesSendDate() throws ParseException {
-		List<Message> list = service.queryMesSendDate(inform("1998-2-19 00:00:00"));
+	//全部的模糊查询
+	public void testQueryMesByCondition() {
 		
-		for(Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-	
-	@Test
-	//根据收件人邮箱查询信息
-	public void queryByReciverEmail() {
-		
-		List<Message> list = service.queryByReciverEmail("44441");
-		
-		for(Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-	
-	@Test
-	//根据发送时间进行模糊查询
-	public void testQueryByDateCondition() {
-		
-		List<Message> list = service.queryByDateCondition(0, 1, "1998-02-19%");
-
-		for (Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-	
-	@Test
-	//根据收件人邮箱进行模糊查询
-	public void testQueryByReciverCondition() {
-		
-		List<Message> list = service.queryByReciverCondition(0, 1, "44");
+		List<Message> list = service.queryMesByCondition(0, 2, "1998-02-19%", "44", "n");
 		
 		for (Message mes : list) {
 			System.out.println(mes);
 		}
 	}
 	
-	@Test
-	//根据题目进行模糊查询
-	public void testQueryByTitleCondition() {
-
-		List<Message> list = service.queryByTitleCondition(0, 3, "n");
-
-		for (Message mes : list) {
-			System.out.println(mes);
-		}
-	}
-
 }

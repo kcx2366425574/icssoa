@@ -1,6 +1,6 @@
 package com.icss.oa.card.controller;
 
-
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,8 +47,8 @@ public class CardController {
 	 * @param card
 	 */
 	@RequestMapping("/card/delete")
-	public void delete(HttpServletRequest request, HttpServletResponse response, String[] names) {
-		service.deleteCard(names);
+	public void delete(HttpServletRequest request, HttpServletResponse response, Integer[] ids) {
+		service.deleteCard(ids);
 	}
 
 	/**
@@ -72,9 +72,11 @@ public class CardController {
 	 */
 	@RequestMapping("/card/getCount")
 	@ResponseBody
-	public Integer getCount(HttpServletRequest request, HttpServletResponse response, Pager page, String teamName,
-			String cardName, String cardSex, String cardIntro) {
-		return service.getCardCountByCondition(page, teamName, cardName, cardSex, cardIntro);
+	public Integer getCount(HttpServletRequest request, HttpServletResponse response, String teamName, String cardName,
+			String cardSex, String cardIntro) {
+
+		return service.getCardCountByCondition(teamName, cardName, cardSex, cardIntro);
+
 	}
 
 	/**
@@ -86,9 +88,20 @@ public class CardController {
 	 */
 	@RequestMapping("/card/query")
 	@ResponseBody
-	public List<Card> query(HttpServletRequest request, HttpServletResponse response, Pager page, String teamName,
-			String cardName, String cardSex, String cardIntro) {
-		return service.queryCardByCondition(page, teamName, cardName, cardSex, cardIntro);
+	public HashMap<String, Object> query(HttpServletRequest request, HttpServletResponse response, Integer pageSize,
+			Integer pageNum, String teamName, String cardName, String cardSex, String cardIntro) {
+		// return service.queryCardByCondition(page, teamName, cardName, cardSex, cardIntro);
+
+		Pager pager = new Pager(service.getCardCountByCondition(teamName, cardName, cardSex, cardIntro),
+				pageSize, pageNum);
+		List<Card> list = service.queryCardByCondition(pager, teamName, cardName, cardSex, cardIntro);
+
+		// 在Map集合中存储分页数据和名片数据
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
+
+		return map;
 	}
-	
+
 }

@@ -27,7 +27,7 @@ public class TestTeamMapper {
 	//删除数据
 	@Test
 	public void testDelete() {
-		mapper.delete("xxx");
+		mapper.delete(12);
 	}
 	
 	//修改数据
@@ -39,8 +39,8 @@ public class TestTeamMapper {
 	
 	//查询数据
 	@Test
-	public void testQueryByName() {
-		Team team = mapper.queryByName("www");
+	public void testQueryById() {
+		Team team = mapper.queryById(2);
 		System.out.println(team);
 	}
 	

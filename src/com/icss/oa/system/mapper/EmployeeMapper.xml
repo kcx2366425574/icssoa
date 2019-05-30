@@ -54,8 +54,19 @@
 		#{dept.deptId,jdbcType=INTEGER}, #{job.jobId,jdbcType=INTEGER})
 	</insert>
 
-	<delete id="delete">
-	  delete from employee where emp_name = #{empName}
+   	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+   		select * 
+   		from employee e
+   		LEFT OUTER JOIN department d
+		ON e.`emp_dept_id`
+		= d.`dept_id`
+		LEFT OUTER JOIN job j ON
+		e.`emp_job_id` = j.`job_id`
+   		where emp_id=#{empId}
+   	</select>
+   	
+	<delete id="delete" parameterType="java.lang.Integer">
+	  delete from employee where emp_id = #{empId}
 	</delete>
 
 	<!-- 根据条件获得总记录数 -->
@@ -109,6 +120,12 @@
 			
 		</where>
 		LIMIT #{start}, #{pageSize}
+	</select>
+	
+	<select id="queryByLoginName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT *
+		FROM	employee e
+		where	emp_login_name=#{empLoginName}
 	</select>
 	
 	<update id="update" parameterType="com.icss.oa.system.pojo.Employee">

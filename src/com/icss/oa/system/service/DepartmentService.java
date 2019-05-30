@@ -1,13 +1,10 @@
 package com.icss.oa.system.service;
 
-import java.util.HashMap;
-import java.util.List;
 
-import org.junit.Test;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.icss.oa.system.dao.DepartmentMapper;
 import com.icss.oa.system.pojo.Department;
 
@@ -59,6 +56,11 @@ public class DepartmentService {
 	@Transactional(readOnly=true)
 	public List<Department> queryDept(int start,int pageSize) {
 		return mapper.query(start,pageSize);
+	}
+
+	public int getDeptCount() {
+		
+		return mapper.getCount();
 	}
 	
 }

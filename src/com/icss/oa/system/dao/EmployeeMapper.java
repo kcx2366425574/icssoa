@@ -8,12 +8,15 @@ import com.icss.oa.system.pojo.Employee;
 
 public interface EmployeeMapper {
 
-	void delete(String empName);
+	void delete(Integer empId);
 
 	void insert(Employee emp);
 
 	int update(Employee emp);
+	
+	Employee queryById(Integer empid);
 
+	Employee queryByLoginName(String empLoginName);
 	
 	List<Employee> queryByCondition(@Param("start") Integer start, @Param("pageSize") Integer pageSize,
 			@Param("empName") String empName,@Param("empSex") String empSex,

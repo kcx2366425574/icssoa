@@ -1,71 +1,62 @@
 package com.icss.test;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
+
+import org.apache.commons.io.CopyUtils;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.FileCopyUtils;
+
 import com.icss.oa.pic.dao.PicMapper;
 import com.icss.oa.pic.pojo.Pic;
 
 /**
- * Í¼Æ¬daoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ * Í¼Æ¬dao²âÊÔÀà
  * 
- * @author bhl
+ * @author Administrator
  *
  */
-
 public class TestPicMapper {
 
-	// ï¿½ï¿½ï¿½Springï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// »ñµÃSpringºËÐÄÈÝÆ÷¶ÔÏó
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-	// ï¿½ï¿½ï¿½Mapperï¿½ï¿½ï¿½ï¿½(daoï¿½ï¿½ï¿½ï¿½
 	PicMapper mapper = context.getBean(PicMapper.class);
 
 	@Test
-	public void testInsert() throws IOException {
+	public void insert() throws IOException {
 
-		FileInputStream fis = new FileInputStream("e:\\Ö£Ë¬.jpg");
+		//ÊäÈëÁ÷¶ÁÈ¡ÎÄ¼þ
+		FileInputStream fis = new FileInputStream("e:\\ÕÅÂüÓñ.jpg");
+
+		//×ª»»Îª×Ö½ÚÊý×é
 		byte[] picEmp = FileCopyUtils.copyToByteArray(fis);
 
-		Pic pic = new Pic("Ö£Ë¬", 132497L, "Ð¡ï¿½ï¿½Å®", new Date(), "wo", picEmp);
+		Pic pic = new Pic("ÕÅÂüÓñ.jpg", 132497L, "ÕÅÂüÓñÉú»îÕÕ", new Date(), "zhangsan", picEmp);
+
 		mapper.insert(pic);
 	}
 
 	@Test
-	public void testQueryById() throws IOException {
-
-		Pic pic = mapper.queryById(2);
+	public void queryById() throws IOException {
+		
+		Pic pic = mapper.queryById(1);		
+		
 		System.out.println(pic);
-
+		
+		//Êä³öÁ÷
 		FileOutputStream fos = new FileOutputStream("e:\\" + pic.getPicName());
+		
+		//×Ö½ÚÊý×é¸´ÖÆµ½Êä³öÁ÷
 		FileCopyUtils.copy(pic.getPicData(), fos);
+		
 		fos.close();
-	}
 
-	@Test
-	public void testQuery() throws IOException {
-
-		List<Pic> list = mapper.query();
-
-		for (Pic pic : list) {
-
-			System.out.println(pic);
-
-			FileOutputStream fos = new FileOutputStream("e:\\" + pic.getPicName());
-			FileCopyUtils.copy(pic.getPicData(), fos);
-			fos.close();
-		}
-	}
-
-	@Test
-	public void testDelete() {
-		mapper.delete(1);
 	}
 
 }

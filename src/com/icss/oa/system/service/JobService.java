@@ -1,14 +1,11 @@
 package com.icss.oa.system.service;
 
-import java.util.HashMap;
-import java.util.List;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.icss.oa.system.dao.JobMapper;
-import com.icss.oa.system.pojo.Department;
 import com.icss.oa.system.pojo.Job;
 
 /**
@@ -57,7 +54,12 @@ public class JobService {
 	 * ��ѯ����ְ��
 	 */
 	@Transactional(readOnly=true)
-	public List<Job> query(int start,int pageSize){
+	public List<Job> queryJob(int start,int pageSize){
 		return mapper.query(start,pageSize);
+	}
+
+	public int getJobCount() {
+		// TODO Auto-generated method stub
+		return mapper.getCount();
 	}
 }

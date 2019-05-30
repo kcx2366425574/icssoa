@@ -20,6 +20,10 @@ public interface FolderMapper {
     int getCount();
     
     Folder queryById(Integer folId);
-
     
+    List<Folder> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("folId") Integer folId,@Param("empId") Integer empId,@Param("folName") String folName);
+
+    int getCountByCondition(@Param("folId") Integer folId,@Param("empId") Integer empId,@Param("folName") String folName);
+    
+    List<Folder> queryByIds(@Param("ids") Integer[] ids);
 }

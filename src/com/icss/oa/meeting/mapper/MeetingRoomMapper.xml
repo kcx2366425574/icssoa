@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.meeting.dao.MeetingRoomMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.MeetingRoom">
+		<id column="meeting_room_id" property="meetingRoomId" jdbcType="INTEGER" />
+		<result column="meeting_room_name" property="meetingRoomName"
+			jdbcType="VARCHAR" />
+		<result column="meeting_room_state" property="meetingRoomState"
+			jdbcType="VARCHAR" />
+		<result column="meeting_room_location" property="meetingRoomLocation"
+			jdbcType="VARCHAR" />
+		<result column="meeting_room_size" property="meetingRoomSize"
+			jdbcType="INTEGER" />
+		<result column="meeting_room_condition" property="meetingRoomCondition"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<!-- 插入新会议室 -->
+	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.MeetingRoom">
+		insert into meeting_room
+		(meeting_room_id, meeting_room_name,
+		meeting_room_state,
+		meeting_room_location, meeting_room_size, meeting_room_condition
+		)
+		values (default,
+		#{meetingRoomName,jdbcType=VARCHAR},
+		#{meetingRoomState,jdbcType=VARCHAR},
+		#{meetingRoomLocation,jdbcType=VARCHAR},
+		#{meetingRoomSize,jdbcType=INTEGER},
+		#{meetingRoomCondition,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 删除会议室 -->
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from meeting_room
+		where
+		meeting_room_id = #{meetingRoomId,jdbcType=INTEGER}
+	</delete>
+
+	<!-- 根据会议室编号查询会议室信息 -->
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		*
+		from meeting_room
+		where meeting_room_id =
+		#{meetingRoomId,jdbcType=INTEGER}
+	</select>
+
+	<!-- 修改会议室信息 -->
+	<update id="update" parameterType="com.icss.oa.meeting.pojo.MeetingRoom">
+		update meeting_room
+		set
+		meeting_room_name = #{meetingRoomName,jdbcType=VARCHAR},
+		meeting_room_state = #{meetingRoomState,jdbcType=VARCHAR},
+		meeting_room_location = #{meetingRoomLocation,jdbcType=VARCHAR},
+		meeting_room_size = #{meetingRoomSize,jdbcType=INTEGER},
+		meeting_room_condition = #{meetingRoomCondition,jdbcType=VARCHAR}
+		where meeting_room_id = #{meetingRoomId,jdbcType=INTEGER}
+	</update>
+
+	<!-- 修改会议室状态 -->
+	<update id="updateMeetingRoomState" parameterType="com.icss.oa.meeting.pojo.MeetingRoom">
+		update
+		meeting_room
+		set
+		meeting_room_state=#{meetingRoomState,jdbcType=VARCHAR}
+		where
+		meeting_room_id=#{meetingRoomId,jdbcType=INTEGER}
+	</update>
+
+	<!-- 查询全部会议室数据的SQL语句操作 -->
+	<select id="query" resultMap="BaseResultMap">
+		select * from meeting_room order by
+		meeting_room_id
+	</select>
+	
+	<!-- 查询会议数据数量 -->
+	<select id="getMeetingRoomCount" resultType="java.lang.Integer" >
+	    SELECT COUNT(*)
+        FROM meeting_room
+	</select>
+	
+	<!-- 分页查询2 -->
+	<select id="queryByPage2" resultMap="BaseResultMap">
+		select * 
+		from meeting_room order by meeting_room_id
+		LIMIT #{start},#{pageSize}
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="queryByPage" resultMap="BaseResultMap"
+		parameterType="java.util.HashMap">
+		select * from meeting_room order by meeting_room_id
+		LIMIT #{start},#{pageSize}
+	</select>
+
+	<!-- 使用mysql的concat函数动态查询会议室 -->
+	<select id="queryByCondition" parameterType="com.icss.oa.meeting.pojo.MeetingRoom"
+		resultMap="BaseResultMap">
+		SELECT
+		mr.`meeting_room_id`,mr.`meeting_room_name`,mr.`meeting_room_location`,mr.`meeting_room_size`,mr.`meeting_room_state`,mr.`meeting_room_condition`
+		FROM meeting_room mr
+		<where>
+			<if test="meetingRoomId != null">
+				and meeting_room_id=#{meetingRoomId,jdbcType=INTEGER}
+			</if>
+			<if test="meetingRoomName != null and empName!='' ">
+				and meeting__room_name LIKE
+				CONCAT('%',#{meetingRoomName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomState != null and meetingRoomState !='' ">
+				and meeting_room_state LIKE
+				CONCAT('%',#{meetingRoomState,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomLocation != null and meetingRoomLocation !='' ">
+				and meeting_room_location LIKE
+				CONCAT('%',#{meetingRoomLocation,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomCondition != null and meetingRoomCondition !='' ">
+				and meeting_room_condition LIKE
+				CONCAT('%',#{meetingRoomCondition,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomSize!=null">
+				and meeting_room_size=#{meetingRoomSize,jdbcType=INTEGER}
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}
+	</select>
+</mapper>

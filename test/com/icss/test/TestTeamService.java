@@ -31,7 +31,7 @@ public class TestTeamService {
 	//删除数据
 	@Test
 	public void testDeleteTeam() {
-		service.deleteTeam("www");
+		service.deleteTeam(11);
 	}
 	
 	//修改数据
@@ -43,8 +43,8 @@ public class TestTeamService {
 	
 	//通过name查询数据
 	@Test
-	public void testQueryTeamByName() {
-		Team team = service.queryTeamByName("aaa");
+	public void testQueryTeamById() {
+		Team team = service.queryTeamById(2);
 		System.out.println(team);
 	}
 	
