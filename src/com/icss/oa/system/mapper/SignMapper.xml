@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.system.dao.SignMapper">
+
+	<!-- 查询结果集映射 -->
+	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Sign">
+		<id column="sign_id" property="signId" jdbcType="INTEGER" />
+		<result column="sign_time" property="signTime" jdbcType="TIMESTAMP" />
+		
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="emp_id" property="empId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+
+		</association>
+	</resultMap>
+	
+	<!-- 新增签到 -->
+	<insert id="insert">
+		insert into sign 
+		values(default,#{signTime},#{signEmpId})
+	</insert>
+
+	<select id="queryByEmpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select s.* ,e.emp_id,e.emp_name from sign s
+		left outer join employee e
+		on s.sign_emp_id=e.emp_id
+		where sign_emp_id=#{signEmpId}
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap">
+		select s.* ,e.emp_id,e.emp_name from sign s
+		left outer join employee e
+		on s.sign_emp_id=e.emp_id
+	</select>
+	
+	<select id="getCountByEmpId" parameterType="java.lang.Integer">
+	   	select count(*) from sign where sign_emp_id=#{signEmpId}
+	</select>
+
+</mapper>

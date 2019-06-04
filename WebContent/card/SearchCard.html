@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title>名片列表</title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<style>
+			.pagination {
+				margin-top: 0!important;
+			}			
+		</style>
+	</head>
+	<body>
+		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">名片管理</a></li>
+				<li>名片列表</li>
+			</ol>
+			
+			<h3 class="page-header">
+				名片列表
+			</h3>
+			
+			<div class="row" style="margin-bottom: 20px;">
+				<div class="col-sm-11">
+	            	 <form class="form-inline" id="form1">
+						<div class="form-group">
+							<label for="">分组</label>							
+							<select name="teamId" id="teamId" class="form-control">
+								<option value="">请选择分组</option>							
+							</select>																			
+						</div>	
+						<div class="form-group">
+							<label for="">性别</label>							
+							<select name="cardSex" id="cardSex" class="form-control">
+								<option value="">请选择性别</option>
+								<option value="男">男</option>
+								<option value="女">女</option>
+							</select>																			
+						</div>	
+						<div class="form-group">
+							<input type="text" name="cardName" id="cardName" 
+								class="form-control" placeholder="请输入成员姓名关键字" />												
+						</div>
+						<!--<div class="form-group">
+							<input type="text" name="cardSex" id="cardSex" 
+								class="form-control" placeholder="请输入成员性别关键字" />												
+						</div>-->
+						<div class="form-group">
+							<input type="text" name="cardIntro" id="cardIntro" 
+								class="form-control" placeholder="请输入成员信息关键字" />												
+						</div>
+						<div class="form-group">
+							<input type="button" value="普通搜索" class="btn btn-primary" id="searchBtn" />
+						</div>	
+					</form>     
+	            </div>
+	            <div class="col-sm-1">
+	            	<a href="#" class="btn btn-info">切换到全文检索</a>
+	            </div>
+			</div>
+			
+			<!--
+			<div class="row" style="margin-bottom: 20px;">
+				<div class="col-sm-8">
+	            	<div class="input-group">                	
+	                	<input type="text" class="form-control" id="keywords" name="keywords" placeholder="请输入部门关键字">
+	                    <span class="input-group-btn">
+	                    	<button type="button" class="btn btn-primary">全文搜索</button>
+	                    </span>
+	                </div>            
+	            </div>
+	            <div class="col-sm-4">
+	            	<a href="#" class="btn btn-info">切换到普通检索</a>
+	            </div>
+			</div>
+			-->
+
+			<table class="table table-striped table-bordered table-hover table-condensed">
+				<thead>
+					<tr>
+						<th>成员编号</th>
+						<th>成员名称</th>
+						<th>成员性别</th>
+						<th>成员电话</th>
+						<th>成员Email</th>
+						<th>分组类别</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(card, index) in cardData">
+						<td>{{card.cardId}}</td>
+						<td>{{card.cardName}}</td>
+						<td>{{card.cardSex}}</td>
+						<td>{{card.cardPhone}}</td>
+						<td>{{card.cardEmail}}</td>
+						<td>{{card.team.teamName}}</td>
+						<td>
+							<div class="dropdown">				
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									操作
+									<span class="caret"></span>
+								</button>				
+								<ul class="dropdown-menu">
+									<li><a href="javascript:void(0);" @click="showDetails(card.cardId);">修改/详细</a></li>
+									<li><a href="javascript:void(0);" @click="del(card.cardId,index);">删除</a></li>
+									
+								</ul>				
+							</div>
+						</td>
+					</tr>
+					
+				</tbody>
+			</table>	
+			
+			<div class="row" v-show="pager.recordCount!=0">
+				<div class="col-sm-4">
+					<div>
+						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条，
+						共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<nav>
+			        	<ul class="pagination pull-right">
+			        		<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
+			                <li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
+			                
+			                <li :class="{active:item==pager.pageNum}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
+			                			                
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>			                
+			        	</ul>
+			        </nav>
+				</div>				
+			</div>
+			
+			<div class="alert alert-info" v-show="pager.recordCount==0">
+				没有任何满足条件的数据
+			</div>
+			
+			
+			<div class="row">
+				<div class="col-md-offset-8 col-md-4">
+					<a href="AddCard.html" class="btn btn-primary btn-block">增加新名片</a>
+				</div>
+			</div>
+			
+		</div>
+		
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+		
+		<script>
+			
+			//搜索条件
+			var teamCond = '';
+			var cardNameCond = '';
+			var cardSexCond = '';
+			var cardIntroCond = '';
+		
+			//动态生成分组列表
+			$.getJSON(baseUrl + '/team/query',{},function(data) {				
+				//遍历数据集合
+				$.each(data, function(index,el) {				
+					$('#teamId').append('<option value="' + el.teamId + '" >' + el.teamName + '</option>');					
+				});				
+			})
+			.error(function(){
+				alert('请求分组列表失败');				
+			});
+			
+			
+			var v = new Vue({
+				el:'.container', //应用vue数据的范围
+				data:{  //数据模型
+					cardData:[],  //分组数据集合
+					pager:{},   //分页信息
+					pageBtn:[]  //分页按钮
+				},
+				methods:{ //定义方法
+					query:function(pageNum) {	 //查询					
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/card/query";
+						
+						//请求参数
+						var params = {
+							pageNum:pageNum,
+							pageSize:4,
+							teamId:teamCond,
+							cardName:cardNameCond,
+							cardSex:cardSexCond,
+							cardIntro:cardIntroCond
+						}
+						
+						$.ajax({
+							type:"post", //请求类型get post
+							url: url, //请求url地址
+							async:true, //true默认表示异步请求
+							dataType:'json', //响应的数据类型
+							data:params     //请求参数
+						})
+						.done(function(data,status,xhr){ //请求成功回调函数
+							//把响应的数据赋值给vue数据模型中的变量
+							v.cardData = data.list;	
+							v.pager = data.pager;
+							
+							//生成分页按钮
+							var start = v.pager.pageNum - 2;
+							var end = v.pager.pageNum + 2;
+							
+							if (v.pager.pageNum < 3) {
+								start = 1;
+								end = 5;
+							}
+							
+							if (end > v.pager.pageCount) {
+								end = v.pager.pageCount;								
+							}
+							
+							if (v.pager.pageCount < 5) {
+								start = 1;
+								end = v.pager.pageCount;
+							}
+							
+							v.pageBtn = [];//初始化清空
+							
+							for (var i = start;i <= end;i ++) {
+								v.pageBtn.push(i);
+							}	
+						})
+						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+							alert(errorStatus + ',' + errorText);				
+						});							
+					},
+					
+					showDetails:function(cardId) { //修改查看详细的方法
+						
+						// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title:'名片详细信息',
+						    type: 2, 				   
+						    area: ['600px', '800px'], //宽高
+						    content: 'UpdateCard.html?cardId=' + cardId
+						});
+						
+					},
+					
+					del:function(cardId,index) {  //删除
+												
+						var flag = window.confirm('确定要删除此名片吗');
+						
+						if (!flag)
+							return;						
+												
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/card/delete";
+						
+						$.ajax({
+							type:"get", //请求类型get post
+							url: url, //请求url地址
+							async:true, //true默认表示异步请求
+							dataType:'text', //响应的数据类型	
+							data:{ids:cardId}	
+						})
+						.done(function(data,status,xhr){ //请求成功回调函数
+							layer.msg('删除名片成功');	
+							//location.reload();//刷新当前网页
+							v.cardData.splice(index,1);//前端删除
+						})
+						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+							alert(errorStatus + ',' + errorText);				
+						});
+					}
+				}
+			});	
+			
+			
+//			调用查询方法
+			v.query(1);	
+			
+			//搜索按钮单击
+			$('#searchBtn').click(function(){
+				
+				//条件赋值
+				teamCond = $('#teamId').val();
+				cardNameCond = $('#cardName').val();
+				cardSexCond = $('#cardSex').val();
+				cardIntroCond = $('#cardIntro').val();
+				
+				v.query(1);				
+			});
+			
+		</script>	
+		
+	</body>
+</html>

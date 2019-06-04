@@ -89,8 +89,20 @@ public class TestEmployeeService {
 	@Test
 	public void getAll(){
 		List<Employee> list = service.queryByNothing();
+		System.out.println(list.size());
 		for (Employee employee : list) {
 			System.out.println(employee);
 		}
+	}
+	
+	@Test
+	public void updateHead(){
+		service.updateHead("lisi", "abcd");
+	}
+	
+	@Test
+	public void queryHead(){
+		String head = service.queryHead("lisi");
+		System.out.println(head);
 	}
 }

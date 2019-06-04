@@ -75,6 +75,14 @@ public class TestEmployeeMapper {
 
 	
 	@Test
+	public void getAll(){
+		List<Employee> list = mapper.queryByNothing();
+		for (Employee employee : list) {
+			System.out.println(employee);
+		}
+	}
+	
+	@Test
 	//instr
 	public void testQueryByCondition() {
 

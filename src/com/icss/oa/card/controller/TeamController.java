@@ -74,7 +74,7 @@ public class TeamController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("/team/queryById")
+	@RequestMapping("/team/get")
 	@ResponseBody
 	public Team queryById(HttpServletRequest request,HttpServletResponse response,Integer teamId) {
 		return service.queryTeamById(teamId);

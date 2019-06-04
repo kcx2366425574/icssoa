@@ -14,6 +14,12 @@ public interface EmployeeMapper {
 
 	int update(Employee emp);
 	
+	//查看头像
+	String queryHead(String empLoginName);
+	
+	//更新头像
+	void updateHead(@Param("empLoginName")String empLoginName,@Param("empPhoto")String empPhoto);
+	
 	Employee queryById(Integer empid);
 
 	Employee queryByLoginName(String empLoginName);

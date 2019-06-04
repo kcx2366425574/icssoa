@@ -15,6 +15,8 @@
 		<result column="emp_sal" property="empSal" jdbcType="INTEGER" />
 		<result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
 		<result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+		
+		
 
 		<!-- 多对一映射必须写在resultMap最后面 -->
 		<!-- 部门映射 -->
@@ -137,8 +139,19 @@
 		where emp_id=#{empId}
 	</update>
 	
-	<select id="queryByNothing" resultType="com.icss.oa.system.pojo.Employee">
+	<select id="queryByNothing" resultMap = "BaseResultMap">
 		select * from employee
+	</select>
+	
+	<!-- 更新员工头像 -->
+	<update id="updateHead">
+		update employee set emp_photo=#{empPhoto}
+		where emp_login_name=#{empLoginName}
+	</update>
+	
+	<!-- 察看员工头像 -->
+	<select id="queryHead" parameterType="java.lang.String" resultType="java.lang.String">
+		select emp_photo from employee where emp_login_name=#{empLoginName}
 	</select>
 
 </mapper>

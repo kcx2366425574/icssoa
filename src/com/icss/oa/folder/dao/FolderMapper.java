@@ -14,6 +14,7 @@ public interface FolderMapper {
     
     void update(Folder record);
 
+    List<Folder> query();
     
     List<Folder> queryByPage(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
     

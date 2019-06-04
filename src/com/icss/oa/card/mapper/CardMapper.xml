@@ -56,6 +56,13 @@
 		card_id = #{cardId,jdbcType=INTEGER}
 	</delete>
 	
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT *
+		FROM card c
+		LEFT OUTER JOIN team t ON c.`card_team_id` = t.`team_id`
+		WHERE card_id = #{cardId,jdbcType=INTEGER}
+	</select>
+	
 	<select id="queryTeamIdById" resultType="java.lang.Integer">
 		SELECT card_team_id
 		FROM card
@@ -84,9 +91,10 @@
 		select count(*)
 		from card
 		<where>
-			<if test="teamName != null and teamName != '' ">
-				and team_name = #{teamName, jdbcType=VARCHAR}
+			<if test="teamId != null and teamId != '' ">
+				and card_team_id = #{teamId, jdbcType=INTEGER}
 			</if>
+			
 			<if test="cardName != null and cardName != '' ">
 				and instr (card_name, #{cardName, jdbcType=VARCHAR}) != 0
 			</if>
@@ -105,8 +113,8 @@
 		FROM card c
 		LEFT OUTER JOIN team t ON c.`card_team_id` = t.`team_id`
 		<where>
-			<if test="teamName != null and teamName != '' ">
-				and instr (team_name, #{teamName, jdbcType=VARCHAR}) != 0
+			<if test="teamId != null and teamId != '' ">
+				and c.card_team_id = #{teamId, jdbcType=INTEGER}
 			</if>
 			<if test="cardName != null and cardName != '' ">
 				and instr (card_name, #{cardName, jdbcType=VARCHAR}) != 0

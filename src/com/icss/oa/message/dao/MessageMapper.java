@@ -1,6 +1,5 @@
 package com.icss.oa.message.dao;
 
-import java.util.HashMap;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import com.icss.oa.message.pojo.Message;
@@ -18,10 +17,8 @@ public interface MessageMapper {
 	void update(Message mes); //修改信息
 
 	void delete(Integer mesId); //删除信息
-
-	List<Message> queryByPage(HashMap<String, Integer> map); //查询全部信息，进行分页
 	
-	List<Message> queryByPage1(@Param("start") Integer start, @Param("pageSize") Integer pageSize);
+	Message queryById(Integer mesId); //根据id查询信息
 	
 	int getCount(); //获得总数
 	

@@ -1,6 +1,5 @@
 package com.icss.oa.message.service;
 
-import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,11 @@ public class MessageService {
 	@Autowired
 	private MessageMapper mapper;
 	
+	//根据id查询信息
+	public Message queryMesById(Integer mesId) {
+		return mapper.queryById(mesId);
+	}
+	
 	//添加信息
 	public void addMes(Message mes){
 		mapper.insert(mes);
@@ -36,17 +40,6 @@ public class MessageService {
 		mapper.update(mes);
 	}
 	
-	//查询全部信息
-	@Transactional(readOnly = true)
-	public List<Message> queryMesByPage(HashMap<String, Integer> map) {
-		return mapper.queryByPage(map);
-	}
-	
-	@Transactional(readOnly = true)
-	public List<Message> queryByPage(Integer start, Integer pageSize) {
-		return mapper.queryByPage1(start, pageSize);
-	}
-	
 	/**
 	 * 返回信息总记录数
 	 */
@@ -55,18 +48,10 @@ public class MessageService {
 		return mapper.getCount();
 	}
 	
-	/**
-	 * 分页查询信息
-	 */
-	@Transactional(readOnly=true)
-	public List<Message> queryMesByPage(Pager pager) {
-		return mapper.queryByPage1(pager.getStart(), pager.getPageSize());
-	}
-	
 	//全部的模糊查询
 	@Transactional(readOnly=true)
-	public List<Message> queryMesByCondition(Integer start, Integer pageSize, String mesSendDate, String empEmail, String mesTitle) {
-		return mapper.queryByCondition(start, pageSize, mesSendDate, empEmail, mesTitle);
+	public List<Message> queryMesByCondition(Pager pager, String mesSendDate, String empEmail, String mesTitle) {
+		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(), mesSendDate, empEmail, mesTitle);
 	}
-
+	
 }

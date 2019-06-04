@@ -62,21 +62,17 @@ public class CardController {
 	public void update(HttpServletRequest request, HttpServletResponse response, Integer cardId, Card card) {
 		service.updateCard(cardId, card);
 	}
-
+	
 	/**
-	 * 条件获取记录数
-	 * 
+	 * 通过id查询名片
 	 * @param request
 	 * @param response
-	 * @param card
+	 * @return
 	 */
-	@RequestMapping("/card/getCount")
+	@RequestMapping("/card/get")
 	@ResponseBody
-	public Integer getCount(HttpServletRequest request, HttpServletResponse response, String teamName, String cardName,
-			String cardSex, String cardIntro) {
-
-		return service.getCardCountByCondition(teamName, cardName, cardSex, cardIntro);
-
+	public Card queryById(HttpServletRequest request,HttpServletResponse response,Integer cardId) {
+		return service.queryCardById(cardId);
 	}
 
 	/**
@@ -89,12 +85,18 @@ public class CardController {
 	@RequestMapping("/card/query")
 	@ResponseBody
 	public HashMap<String, Object> query(HttpServletRequest request, HttpServletResponse response, Integer pageSize,
-			Integer pageNum, String teamName, String cardName, String cardSex, String cardIntro) {
+			Integer pageNum, Integer teamId, String cardName, String cardSex, String cardIntro) {
 		// return service.queryCardByCondition(page, teamName, cardName, cardSex, cardIntro);
 
-		Pager pager = new Pager(service.getCardCountByCondition(teamName, cardName, cardSex, cardIntro),
+		if (pageNum == null)
+			pageNum = 1;
+		
+		if (pageSize == null)
+			pageSize = 10;
+		
+		Pager pager = new Pager(service.getCardCountByCondition(teamId, cardName, cardSex, cardIntro),
 				pageSize, pageNum);
-		List<Card> list = service.queryCardByCondition(pager, teamName, cardName, cardSex, cardIntro);
+		List<Card> list = service.queryCardByCondition(pager, teamId, cardName, cardSex, cardIntro);
 
 		// 在Map集合中存储分页数据和名片数据
 		HashMap<String, Object> map = new HashMap<>();

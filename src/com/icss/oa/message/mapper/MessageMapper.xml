@@ -31,7 +31,8 @@
 	<insert id="insert" parameterType="com.icss.oa.message.pojo.Message">
 		insert into message
 		values(default, #{mesTitle}, #{mesSendConfirm},
-		#{mesReadConfirm}, #{mesSendDate}, #{mesInfo},
+		#{mesReadConfirm},
+		#{mesSendDate}, #{mesInfo},
 		#{mesSender.empId},#{mesReciver.empId})
 	</insert>
 
@@ -57,6 +58,37 @@
 		mes_id = #{mesId}
 	</delete>
 
+	<!-- 根据id查询信息 -->
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email
+		FROM message m
+		LEFT OUTER JOIN employee as e1
+		ON m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2
+		ON
+		m.`mes_reciver` = e2.`emp_id`
+		where mes_id=#{mesId}
+	</select>
+
+	<!-- 查询全部信息 -->
+	<select id="query" resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email
+		FROM message m
+		LEFT OUTER JOIN employee as e1
+		ON m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2
+		ON
+		m.`mes_reciver` = e2.`emp_id`
+	</select>
+
 	<!-- 简单的查询，把查询结果分页 -->
 	<select id="queryByPage" resultMap="BaseResultMap"
 		parameterType="java.util.HashMap">
@@ -66,12 +98,13 @@
 		FROM message m
 		LEFT OUTER JOIN employee as e1
 		ON m.`mes_sender` = e1.`emp_id`
-		LEFT OUTER JOIN employee as e2
+		LEFT
+		OUTER JOIN employee as e2
 		ON m.`mes_reciver` = e2.`emp_id`
 		LIMIT
 		#{start}, #{pageSize}
 	</select>
-	
+
 	<!-- 另一个分页查询 -->
 	<select id="queryByPage1" resultMap="BaseResultMap"
 		parameterType="java.util.HashMap">
@@ -81,22 +114,26 @@
 		FROM message m
 		LEFT OUTER JOIN employee as e1
 		ON m.`mes_sender` = e1.`emp_id`
-		LEFT OUTER JOIN employee as e2
+		LEFT
+		OUTER JOIN employee as e2
 		ON m.`mes_reciver` = e2.`emp_id`
 		LIMIT
 		#{start}, #{pageSize}
 	</select>
-	
+
 	<!-- 整合的模糊查询 -->
-	<select id="queryByCondition" parameterType="com.icss.oa.message.pojo.Message" resultMap="BaseResultMap">
+	<select id="queryByCondition" parameterType="com.icss.oa.message.pojo.Message"
+		resultMap="BaseResultMap">
 		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name
 		sender_name,e2.emp_name reciver_name,
-		e1.emp_email sender_email, e2.emp_email reciver_email
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email
 		FROM message m
 		LEFT OUTER JOIN employee as e1
 		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
-		ON m.`mes_reciver` = e2.`emp_id`
+		ON
+		m.`mes_reciver` = e2.`emp_id`
 		<where>
 			<if test="mesTitle != null and mesTitle != '' ">
 				and mes_title like
@@ -112,7 +149,7 @@
 		</where>
 		LIMIT #{start}, #{pageSize}
 	</select>
-	
+
 	<!-- 查询总记录数 -->
 	<select id="getCount" resultType="java.lang.Integer">
 		select count(*)

@@ -13,9 +13,11 @@ public interface CardMapper {
 	void delete(Integer cardId);
 
 	void update(Card card);
+	
+	Card queryById(Integer cardId);
 
 	List<Card> queryByCondition(@Param("start") Integer start, @Param("pageSize") Integer pageSize,
-			@Param("teamName") String teamName, @Param("cardName") String cardName, @Param("cardSex") String cardSex,
+			@Param("teamId") Integer teamId, @Param("cardName") String cardName, @Param("cardSex") String cardSex,
 			@Param("cardIntro") String cardIntro);
 
 	void upTeamNum(Integer teamId);
@@ -24,7 +26,7 @@ public interface CardMapper {
 
 	int queryTeamIdById(Integer cardId);
 
-	int getCountByCondition(@Param("teamName") String teamName, @Param("cardName") String cardName,
+	int getCountByCondition(@Param("teamId") Integer teamId, @Param("cardName") String cardName,
 			@Param("cardSex") String cardSex, @Param("cardIntro") String cardIntro);
 
 }

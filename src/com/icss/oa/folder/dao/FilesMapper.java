@@ -13,6 +13,8 @@ public interface FilesMapper {
 	void delete(Integer fileId);
 	
 	void update(Files files);
+	
+	List<Files> query();
 
     Files queryById(Integer fileId);
     

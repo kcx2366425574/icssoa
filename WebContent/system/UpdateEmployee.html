@@ -275,7 +275,8 @@
 					layer.msg('修改员工成功');
 	
 					setTimeout(function() {
-					location.href = 'QueryEmployee.html';//重定向到查询画面
+						window.parent.layer.close();
+						window.parent.location.reload();
 					}, 1000);
 				})
 				.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数

@@ -6,8 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileHelper {
-
-	public byte[] getContent(String filePath) throws IOException {
+    //第一种获取文件内容方式
+    public byte[] getContent(String filePath) throws IOException {
         File file = new File(filePath);
 
         long fileSize = file.length();
@@ -32,6 +32,7 @@ public class FileHelper {
 
         }
 
+        // 确保所有数据均被读取
 
         if (offset != buffer.length) {
 
@@ -44,6 +45,7 @@ public class FileHelper {
         return buffer;
     }
     
+    //第二种获取文件内容方式
     public byte[] getContent2(String filePath) throws IOException
     {
         FileInputStream in=new FileInputStream(filePath);
@@ -68,7 +70,7 @@ public class FileHelper {
         
         return bytes;
     }
-
+        //将byte数组写入文件
     public void createFile(String path, byte[] content) throws IOException {
 
         FileOutputStream fos = new FileOutputStream(path);

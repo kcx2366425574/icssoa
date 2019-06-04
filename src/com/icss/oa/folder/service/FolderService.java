@@ -29,6 +29,11 @@ public class FolderService {
 		mapper.update(folder);
 	}
 	@Transactional(readOnly=true)
+	public List<Folder> query()
+	{
+		return mapper.query();
+	}
+	@Transactional(readOnly=true)
 	public Folder queryFolderById(Integer folId)
 	{
 		return mapper.queryById(folId);

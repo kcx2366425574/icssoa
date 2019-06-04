@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,47 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService service;
 	
+	
+	/**
+	 * 登录验证
+	 * @param request
+	 * @param response
+	 * @param emp
+	 */
+	@RequestMapping("/employee/login")	 
+	@ResponseBody
+	public Integer login(HttpServletRequest request,HttpServletResponse response,String empLoginName,String empPwd) {
+		
+		//返回登录状态
+		int flag = service.checkLogin(empLoginName, empPwd);
+		
+		//如果登录成功，session中记录当前用户的登录名（用户id）
+		if (flag == 3) {
+			HttpSession session = request.getSession();
+			session.setAttribute("empLoginName", empLoginName); //记录登录名
+			
+			Employee emp = service.queryEmpByLoginName(empLoginName);
+			session.setAttribute("empId",emp.getEmpId()); //记录用户id
+		}				
+				
+		return flag;
+	}
+	
+	
+	/**
+	 * 返回登录名
+	 * @param request
+	 * @param response
+	 * @param emp
+	 */
+	@RequestMapping("/employee/getLoginName")	
+	@ResponseBody
+	public String getLoginName(HttpServletRequest request,HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		String empLoginName = (String) session.getAttribute("empLoginName");
+		return empLoginName;
+	}
+	
 	//增加员工
 	@RequestMapping("/employee/add")
 	public void addEmployee(HttpServletRequest request,HttpServletResponse response,Employee emp){
@@ -29,13 +71,13 @@ public class EmployeeController {
 	
 	//根据id删除员工
 	@RequestMapping("/employee/delete")
-	public void delete(Integer empId){
+	public void delete(HttpServletRequest request,HttpServletResponse response,Integer empId){
 		service.deleteEmployee(empId);
 	}
 	
 	@RequestMapping("/employee/getAll")
 	@ResponseBody
-	public List<Employee> getAll(){
+	public List<Employee> getAll(HttpServletRequest request,HttpServletResponse response){
 		return service.queryByNothing();
 	}
 
@@ -43,7 +85,7 @@ public class EmployeeController {
 	//根据查询条件动态查询员工
 	@RequestMapping("/employee/query")
 	@ResponseBody
-	public HashMap<String, Object> query(Integer pageNum,Integer pageSize,String empName,String empSex,Integer deptId,Integer jobId){
+	public HashMap<String, Object> query(HttpServletRequest request,HttpServletResponse response,Integer pageNum,Integer pageSize,String empName,String empSex,Integer deptId,Integer jobId){
 		if (pageNum==null) pageNum=1;
 		if (pageSize==null) pageSize=10;
 		int count=service.getEmpCount(empName, empSex, deptId, jobId);
@@ -58,14 +100,14 @@ public class EmployeeController {
 	}
 	//修改员工信息
 	@RequestMapping("/employee/update")
-	public void updateEmp(Employee emp){
+	public void updateEmp(HttpServletRequest request,HttpServletResponse response,Employee emp){
 		service.updateEmployee(emp);
 	}
 	
 	//根据登录名查询员工是否存在
 	@RequestMapping("/employee/checkLoginName")
 	@ResponseBody
-	public boolean queryEmp(String empLoginName){
+	public boolean queryEmp(HttpServletRequest request,HttpServletResponse response,String empLoginName){
 		Employee emp = service.queryEmpByLoginName(empLoginName);
 		if (emp ==null ) 
 			return true;
@@ -76,8 +118,30 @@ public class EmployeeController {
 	//根据id查询员工
 	@RequestMapping("/employee/get")
 	@ResponseBody
-	public Employee getEmpById(Integer empId){
+	public Employee getEmpById(HttpServletRequest request,HttpServletResponse response,Integer empId){
 		return service.getById(empId);
+	}
+	
+	//头像
+	@RequestMapping("/employee/updateHead")
+	public void updateHead(HttpServletRequest request,HttpServletResponse response,String empPhoto){
+		HttpSession session = request.getSession();
+		
+		String empLoginName = (String) session.getAttribute("empLoginName");
+		service.updateHead(empLoginName, empPhoto);
+	}
+	
+	/**
+	 * 更新头像
+	 */
+	@RequestMapping("employee/queryHead")
+	@ResponseBody
+	public String queryHead(HttpServletRequest request,HttpServletResponse response) {
+		
+		HttpSession session = request.getSession();
+		String empLoginName = (String) session.getAttribute("empLoginName");
+				
+		return service.queryHead(empLoginName);
 	}
 	
 }

@@ -11,8 +11,8 @@ import com.icss.oa.folder.pojo.Folder;
 import com.icss.oa.system.pojo.Employee;
 
 public class TestFolderMapper {
-
-	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+	
+		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 	//Mapper Object
 	    FolderMapper mapper=context.getBean(FolderMapper.class)	;
 	    

@@ -54,6 +54,10 @@
 		where file_id =
 		#{fileId,jdbcType=INTEGER}
 	</update>
+	<select id="query" resultMap="ResultMapWithBLOBs">
+		select *
+		from files
+	</select>
 	<select id="queryById" resultMap="ResultMapWithBLOBs"
 		parameterType="java.lang.Integer">
 		SELECT fi.*,fo.fol_id

@@ -10,16 +10,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icss.oa.common.FileHelper;
 import com.icss.oa.common.Pager;
+import com.icss.oa.folder.dao.FilesMapper;
 import com.icss.oa.folder.pojo.Files;
 import com.icss.oa.folder.pojo.Folder;
 import com.icss.oa.folder.service.FilesService;
+import com.icss.oa.system.pojo.Employee;
 
 public class TestFilesService {
-	
 	ApplicationContext context=new ClassPathXmlApplicationContext("applicationContext.xml");
-	
 	FilesService service = context.getBean(FilesService.class);
-	
 	@Test
 	public void testAddFolder() throws IOException
 	{
@@ -29,13 +28,11 @@ public class TestFilesService {
 		Files file=new Files("haha", 500, f, "中心",Date.valueOf("2011-10-14"),Date.valueOf("2012-05-10"),helper.getContent("E:\\new\\fuck.jpg"));
 		service.addFiles(file);
 	}
-	
 	@Test
 	public void testDeleteFiles()
 	{
 		service.deleteFiles(6);
 	}
-	
 	@Test
 	public void testUpdateFiles() throws IOException
 	{
@@ -45,13 +42,11 @@ public class TestFilesService {
     	Files file=new Files("haha", 500, f, "惊涛骇浪",Date.valueOf("2011-10-14"),Date.valueOf("2012-05-10"),helper.getContent("E:\\new\\fuck.jpg"));
 		service.updateFiles(file);
 	}
-	
 	@Test
 	public void testQueryFilesById()
 	{
 		System.out.println(service.queryFileById(1));
 	}
-	
 	@Test
 	public void testQueryFilesByPage()
 	{
@@ -62,13 +57,11 @@ public class TestFilesService {
 			System.out.println(files);
 		}
 	}
-	
 	@Test 
 	public void testGetCount()
 	{
 		System.out.println(service.getCount());
 	}
-	
 	@Test
 	public void testQueryByCondition()
 	{
@@ -79,13 +72,11 @@ public class TestFilesService {
 			System.out.println(files);
 		}
 	}
-	
 	@Test
 	public void testGetCountByCondition()
 	{
 		System.out.println(service.getCountByCondition(2, "a"));
 	}
-	
 	@Test
   	public void testqueryByIds()
   	{

@@ -46,15 +46,21 @@ public class CardService {
 		mapper.lowTeamNum(id0);
 	}
 	
+	//通过id查询数据
+	@Transactional(readOnly = true)
+	public Card queryCardById(Integer cardId) {
+		return mapper.queryById(cardId);
+	}
+	
 	//条件获取记录数
-	public Integer getCardCountByCondition(String teamName, String cardName, String cardSex, String cardIntro) {
-		return mapper.getCountByCondition(teamName, cardName, cardSex, cardIntro);
+	public Integer getCardCountByCondition(Integer teamId, String cardName, String cardSex, String cardIntro) {
+		return mapper.getCountByCondition(teamId, cardName, cardSex, cardIntro);
 	}
 	
 	//条件查询(分页、分组名称、姓名、性别、介绍)
 	@Transactional(readOnly = true)
-	public List<Card> queryCardByCondition(Pager page, String teamName, String cardName, String cardSex, String cardIntro) {
-		return mapper.queryByCondition(page.getStart(), page.getPageSize(), teamName, cardName, cardSex, cardIntro);
+	public List<Card> queryCardByCondition(Pager page, Integer teamId, String cardName, String cardSex, String cardIntro) {
+		return mapper.queryByCondition(page.getStart(), page.getPageSize(), teamId, cardName, cardSex, cardIntro);
 	}
 
 }

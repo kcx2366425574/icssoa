@@ -61,40 +61,34 @@ public class MessageController {
 	}
 	
 	/**
-	 * 分页查询信息,简单查询然后进行分页
+	 * 条件查询
 	 * @param request
 	 * @param response
-	 * @param emp
-	 * @param pageNum
+	 * @param start
 	 * @param pageSize
+	 * @param mesSendDate
+	 * @param empEmail
+	 * @param mesTitle
 	 * @return
 	 */
-	@RequestMapping("/mes/queryByPage")
-	@ResponseBody
-	public HashMap<String, Object> queryByPage(HttpServletRequest request, HttpServletResponse response, Message mes, Integer pageNum, Integer pageSize) {
-
-		Pager pager = new Pager(service.getMesCount(), pageSize, pageNum);
-	
-		List<Message> list = service.queryByPage(pageNum, pageSize);
-		
-		//在Map集合中存储分页数据和员工数据
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("pager", pager);
-		map.put("list", list);
-		
-		return map;
-	}
-	
 	@RequestMapping("/mes/queryByCondition")
 	@ResponseBody
 	public HashMap<String, Object> queryByCondition(HttpServletRequest request, HttpServletResponse response, 
-			Integer start, Integer pageSize,
+			Integer pageNum, Integer pageSize,
 			String mesSendDate, String empEmail, String mesTitle
 			) {
 		
-		Pager pager = new Pager(service.getMesCount(), pageSize, start);
+		if(pageNum == null) {
+			pageNum = 0;
+		}
 		
-		List<Message> list = service.queryMesByCondition(start, pageSize, mesSendDate, empEmail, mesTitle);
+		if(pageSize == null) {
+			pageSize = 2;
+		}
+		
+		Pager pager = new Pager(service.getMesCount(), pageSize, pageNum);
+		
+		List<Message> list = service.queryMesByCondition(pager, mesSendDate, empEmail, mesTitle);
 		
 		//在Map集合中存储分页数据和员工数据
 				HashMap<String, Object> map = new HashMap<>();
@@ -102,6 +96,22 @@ public class MessageController {
 				map.put("list", list);
 		
 		return map;
+	}	
+	
+	/**
+	 * 根据id查询信息
+	 * @param request
+	 * @param response
+	 * @param mesId
+	 * @return
+	 */
+	@RequestMapping("/mes/queryById")
+	@ResponseBody
+	public Message queryById(HttpServletRequest request,HttpServletResponse response,Integer mesId) {
+		
+		Message mes = service.queryMesById(mesId);
+		
+		return mes;
 	}
 
 }

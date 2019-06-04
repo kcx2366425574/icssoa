@@ -28,6 +28,10 @@ public class ScheduleService {
 	{
 		mapper.update(sch);
 	}
+	public List<Schedule> querySchedule()
+	{
+		return mapper.query();
+	}
 	public Schedule queryBySchId(Integer schId)
 	{
 		return mapper.queryById(schId);
@@ -40,9 +44,9 @@ public class ScheduleService {
 	{
 		return mapper.getCount();
 	}
-	public List<Schedule> queryByCondition (Pager pager,@Param("empId")Integer e1,@Param("empId")Integer e2,@Param("schName")String schName)
+	public List<Schedule> queryByCondition (Pager pager,@Param("empId")Integer empId1,@Param("empId")Integer empId2,@Param("schName")String schName)
 	{
-		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(), e1, e2, schName);
+		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(), empId1, empId2, schName);
 	}
 	public List<Schedule> queryByIds(@Param("ids") Integer[] ids)
 	{

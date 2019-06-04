@@ -18,6 +18,24 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeMapper mapper;
 	
+	
+	/**
+	 * 登录验证
+	 * 返回1 用户名不存在 2 密码错误 3 登录成功
+	 */
+	@Transactional(readOnly=true)
+	public int checkLogin(String empLoginName,String empPwd) {
+		
+		Employee emp = mapper.queryByLoginName(empLoginName);
+		
+		if (emp == null)
+			return 1;
+		else if ( !empPwd.equals(emp.getEmpPwd()) )
+			return 2;
+		else
+			return 3;
+	}
+	
 	public void addEmployee(Employee emp){
 		mapper.insert(emp);
 	}
@@ -38,6 +56,17 @@ public class EmployeeService {
 	@Transactional(readOnly=true)
 	public Employee queryEmpByLoginName(String empLoginName){
 		return mapper.queryByLoginName(empLoginName);
+	}
+	
+	//更新员工头像
+	public void updateHead(String empLoginName,String empPhoto){
+		mapper.updateHead(empLoginName, empPhoto);
+	}
+	
+	//查看员工头像
+	public String queryHead(String empLoginName){
+		return mapper.queryHead(empLoginName);
+		
 	}
 	
 	@Transactional(readOnly=true)

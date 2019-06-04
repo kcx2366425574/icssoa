@@ -70,6 +70,10 @@
 	<select id="getCount" resultType="java.lang.Integer">
 		select count(*) from folder
 	</select>
+	<select id="query" resultMap="BaseResultMap">
+	    SELECT *
+	    from folder
+	</select>
 	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
 		SELECT
 		f.*,fold.fol_id,e.emp_name,e.emp_id

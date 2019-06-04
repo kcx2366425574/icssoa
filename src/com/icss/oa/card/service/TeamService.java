@@ -36,7 +36,7 @@ public class TeamService {
 		mapper.update(team);
 	}
 	
-	//通过name查询数据
+	//通过id查询数据
 	@Transactional(readOnly = true)
 	public Team queryTeamById(Integer teamId) {
 		return mapper.queryById(teamId);

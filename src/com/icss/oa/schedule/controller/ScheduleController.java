@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.icss.oa.common.Pager;
 import com.icss.oa.schedule.pojo.Schedule;
 import com.icss.oa.schedule.service.ScheduleService;
+import com.icss.oa.system.pojo.Employee;
 /**
- * ÈÎÎñ¿ØÖÆÆ÷
+ * 
  * @author Administrator
  *
  */
@@ -43,7 +44,7 @@ public class ScheduleController {
 	 * @param schId
 	 */
 	@RequestMapping("/sch/delete")
-	public void update(HttpServletRequest request,HttpServletResponse response,Integer schId) {
+	public void delete(HttpServletRequest request,HttpServletResponse response,Integer schId) {
 		service.deleteSchedule(schId);
 	}
 	/**
@@ -56,6 +57,13 @@ public class ScheduleController {
 	public void update(HttpServletRequest request,HttpServletResponse response,Schedule sch) {
 		service.updateSchedule(sch);
 	}
+	@RequestMapping("/sch/query")
+	@ResponseBody
+	public List<Schedule> queryAll()
+	{
+		return service.querySchedule();
+	}
+	
 	@RequestMapping("/sch/queryById")
 	@ResponseBody
 	public Schedule queryById(HttpServletRequest request,HttpServletResponse response,Integer schId) {
@@ -63,8 +71,13 @@ public class ScheduleController {
 	}
 	@RequestMapping("/sch/queryByPage")
 	@ResponseBody
-	public HashMap<String, Object> queryByPage(HttpServletRequest request,HttpServletResponse response,int pageSize,int pageNum)
+	public HashMap<String, Object> queryByPage(HttpServletRequest request,HttpServletResponse response,Integer pageSize,Integer pageNum)
 	{
+		if (pageNum == null)
+			pageNum = 1;
+		
+		if (pageSize == null)
+			pageSize = 10;
 		Pager pager=new Pager(service.getCount(), pageSize, pageNum);
 		List<Schedule> list=service.queryByPage(pager);
 		HashMap<String, Object> map = new HashMap<>();
@@ -72,5 +85,27 @@ public class ScheduleController {
 		map.put("pager",pager);
 		map.put("list", list);
 		return map;
+	}
+	@RequestMapping("sch/search") 
+	@ResponseBody
+	public HashMap<String, Object> search(HttpServletRequest request,HttpServletResponse responsep,Integer pageNum,
+			Integer pageSize,Integer empId1,Integer empId2,String schName) {
+		
+		if (pageNum == null)
+			pageNum = 1;
+		
+		if (pageSize == null)
+			pageSize = 10;		
+		
+		Pager pager = new Pager(service.getCountByCondition(empId1, empId2, schName), pageSize, pageNum);
+		
+		List<Schedule> list = service.queryByCondition(pager, empId1, empId2, schName);
+		
+		//åœ¨Mapé›†åˆä¸­å­˜å‚¨åˆ†é¡µæ•°æ®å’Œå‘˜å·¥æ•°æ®
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager",pager);
+		map.put("list", list);
+		
+		return map;		
 	}
 }

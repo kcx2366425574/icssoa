@@ -17,18 +17,20 @@ public interface ScheduleMapper {
     void insertSelective(Schedule record);
     
     void update(Schedule record);
+    
+    List<Schedule> query();
 
     Schedule queryById(Integer schId);
     
     List<Schedule> queryByPage(@Param("start")Integer start,@Param("pageSize")Integer pageSize);
     
-    List<Schedule> queryByCondition(@Param("start")Integer start,@Param("pageSize")Integer pageSize,@Param("empId")Integer e1,@Param("empId")Integer e2,@Param("schName")String schName);
+    List<Schedule> queryByCondition(@Param("start")Integer start,@Param("pageSize")Integer pageSize,@Param("empId1")Integer e1,@Param("empId2")Integer e2,@Param("schName")String schName);
     
     List<Schedule> queryByIds(@Param("ids") Integer[] ids);
     
     int getCount();
     
-    int getCountByCondition(@Param("empId") Integer e1,@Param("empId") Integer e2,@Param("schName")String schName);
+    int getCountByCondition(@Param("empId1") Integer empId1,@Param("empId2") Integer empId2,@Param("schName")String schName);
     
     
 

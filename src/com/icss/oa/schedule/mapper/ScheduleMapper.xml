@@ -11,12 +11,12 @@
 			jdbcType="DATE" />
 		<result column="sch_end_date" property="schEndDate" jdbcType="DATE" />
 		<association property="schGranter" javaType="com.icss.oa.system.pojo.Employee">
-			<id column="empa" property="empId" jdbcType="INTEGER" />
-			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+			<id column="empc" property="empId" jdbcType="INTEGER" />
+			<result column="empa" property="empName" jdbcType="VARCHAR" />
 		</association>
 		<association property="schGrantee" javaType="com.icss.oa.system.pojo.Employee">
-			<id column="empb" property="empId" jdbcType="INTEGER" />
-			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+			<id column="empd" property="empId" jdbcType="INTEGER" />
+			<result column="empb" property="empName" jdbcType="VARCHAR" />
 		</association>
 	</resultMap>
 	<insert id="insert" parameterType="com.icss.oa.schedule.pojo.Schedule">
@@ -44,7 +44,7 @@
 		update schedule
 		set sch_name =
 		#{schName,jdbcType=VARCHAR},
-		sch_info =
+		 sch_info =
 		#{schInfo,jdbcType=VARCHAR},
 		sch_grant_date =
 		#{schGrantDate,jdbcType=DATE},
@@ -62,22 +62,27 @@
 	<select id="getCount" resultType="java.lang.Integer">
 		select count(*) from schedule
 	</select>
-	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-		SELECT
-		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
-		empa,em.emp_id empb
-		FROM schedule s
+	<select id="query" resultMap="BaseResultMap">
+		select s.*,e.emp_name empa ,em.emp_name empb ,e.emp_id empc,em.emp_id empd
+		from schedule s
 		LEFT OUTER JOIN employee e ON
 		s.sch_granter=e.emp_id
 		LEFT OUTER JOIN employee em ON
 		s.sch_grantee=em.emp_id
-		where sch_id = #{schId,jdbcType=INTEGER}
+		order by sch_id
+	</select>
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select s.*,e.emp_name empa ,em.emp_name empb ,e.emp_id empc,em.emp_id empd
+		from schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		where s.sch_id = #{schId,jdbcType=INTEGER}
 	</select>
 	<select id="queryByPage" resultMap="BaseResultMap">
-		SELECT
-		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
-		empa,em.emp_id empb
-		FROM schedule s
+		select s.*,e.emp_name empa ,em.emp_name empb ,e.emp_id empc,em.emp_id empd
+		from schedule s
 		LEFT OUTER JOIN employee e ON
 		s.sch_granter=e.emp_id
 		LEFT OUTER JOIN employee em ON
@@ -87,20 +92,18 @@
 	</select>
 
 	<select id="queryByCondition" resultMap="BaseResultMap">
-		SELECT
-		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
-		empa,em.emp_id empb
-		FROM schedule s
+		select s.*,e.emp_name empa ,em.emp_name empb ,e.emp_id empc,em.emp_id empd
+		from schedule s
 		LEFT OUTER JOIN employee e ON
 		s.sch_granter=e.emp_id
 		LEFT OUTER JOIN employee em ON
 		s.sch_grantee=em.emp_id
 		<where>
-			<if test="empId!=null">
-				and sch_granter=#{empId,jdbcType=INTEGER}
+			<if test="empId1!=null">
+				and sch_granter=#{empId1,jdbcType=INTEGER}
 			</if>
-			<if test="empId!=null">
-				and sch_grantee=#{empId,jdbcType=INTEGER}
+			<if test="empId2!=null">
+				and sch_grantee=#{empId2,jdbcType=INTEGER}
 			</if>
 			<if test="schName!=null and schName!='' ">
 				and instr(sch_name,#{schName,jdbcType=VARCHAR})!=0
@@ -108,11 +111,10 @@
 		</where>
 		LIMIT #{start},#{pageSize}
 	</select>
+	
 	<select id="queryByIds" resultMap="BaseResultMap">
-		SELECT
-		s.sch_id,s.sch_name,s.sch_info,s.sch_grant_date,s.sch_start_date,s.sch_end_date,e.emp_id
-		empa,em.emp_id empb
-		FROM schedule s
+		select s.*,e.emp_name empa ,em.emp_name empb ,e.emp_id empc,em.emp_id empd
+		from schedule s
 		LEFT OUTER JOIN employee e ON
 		s.sch_granter=e.emp_id
 		LEFT OUTER JOIN employee em ON
@@ -128,15 +130,18 @@
 		</where>
 	</select>
 	<select id="getCountByCondition" resultType="java.lang.Integer">
-		SELECT COUNT(*) FROM SCHEDULE SCH INNER JOIN employee e1 ON
-		sch.sch_grantee=e1.emp_id
-		INNER JOIN employee e2 ON sch.sch_granter=e2.emp_id
+		select COUNT(*)
+		from schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
 		<where>
-			<if test="empId!=null">
-				and sch_grantee=#{empId,jdbcType=INTEGER}
+			<if test="empId1!=null">
+				and sch_granter=#{empId1,jdbcType=INTEGER}
 			</if>
-			<if test="empId!=null">
-				and sch_granter=#{empId,jdbcType=INTEGER}
+			<if test="empId2!=null">
+				and sch_grantee=#{empId2,jdbcType=INTEGER}
 			</if>
 
 			<if test="schName!=null and schName!='' ">
