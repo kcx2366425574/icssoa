@@ -48,7 +48,7 @@
 						<td>{{dept.deptName}}</td>
 						<td>{{dept.deptInfo}}</td>
 						<td>
-							<a href="'UpdateDept.html?deptId='+dept.deptId" value="修改" class="btn btn-info btn-sm">修改</a>
+							<a :href="'UpdateDept.html?deptId='+dept.deptId" value="修改" class="btn btn-info btn-sm">修改</a>
 							<input type="button" value="删除" class="btn btn-danger btn-sm" @click="del(dept.deptId,index);"/>
 						</td>
 					</tr>					

@@ -6,78 +6,70 @@
 		<meta charset="UTF-8">
 		<title>修改员工</title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css"/>
 	</head>
 	<body>
 		<div class="container">
 
-			<ol class="breadcrumb">
-				<li><a href="#">OA系统</a></li>
-				<li><a href="#">系统管理</a></li>
-				<li><a href="queryEmployee.html">员工管理</a></li>
-				<li>修改员工</li>
-			</ol>
-
-			<h3 class="page-header">
-				修改员工
-			</h3>
-
-			<form class="form-horizontal col-md-10">
+			<form class="form-horizontal col-md-12" id="form1">
 				<div class="form-group">
-					<label for="" class="col-md-2">员工名称:</label>
-					<div class="col-md-2">
-						<input type="text" id="empName" name="empName" placeholder="请输入员工名称" class="form-control" />
+					<label for="" class="col-xs-2">员工姓名:</label>
+					<div class="col-xs-10">
+						<input type="text" id="empName" name="empName" placeholder="请输入员工姓名" class="form-control" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">员工性别:</label>
-					<div class="col-md-2">
-						<select name="selectSex" value="selectSex" class="form-control">
-                           <option value="男">男</option>
-                           <option value="男">女</option>
-                       </select>
+					<label for="" class="col-xs-2">员工登录名</label>
+					<div class="col-xs-10">
+						<input readonly type="text" id="empLoginName" name="empLoginName" placeholder="请输入员工登录名" class="form-control"/>
+					</div>					
+				</div>	
+				<div class="form-group">
+					<label for="" class="col-xs-2">性别</label>
+					<div class="col-xs-10">
+						<div class="radio">
+							<label for="">
+								<input type="radio" name="empSex" value="男" />男
+							</label>
+							<label for="">
+								<input type="radio" name="empSex" value="女" />女
+							</label>
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">员工出生日期:</label>
-					<div class="col-md-4">
+					<label for="" class="col-xs-2">出生日期:</label>
+					<div class="col-xs-10">
 						<input type="text" id="empBirthday" name="empBirthday" class="form-control" />
 					</div>
 				</div>
+				
 				<div class="form-group">
-					<label for="" class="col-md-2">员工介绍:</label>
-					<div class="col-md-10">
-						<input type="text" id="empInfo" name="empInfo" class="form-control" />
+					<label for="" class="col-xs-2">联系电话:</label>
+					<div class="col-xs-10">
+						<input type="text" id="empPhone" name="empPhone" placeholder="请输入手机号码" class="form-control" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">员工联系电话:</label>
-					<div class="col-md-4">
-						<input type="text" id="empPhone" name="empPhone" class="form-control" />
+					<label for="" class="col-xs-2">邮箱</label>
+					<div class="col-xs-4">
+						<input readonly type="text" id="empEmail" name="empEmail" placeholder="请输入邮箱" class="form-control" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">员工邮箱</label>
-					<div class="col-md-4">
-						<input type="text" id="empEmail" name="empEmail" class="form-control" />
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="" class="col-md-2">员工部门</label>
-					<div class="col-md-4">
-						<select name="selectSex" value="selectSex" class="form-control">
-                           <option value="行政部">行政部</option>
-                           <option value="技术部">技术部</option>
-                           <option value="开发部">开发部</option>
-                           <option value="市场营销部">市场营销部</option>
-                           <option value="财务部">财务部</option>
+					<label for="" class="col-xs-2">员工部门</label>
+					<div class="col-xs-10">
+						<select name="dept.deptId" id="deptId" class="form-control">
+                           <option value="">请选择部门</option>
                       </select>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">员工职务</label>
-					<div class="col-md-4">
-						<!--添加模糊查询，防止输入不规范-->
-						<input type="text" id="empJob" name="empJob" class="form-control" />
+					<label for="" class="col-xs-2">员工职务</label>
+					<div class="col-xs-10">
+						<select name="job.jobId" id="jobId" class="form-control">
+                           <option value="">请选择职务</option>
+                      </select>
 					</div>
 				</div>
 				<div class="form-group">
@@ -86,12 +78,18 @@
 						<input type="text" id="empSal" name="empSal" class="form-control" />
 					</div>
 				</div>
+				
+				<div class="form-group">
+					<label for="" class="col-xs-2">个人简介:</label>
+					<div class="col-xs-10">
+						<textarea name="empInfo" id="empInfo" class="form-control"></textarea>
+					</div>
+				</div>
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-4">
-						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();" />
-					</div>
-					<div class="col-md-4">
-						<input type="button" value="增加" class="btn btn-primary btn-block" />
+						<input type="button" value="关闭" class="btn btn-warning" onclick="parent.layer.closeAll()" />
+						<input type="button" value="修改" class="btn btn-primary" id="updateBtn"/>
+						<input type="hidden" id="empId" name="empId" />
 					</div>
 				</div>
 			</form>
@@ -103,5 +101,191 @@
 		<script type="text/javascript" src="../js/jquery.js"></script>
 		<script type="text/javascript" src="../js/global.js"></script>
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+		
+		<script>
+			
+			
+			
+			//动态生成部门列表
+			$.ajax({
+				type:"get",
+				url:baseUrl + "/dept/query",
+				async:false,
+				dataType:'json',
+			})
+			.done(function(data,status,xhr){
+				//遍历数组集合
+				var list = data.list;
+				$.each(list, function(index,el) {
+					$('#deptId').append('<option value="' + el.deptId + '" >' + el.deptName + '</option>');
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll(); //关闭加载
+			});
+			
+			//动态生成职务列表(同步请求)
+			$.ajax({
+				type:"get",
+				url:baseUrl + "/job/query",
+				async:false,
+				dataType:'json',
+			})
+			.done(function(data,status,xhr){
+				//遍历数组集合
+				var list = data.list;
+				$.each(list, function(index,el) {
+					$('#jobId').append('<option value="' + el.jobId + '" >' + el.jobName + '</option>');
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll(); //关闭加载
+			});
+			
+			//获得id
+			var empId = getParam('empId');
+			
+			var url = baseUrl + '/employee/get?empId='+empId;
+			//根据id返回员工数据
+			$.getJSON(url,function(data){
+				
+				//表单回显
+				$('#empId').val(data.empId);
+				$('#empName').val(data.empName);
+				$('#empLoginName').val(data.empLoginName);				
+				var sexCheck = [];
+				sexCheck.push(data.empSex);				
+				$(':radio[name=empSex]').val(sexCheck);
+				$('#empBirthday').val(data.empBirthday);
+				$('#empPhone').val(data.empPhone);
+				$('#empSal').val(data.empSal);
+				$('#empEmail').val(data.empEmail);
+				$('#deptId').val(data.dept.deptId);
+				$('#jobId').val(data.job.jobId);
+				$('#empInfo').val(data.empInfo);
+			})
+			.error(function(){
+				alert('请求员工数据失败');
+			});
+			
+			// 给文本框绑定日历控件
+			$('#empBirthday').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:false
+			});
+			
+			//单击修改按钮
+		    $('#updateBtn').click(function(){
+		    	//表单验证函数
+		    	function checkForm(){
+		    		
+		    		
+		    		
+		    		
+		    		var r; //正则表达式
+		    		
+		    		//员工姓名验证
+		    		var empName = $('#empName');		    		
+		    		if(empName.val() == '' || empName.val().length > 20){
+		    			layer.msg('用户姓名不能为空且最多不超过20字符');
+		    			empName.focus();
+		    			return false;
+		    		}
+		    		
+		    
+		    		
+		    		
+		    		
+		    		
+		    		//性别验证
+		    		var empSex = $(':radio[name=empSex]:checked');
+		    		
+		    		if ( empSex.val() == undefined ){
+		    			layer.msg('必须选择性别');						
+						return false;
+		    		}
+		    		
+		    		
+		    		
+		    		//出生日期使用日历插件，不用验证
+		    		
+		    		//手机号码验证
+		    		var empPhone = $('#empPhone');
+		    		
+		    		r = /^1[345678]\d{9}$/;
+		    		
+		    		if( !r.test(empPhone.val()) ) {
+		    			layer.msg('手机号码格式不正确');
+						empPhone.focus();
+						return false;
+		    		}
+		    		
+		    		//工资验证
+		    		url = "/job/get?jobId="+$('#jobId').val();
+		    		$.getJSON( baseUrl + url,{},function(data){
+		    			var minSal = data.jobMinSal;
+		    			
+		    			var maxSal = data.jobMaxSal;
+		    			if ( $('#empSal').val() < minSal || $('#empSal').val() > maxSal ){
+		    				layer.msg('员工工资不在职务区间内，该职务的工资区间为：'+minSal+'-'+maxSal);
+		    				return false;
+		    			}
+		    		})
+		    		.error(function(){
+			    		alert('工资验证失败');
+			    		
+			    	});
+
+				
+					//个人介绍
+					
+					
+					return true;
+
+		    	}
+		    	
+		    	//调用表单验证
+		    	if ( !checkForm() )
+		    		return;
+		    	
+		    	//加载层
+				layer.load(2);
+				
+				//把表单的元素序列化为参数数据
+				var params = $('#form1').serialize();
+	
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/employee/update", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params   //请求参数数据
+				})
+				.done(function(data, status, xhr) { //请求成功回调函数
+					layer.closeAll(); //关闭加载
+					layer.msg('修改员工成功');
+	
+					setTimeout(function() {
+					location.href = 'QueryEmployee.html';//重定向到查询画面
+					}, 1000);
+				})
+				.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll(); //关闭加载
+				});
+		   });
+			
+			
+		</script>
+		
 	</body>
 </html>

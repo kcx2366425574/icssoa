@@ -85,4 +85,12 @@ public class TestEmployeeService {
 		Employee emp = service.queryEmpByLoginName("lisi");
 		System.out.println(emp);
 	}
+	
+	@Test
+	public void getAll(){
+		List<Employee> list = service.queryByNothing();
+		for (Employee employee : list) {
+			System.out.println(employee);
+		}
+	}
 }

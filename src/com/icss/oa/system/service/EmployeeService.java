@@ -47,6 +47,11 @@ public class EmployeeService {
 	}
 	
 	@Transactional(readOnly=true)
+	public List<Employee> queryByNothing(){
+		return mapper.queryByNothing();
+	}
+	
+	@Transactional(readOnly=true)
 	public Employee getById(Integer empId){
 		return mapper.queryById(empId);
 	}

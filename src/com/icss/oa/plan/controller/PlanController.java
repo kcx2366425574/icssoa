@@ -23,7 +23,7 @@ public class PlanController {
 		service.addPlan(plan);
 	}
 	
-	@RequestMapping
+	@RequestMapping("/plan/query")
 	public HashMap<String, Object> query(Integer pageNum,Integer pageSize,String planTime,String planName,Integer deptId){
 		if (pageNum==null) pageNum=1;
 		if (pageSize==null) pageSize=10;

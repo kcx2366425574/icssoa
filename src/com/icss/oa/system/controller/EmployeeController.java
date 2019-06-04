@@ -33,12 +33,19 @@ public class EmployeeController {
 		service.deleteEmployee(empId);
 	}
 	
+	@RequestMapping("/employee/getAll")
+	@ResponseBody
+	public List<Employee> getAll(){
+		return service.queryByNothing();
+	}
+
+	
 	//根据查询条件动态查询员工
 	@RequestMapping("/employee/query")
 	@ResponseBody
 	public HashMap<String, Object> query(Integer pageNum,Integer pageSize,String empName,String empSex,Integer deptId,Integer jobId){
 		if (pageNum==null) pageNum=1;
-		if (pageSize==null) pageSize=30;
+		if (pageSize==null) pageSize=10;
 		int count=service.getEmpCount(empName, empSex, deptId, jobId);
 		Pager pager=new Pager(count, pageSize, pageNum);
 		List<Employee>list= service.queryEmployee(pager, empName, empSex, deptId, jobId);

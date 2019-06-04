@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
-		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" dir="ltr"/>
 		<meta charset="UTF-8">
 		<title></title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
@@ -18,7 +18,7 @@
 			<ol class="breadcrumb">
 				<li><a href="#">OA系统</a></li>
 				<li><a href="#">系统管理</a></li>
-				<li><a href="#">员工管理</a></li>
+				<li><a href="QueryEmployee.html">员工管理</a></li>
 				<li>员工列表</li>
 			</ol>
 			
@@ -27,6 +27,29 @@
 			</h3>
 			
 			<div class="row" style="margin-bottom: 20px;">
+				<div class="col-sm-8">
+	            	 <form class="form-inline" id="form1">
+						<div class="form-group">
+							<label for="">部门</label>							
+							<select name="deptId" id="deptId" class="form-control">
+								<option value="">请选择部门</option>							
+							</select>																			
+						</div>	
+						<div class="form-group">
+							<label for="">职务</label>							
+							<select name="jobId" id="jobId" class="form-control">
+								<option value="">请选择职务</option>							
+							</select>												
+						</div>
+						<div class="form-group">
+							<input type="text" name="empName" id="empName" 
+								class="form-control" placeholder="请输入员工姓名关键字" />												
+						</div>
+						<div class="form-group">
+							<input type="button" value="普通搜索" class="btn btn-primary" id="searchBtn" />
+						</div>										
+					</form>     
+	            </div>
 				<div class="col-md-12">
 	            	<div class="input-group">                	
 	                	<input type="text" class="form-control" id="keywords" name="keywords" placeholder="请输入部门关键字">
@@ -67,8 +90,8 @@
 									<span class="caret"></span>
 								</button>				
 								<ul class="dropdown-menu">
-									<li><a href="#">修改/详细</a></li>
-									<li><a href="#">删除</a></li>
+									<li><a href="javascript:void(0);" @click="showDetails(emp.empId);">修改/详细</a></li>
+									<li><input type="button" value="删除" @click="del(emp.empId,index);"/></li>
 									<li><a href="#">XXX</a></li>
 									<li><a href="#">XXX</a></li>
 								</ul>				
@@ -78,7 +101,7 @@
 				</tbody>
 			</table>	
 			
-			<div class="row">
+			<div class="row" v-show="pager.recordCount!=0">
 				<div class="col-sm-4">
 					<div>
 						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条，
@@ -100,9 +123,12 @@
 				</div>				
 			</div>			
 			
+			<div class="alert alert-info" v-show="pager.recordCount==0">
+				没有任何满足条件的数据
+			</div>
 			<div class="row">
 				<div class="col-md-offset-8 col-md-4">
-					<a href="AddEmp.html" class="btn btn-primary btn-block">增加新员工</a>
+					<a href="AddEmployee.html" class="btn btn-primary btn-block">增加新员工</a>
 				</div>
 			</div>
 			
@@ -116,6 +142,33 @@
 		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
 		
 		<script>	
+			
+			//搜索条件
+			var deptCond = '';
+			var jobcond = ''
+			var empNameCond = '';
+			
+			//动态生成部门列表
+			$.getJSON(baseUrl + '/dept/query',{},function(data) {				
+				//遍历数据集合
+				$.each(data.list, function(index,el) {				
+					$('#deptId').append('<option value="' + el.deptId + '" >' + el.deptName + '</option>');					
+				});				
+			})
+			.error(function(){
+				alert('请求部门列表失败');				
+			});
+			
+			//动态生成职务列表
+			$.getJSON(baseUrl + '/job/query',{},function(data) {				
+				//遍历数据集合
+				$.each(data.list, function(index,el) {				
+					$('#jobId').append('<option value="' + el.jobId + '" >' + el.jobName + '</option>');					
+				});				
+			})
+			.error(function(){
+				alert('请求部门列表失败');				
+			});	
 			
 			var v = new Vue({
 				el:'.container', //应用vue数据的范围
@@ -133,7 +186,10 @@
 						//请求参数
 						var params = {
 							pageNum:pageNum,
-							pageSize:10
+							pageSize:10,
+							deptId:deptCond,
+							jobId:jobcond,
+							empName:empNameCond
 						}
 						
 						$.ajax({
@@ -176,6 +232,42 @@
 						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
 							alert(errorStatus + ',' + errorText);				
 						});							
+					},
+					showDetails:function(empId) { //修改查看详细的方法
+						
+						// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title:'员工详细信息',
+						    type: 2, 				   
+						    area: ['600px', '800px'], //宽高
+						    content: 'UpdateEmployee.html?empId=' + empId
+						});
+						
+					},
+					del:function(empId,index){
+						
+						var flag = window.confirm('确定要删除此部门吗');
+						
+						if ( !flag )
+							return;
+							
+						//发出ajax请求
+						var url = baseUrl + "/employee/delete";
+						
+						$.ajax({
+							type:"get",
+							url:url,
+							async:true,
+							dataType:'text',
+							data:{empId:empId}
+						})
+						.done(function(data,status,xhr){
+							layer.msg('删除部门成功');	
+							v.deptData.splice(index,1);//前端删除
+						})
+						.fail(function(xhr,errorStatus,errorText){
+							alert(errorStatus + ',' + errorText);
+						});
 					}
 				}
 			});				
@@ -183,6 +275,17 @@
 //			调用查询方法
 			v.query(1);		
 			
+			
+			//搜索按钮单击
+			$('#searchBtn').click(function(){
+				
+				//条件赋值
+				deptCond = $('#deptId').val();
+				jobcond = $('#jobId').val();
+				empNameCond = $('#empName').val();
+				
+				v.query(1);				
+			});
 		</script>
 		
 	</body>

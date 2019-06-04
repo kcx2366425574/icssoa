@@ -6,15 +6,9 @@
 	<display-name>oa_teacher</display-name>
 
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
-		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.html</welcome-file>
-		<welcome-file>default.htm</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
+		<welcome-file>login.html</welcome-file>
 	</welcome-file-list>
 
-	<!-- Spring核心容器 -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
@@ -22,8 +16,8 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:application*.xml</param-value>
 	</context-param>
-
-	<!-- sprng mvc核心servlet配置 -->
+	
+	
 	<servlet>
 		<servlet-name>springMVC</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -36,8 +30,7 @@
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
-	<!-- 字符编码过滤器 -->
+	
 	<filter>
 		<filter-name>characterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

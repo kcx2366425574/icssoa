@@ -18,6 +18,8 @@ public interface EmployeeMapper {
 
 	Employee queryByLoginName(String empLoginName);
 	
+	List<Employee> queryByNothing();
+	
 	List<Employee> queryByCondition(@Param("start") Integer start, @Param("pageSize") Integer pageSize,
 			@Param("empName") String empName,@Param("empSex") String empSex,
 			@Param("deptId") Integer deptId, @Param("jobId") Integer jobId); // instr

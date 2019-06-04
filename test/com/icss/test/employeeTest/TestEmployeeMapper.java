@@ -78,7 +78,7 @@ public class TestEmployeeMapper {
 	//instr
 	public void testQueryByCondition() {
 
-		List<Employee> list = mapper.queryByCondition(0, 5, null,"女", null,null);
+		List<Employee> list = mapper.queryByCondition(0, 10, null,"女", null,null);
 		for (Employee employee : list) {
 			System.out.println(employee);
 		}

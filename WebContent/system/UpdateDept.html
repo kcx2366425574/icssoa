@@ -49,5 +49,66 @@
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		
+		<script>
+			//获得参数id
+			var deptId = getParam('deptId');
+			
+			//发出ajax请求调用后端接口
+			var url = baseUrl + "/dept/get";
+			
+			$.ajax({
+				type:"get", //请求类型get post
+				url: url, //请求url地址
+				async:true, //true默认表示异步请求
+				dataType:'json', //响应的数据类型
+				data:{deptId:deptId} //传递的请求参数
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//表单数据回显
+				$('#deptName').val(data.deptName);
+				$('#deptInfo').val(data.deptInfo);
+				$('#deptId').val(data.deptId);			
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});	
+			
+						
+			//单击修改按钮
+			$('#updateBtn').click(function() {
+				
+				//加载层
+				layer.load(2);
+				
+				//发出ajax请求调用后端接口
+				var url = baseUrl + "/dept/update";
+				
+				//请求参数
+				var params = $('#form1').serialize();
+				
+				$.ajax({
+					type:"post", //请求类型get post
+					url: url, //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params //传递的请求参数
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('修改部门成功');	
+					
+					setTimeout(function(){
+						location.href = 'QueryDept.html';//重定向到查询画面
+					},1000);		
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});									
+				
+			});
+		</script>
 	</body>
 </html>
