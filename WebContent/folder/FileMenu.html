@@ -1,0 +1,202 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" charset="width=device-width, initial-scale=1"
+	user-scalable="no">
+<!--手机设备显示-->
+<link href="../cloud_oa/js/bootstrap/css/bootstrap.css" rel="stylesheet"
+	type="text/css">
+<link href="../cloud_oa/js/zTree/css/zTreeStyle/zTreeStyle.css"
+	rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../cloud_oa/js/jquery.js"></script>
+<script type="text/javascript"
+	src="../cloud_oa/js/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="../cloud_oa/js/layer/layer.js"></script>
+<script type="text/javascript"
+	src="../cloud_oa/js/zTree/js/jquery.ztree.all-3.5.js"></script>
+<script type="text/javascript" src="../js/jquery.js" ></script>
+<script type="text/javascript" src="../js/global.js" ></script>
+<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+<script type="text/javascript" src="../js/layer/layer.js" ></script>
+<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+	
+<link rel="stylesheet" type="text/css" href="../cloud_oa/css/common.css">
+<script type="text/javascript"
+	src="../cloud_oa/js/Validform/js/Validform_v5.3.2.js"></script>
+<link href="../cloud_oa/css/style.css" rel="stylesheet" type="text/css">
+<link href="../cloud_oa/css/sb-admin.css" rel="stylesheet">
+
+
+<title>云目录</title>
+
+</head>
+
+<body>
+
+	<!-- 网页头部-->
+
+
+
+
+
+	<script type="text/javascript">
+		//轮播时间间隔设置
+		$(document).ready(function(e) {
+			$('.carousel').carousel({
+				interval : 10000
+			});
+			$(document).ready(function(e) {
+				//初始化工具提示
+				$('a,button[data-toggle="tooltip"]').tooltip();
+				$('#fuckhtml').popover();
+			});
+		});
+		
+
+		
+
+	</script>
+	<!--登陆界面模态层-->
+	
+	<!--/登陆界面模态层-->
+
+	<!--导航条-->
+	<nav id="navigation" class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#myCollapse1">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a href="javascript:void(0)" class="navbar-brand"> <img
+					src="../cloud_oa/image/default-transparent.png" height="20" />
+				</a>
+			</div>
+			<!--/.navbar-header-->
+
+
+		</div>
+		<!--/.container-fluid-->
+	</nav>
+	<!--/导航条-->
+
+	<!--轮播容器-->
+	<header id="myCarousel" class="carousel slide">
+		<!-- Indicators -->
+		<ol class="carousel-indicators">
+			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+			<li data-target="#myCarousel" data-slide-to="1"></li>
+			<li data-target="#myCarousel" data-slide-to="2"></li>
+		</ol>
+
+		<!-- Wrapper for slides -->
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="fill"
+					style="background-image: url('../cloud_oa/image/100.jpg');"></div>
+				<div class="carousel-caption">
+					<h2>学JAVA开发，到中软国际。</h2>
+				</div>
+			</div>
+			<div class="item">
+				<div class="fill"
+					style="background-image: url('../cloud_oa/image/101.jpg');"></div>
+				<div class="carousel-caption">
+					<h2>学iOS/Android开发，到中软国际。</h2>
+				</div>
+			</div>
+			<div class="item">
+				<div class="fill"
+					style="background-image: url('../cloud_oa/image/102.jpg');"></div>
+				<div class="carousel-caption">
+					<h2>学C++开发，到中软国际。</h2>
+				</div>
+			</div>
+		</div>
+		<!-- Controls -->
+		<a class="left carousel-control" href="#myCarousel" data-slide="prev">
+			<span class="icon-prev"></span>
+		</a> <a class="right carousel-control" href="#myCarousel"
+			data-slide="next"> <span class="icon-next"></span>
+		</a>
+	</header>
+	<!--/轮播容器-->
+
+
+	<!-- 网页头部完成-->
+	<!-- 每个模块的部分 -->
+	<div class="container">
+		<h2 class="page-header">云文件目录</h2>
+		<!-- 侧边栏树形结构-->
+		<div class="col-md-3">
+			<div class="panel panel-primary">
+				<div class="panel-heading" style="font-weight: bolder">我的云目录</div>
+				<div id="folderTree" class="panel-body">
+					<ul id="tree" class="ztree"></ul>
+				</div>
+			</div>
+
+		</div>
+		<!-- 侧边栏完成    -->
+
+		<!-- 右侧内容-->
+		<div id="currentFolder1" class="col-md-offset-3">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b>系统管理员的云存储</b>
+
+					<div class="pull-right">
+						<a href="javascript:editFolder(21)" class="btn btn-xs btn-info">重命名</a>
+						<a href="javascript:delFolder(21)" class="btn btn-xs btn-info">删除目录</a>
+						<a href="AddFile.html"  class="btn btn-primary btn-xs">上传文件</a>
+						<a href="javascript:void(0)" class="btn btn-primary btn-xs">新建子目录</a>
+					</div>
+				</div>
+
+				<div class="panel-body">
+					<p>文件夹描述：中软云办公为您提供免费默认1G云空间，在您今后的工作生活中有机会增加容量。
+					<div class="panel panel-default">
+						<div class="panel-heading">子目录和文件</div>
+						<div style="height: 300px; overflow-x: visible; overflow-y: auto">
+
+
+
+
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!--右侧内容完 -->
+
+	</div>
+	<iframe name="hiddenUpload" width="0" height="0"></iframe>
+	<!--网页底部-->
+
+
+	<footer>
+		<div class="container-fluid footer_style">
+			<div class="col-md-6 col-md-offset-3 text-center">
+				<h4>
+					<img src="../cloud_oa/image/default-transparent.png" height="20" />
+				</h4>
+				<p>地址：辽宁省大连市广贤路97号中软国际</p>
+				<p>Copyright 2009-2019 dletc.com.cn all rights reserved 网站备案号 :
+					辽ICP备09019147号-1</p>
+			</div>
+		</div>
+	</footer>
+
+	<!--网页底部结束-->
+
+
+
+</body>
+
+</html>

@@ -16,14 +16,13 @@ import com.icss.oa.pic.dao.PicMapper;
 import com.icss.oa.pic.pojo.Pic;
 
 /**
- * Í¼Æ¬dao²âÊÔÀà
+ * Í¼Æ¬daoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * 
  * @author Administrator
  *
  */
 public class TestPicMapper {
 
-	// »ñµÃSpringºËÐÄÈÝÆ÷¶ÔÏó
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
 	PicMapper mapper = context.getBean(PicMapper.class);
@@ -31,13 +30,13 @@ public class TestPicMapper {
 	@Test
 	public void insert() throws IOException {
 
-		//ÊäÈëÁ÷¶ÁÈ¡ÎÄ¼þ
-		FileInputStream fis = new FileInputStream("e:\\ÕÅÂüÓñ.jpg");
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½Ä¼ï¿½
+		FileInputStream fis = new FileInputStream("e:\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.jpg");
 
-		//×ª»»Îª×Ö½ÚÊý×é
+		//×ªï¿½ï¿½Îªï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
 		byte[] picEmp = FileCopyUtils.copyToByteArray(fis);
 
-		Pic pic = new Pic("ÕÅÂüÓñ.jpg", 132497L, "ÕÅÂüÓñÉú»îÕÕ", new Date(), "zhangsan", picEmp);
+		Pic pic = new Pic("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.jpg", 132497L, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", new Date(), "zhangsan", picEmp);
 
 		mapper.insert(pic);
 	}
@@ -49,10 +48,10 @@ public class TestPicMapper {
 		
 		System.out.println(pic);
 		
-		//Êä³öÁ÷
+		//ï¿½ï¿½ï¿½ï¿½ï¿½
 		FileOutputStream fos = new FileOutputStream("e:\\" + pic.getPicName());
 		
-		//×Ö½ÚÊý×é¸´ÖÆµ½Êä³öÁ÷
+		//ï¿½Ö½ï¿½ï¿½ï¿½ï¿½é¸´ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		FileCopyUtils.copy(pic.getPicData(), fos);
 		
 		fos.close();

@@ -55,7 +55,7 @@
 						</form>
 					</div>
 					<div class="col-sm-4">
-						<a href="#" class="btn btn-info">切换到全文检索</a>
+						<a href="SearchMessageIndex.html" class="btn btn-info">切换到全文检索</a>
 					</div>
 				</div>
 
@@ -127,7 +127,7 @@
 			<div class="alert alert-info" v-show="pager.recordCount==0">
 				没有任何满足条件的数据
 			</div>
-			
+
 		</div>
 
 		<script type="text/javascript" src="../js/jquery.js"></script>
@@ -164,6 +164,7 @@
 					query: function(pageNum) { //查询					
 						//发出ajax请求调用后端接口
 						var url = baseUrl + "/mes/queryByCondition";
+//						var url = baseUrl + "/mes/queryByEmpLoginName";
 
 						//请求参数
 						var params = {
@@ -262,7 +263,7 @@
 
 			//调用查询方法
 			v.query(1);
-			
+
 			//搜索按钮单击
 			$('#searchBtn').click(function() {
 
@@ -274,7 +275,6 @@
 
 				v.query(1);
 			});
-			
 		</script>
 
 	</body>

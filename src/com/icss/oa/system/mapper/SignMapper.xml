@@ -20,21 +20,28 @@
 		values(default,#{signTime},#{signEmpId})
 	</insert>
 
-	<select id="queryByEmpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-		select s.* ,e.emp_id,e.emp_name from sign s
-		left outer join employee e
-		on s.sign_emp_id=e.emp_id
-		where sign_emp_id=#{signEmpId}
-	</select>
+
 	
 	<select id="query" resultMap="BaseResultMap">
 		select s.* ,e.emp_id,e.emp_name from sign s
 		left outer join employee e
 		on s.sign_emp_id=e.emp_id
+		
+		<where>
+			<if test="signEmpId != null and signEmpId !='' ">
+				sign_emp_id=#{signEmpId}
+			</if>
+		</where>
 	</select>
 	
-	<select id="getCountByEmpId" parameterType="java.lang.Integer">
-	   	select count(*) from sign where sign_emp_id=#{signEmpId}
+	<select id="getAllCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	   	select count(*) from sign 
+	   	<where>
+	   		<if test="signEmpId != null and signEmpId !='' ">
+	   			sign_emp_id=#{signEmpId}
+	   		</if>
+	   	</where>
+	   	 
 	</select>
 
 </mapper>

@@ -7,6 +7,8 @@
 <body>
 	<div>
 		欢迎你，<span id="empLoginName"></span>
+		<button id="sign" class="btn btn-xs">签到</button>
+		
 	</div>
 	
 	
@@ -14,13 +16,67 @@
 	<script type="text/javascript" src="js/global.js" ></script>
 	<script type="text/javascript" src="js/bootstrap/js/bootstrap.js" ></script>
 	<script type="text/javascript" src="js/layer/layer.js" ></script>
-	<script>		
-		$.get(baseUrl + '/employee/getLoginName',function(data) {
-			alert(111);
-			$('#empLoginName').html(data);
-			alert(data);
+	<script type="text/javascript" src="js/vue/vue2.5.js" ></script>
+	<script type="text/javascript" src="js/layer/layer.js" ></script>
+	<script>
+		//发出ajax请求调用后端接口
+		url = baseUrl + '/employee/getLoginName';
+		$.ajax({
+			type:"post", //请求类型get post
+			url: url, //请求url地址
+			async:false, //true默认表示异步请求
+			dataType:'text', //响应的数据类型
+		})
+		.done(function(data,status,xhr){ //请求成功回调函数
+			$('#empLoginName').html(data);	
+		})
+		.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+			alert(errorStatus + ',' + errorText);
+			layer.closeAll();//关闭加载
+		});
+		
+		
+		$('#sign').click(function(){
+			var date = new Date();
+			var seperator1 = "-";
+			var seperator2 = ":";
+			var month = date.getMonth() + 1<10? "0"+(date.getMonth() + 1):date.getMonth() + 1;
+			var strDate = date.getDate()<10? "0" + date.getDate():date.getDate();
+			var currentdate = date.getFullYear() + seperator1  + month  + seperator1  + strDate
+					+ " "  + date.getHours()  + seperator2  + date.getMinutes()
+					+ seperator2 + date.getSeconds();
 			
-		});		
+			var empLoginName = $('#empLoginName').val();
+			console.log(empLoginName);
+			//发出ajax请求调用后端接口
+			var url = baseUrl + "/sign/add";
+			
+			//请求参数
+			var params = {
+				empLoginName : empLoginName,
+				signTime : currentdate
+				
+			}
+			
+			$.ajax({
+				type:"POST", //请求类型get post
+				url: url, //请求url地址
+				async:true, //true默认表示异步请求
+				dataType:'text', //响应的数据类型
+				data:params     //请求参数
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				
+			 	setTimeout(function() {
+					layer.msg('签到成功');//重定向到查询画面
+				}, 3000);
+				
+				
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});
+		})
 		
 	</script>
 	

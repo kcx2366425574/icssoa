@@ -28,12 +28,12 @@ public class FilesController {
 	@Autowired
 	private FilesService service;
 	@RequestMapping("/file/add")
-	public void add(@RequestParam("fileInfo") MultipartFile fileInfo,HttpServletRequest request,HttpServletResponse response,Files files) throws IOException
+	public void add(@RequestParam("fileInfo") MultipartFile fileInfo,HttpServletRequest request,HttpServletResponse response) throws IOException
 	{
 		Folder folder=new Folder();
 		folder.setFolId(4);
-		Date createdate=new Date(20000101L);
-		Date updateDate=new Date(20000101L);
+		Date createdate=new Date(new java.util.Date().getTime());
+		Date updateDate=new Date(new java.util.Date().getTime());
 		Files file=new Files(fileInfo.getOriginalFilename(), Integer.valueOf((int)fileInfo.getSize()), folder, "共享",createdate ,updateDate ,fileInfo.getBytes());
 		service.addFiles(file);
 	}

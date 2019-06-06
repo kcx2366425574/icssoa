@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+	<body>		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">任务管理</a></li>
+				<li>修改任务</li>
+			</ol>
+			
+			<h3 class="page-header">
+				修改任务
+			</h3>
+			
+			<form class="form-horizontal col-md-10" id="form1">
+				<div class="form-group">
+					<label for="" class="col-md-2">任务名称</label>
+					<div class="col-md-10">
+						<input type="text" id="schName" name="schName" placeholder="请输入任务名称" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">任务描述</label>
+					<div class="col-md-10">
+						<input type="text" id="schInfo" name="schInfo" placeholder="请输入任务描述" class="form-control"/>
+					</div>					
+				</div>
+								
+				<div class="form-group">
+					<label for="" class="col-md-2">任务授予日期</label>
+					<div class="col-md-10">
+						<input type="text" id="schGrantDate" name="schGrantDate" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">任务开始日期</label>
+					<div class="col-md-10">
+						<input type="text" id="schStartDate" name="schStartDate" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">任务结束日期</label>
+					<div class="col-md-10">
+						<input type="text" id="schEndDate" name="schEndDate" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-2">选择授予人</label>
+					<div class="col-xs-10">
+						<select name="schGranter.empId" id="empId5" class="form-control">
+							<option value="">请选择授予人</option>							
+						</select>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-2">选择被授予人</label>
+					<div class="col-xs-10">
+						<select name="schGrantee.empId" id="empId6" class="form-control">
+							<option value="">请选择被授予人</option>							
+						</select>
+					</div>					
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="parent.layer.closeAll()"/>
+					</div>
+					<div class="col-md-4">
+						<input type="hidden" id="schId" name="schId" />
+						<input type="button" value="修改" class="btn btn-primary btn-block" id="updateBtn"/>
+					</div>				
+				</div>
+			</form>			
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
+		
+		<script>
+		//动态生成员工列表
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + "/emp/query", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//遍历数据集合
+				$.each(data.list, function(index,el) {				
+					$('#empId5').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
+			});		
+							
+			//动态生成职务列表（同步请求）
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + "/emp/query", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//遍历数据集合
+				$.each(data.list, function(index,el) {				
+					$('#empId6').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
+			});
+			//获得参数id
+			var schId = getParam('schId');
+			
+			//发出ajax请求调用后端接口
+		/*	var url = baseUrl + "/sch/queryById";
+			
+			$.ajax({
+				type:"get", //请求类型get post
+				url: url, //请求url地址
+				async:true, //true默认表示异步请求
+				dataType:'json', //响应的数据类型
+				data:{schId:schId} //传递的请求参数
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//表单数据回显
+				$('#schName').val(data.schName);
+				$('#schInfo').val(data.schInfo);
+				$('#schId').val(data.schId);
+				$('#schGrantDate').val(data.schGrantDate);
+				$('#schStartDate').val(data.schStartDate);
+				$('#schEndDate').val(data.schEndDate);
+				alert(data.schGranter.empName);
+				$('#empId5').val(data.schGranter.empId);
+				$('#empId6').val(data.schGrantee.empId);
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});	*/
+			$.getJSON(baseUrl + '/sch/queryById',{schId:schId},function(data){
+				
+				//表单回显
+				$('#schName').val(data.schName);
+				$('#schInfo').val(data.schInfo);
+				$('#schId').val(data.schId);
+				$('#schGrantDate').val(data.schGrantDate);
+				$('#schStartDate').val(data.schStartDate);
+				$('#schEndDate').val(data.schEndDate);
+				$('#empId5').val(data.schGranter.empId);
+				$('#empId6').val(data.schGrantee.empId);
+				
+			})
+			.error(function(){
+				alert('请求数据失败');				
+			});	
+			
+			$('#schGrantDate').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:true
+			});	
+			$('#schStartDate').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:true
+			});	
+			$('#schEndDate').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:true
+			});
+
+			
+						
+			//单击修改按钮
+			$('#updateBtn').click(function() {
+				function checkForm() {
+					
+					var r;//正则表达式					
+					
+					//任务名称
+					var schName = $('#schName');
+					
+					if (schName.val() == '' || schName.val().length > 20) {
+						layer.msg('任务名称不能为空且最多20字符');
+						schName.focus();
+						return false;
+					}
+					//任务姓名
+					var schName = $('#schInfo');
+					
+					if (schName.val() == '' || schName.val().length > 1000) {
+						layer.msg('任务名称不能为空且最多1000字符');
+						schName.focus();
+						return false;
+					}	
+					//验证日期的早晚有效性
+					var grantdate=new Date(document.getElementById("schGrantDate").value.replace(/\-/g, "\/"));
+					var startdate=new Date(document.getElementById("schStartDate").value.replace(/\-/g, "\/"));
+					var enddate=new Date(document.getElementById("schEndDate").value.replace(/\-/g, "\/"));
+					if(grantdate>startdate||startdate>enddate){
+						layer.msg("开始日期晚于结束日期，或者早于授予日期，属于非法情形，请重新输入");
+						schStartDate.focus();
+						return false;
+					}
+					return true;					
+				}				
+				
+//				调用表单验证
+				if ( !checkForm() )
+					return;	
+				//加载层
+				layer.load(2);
+				
+				//发出ajax请求调用后端接口
+				var url = baseUrl + "/sch/update";
+				
+				//请求参数
+				var params = $('#form1').serialize();
+				
+				$.ajax({
+					type:"post", //请求类型get post
+					url: url, //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params //传递的请求参数
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('修改任务成功');	
+					setTimeout(function(){
+						parent.location.reload();
+						parent.layer.closeAll();
+						//location.href = 'QuerySch.html';//重定向到查询画面
+					},1000);		
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});									
+				
+			});
+						
+		</script>
+		
+		
+	</body>
+</html>

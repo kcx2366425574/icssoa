@@ -16,12 +16,16 @@
 		<association property="mesSender" javaType="com.icss.oa.system.pojo.Employee">
 			<id column="mes_sender" property="empId" jdbcType="INTEGER" />
 			<result column="sender_name" property="empName" jdbcType="VARCHAR" />
+			<result column="sender_login_name" property="empLoginName"
+				jdbcType="VARCHAR" />
 			<result column="sender_email" property="empEmail" jdbcType="VARCHAR" />
 		</association>
 
 		<association property="mesReciver" javaType="com.icss.oa.system.pojo.Employee">
 			<id column="mes_reciver" property="empId" jdbcType="INTEGER" />
 			<result column="reciver_name" property="empName" jdbcType="VARCHAR" />
+			<result column="reciver_login_name" property="empLoginName"
+				jdbcType="VARCHAR" />
 			<result column="reciver_email" property="empEmail" jdbcType="VARCHAR" />
 		</association>
 
@@ -76,12 +80,15 @@
 
 	<!-- 查询全部信息 -->
 	<select id="query" resultMap="BaseResultMap">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		SELECT m.*,e1.emp_id
+		mes_sender,e2.emp_id
 		mes_reciver,e1.emp_name
-		sender_name,e2.emp_name reciver_name,
+		sender_name,e2.emp_name
+		reciver_name,
 		e1.emp_email sender_email,
 		e2.emp_email reciver_email
-		FROM message m
+		FROM
+		message m
 		LEFT OUTER JOIN employee as e1
 		ON m.`mes_sender` = e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
@@ -146,6 +153,42 @@
 			<if test="mesSendDate != null and mesSendDate != '' ">
 				and mes_send_date like concat('%', #{mesSendDate}, '%')
 			</if>
+			<if test="mesReciver != null and mesReciver != '' ">
+				and mes_reciver = #{mesReciver}
+			</if>
+			<if test="mesInfo != null and mesInfo != '' ">
+				and mes_info like
+				concat('%',#{mesInfo,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+		LIMIT #{start}, #{pageSize}
+	</select>
+
+	<!-- 整合的模糊查询 没有收件人 -->
+	<select id="queryByCondition1" parameterType="com.icss.oa.message.pojo.Message"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email
+		FROM message m
+		LEFT OUTER JOIN employee as e1
+		ON m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2
+		ON
+		m.`mes_reciver` = e2.`emp_id`
+		<where>
+			<if test="mesTitle != null and mesTitle != '' ">
+				and mes_title like
+				concat('%',#{mesTitle,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="empEmail != null and empEmail != '' ">
+				and e2.`emp_email` like
+				concat('%',#{empEmail,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="mesSendDate != null and mesSendDate != '' ">
+				and mes_send_date like concat('%', #{mesSendDate}, '%')
+			</if>
 		</where>
 		LIMIT #{start}, #{pageSize}
 	</select>
@@ -154,6 +197,71 @@
 	<select id="getCount" resultType="java.lang.Integer">
 		select count(*)
 		from message
+	</select>
+
+	<!-- 根据条件查询记录数 -->
+	<select id="getCountByCondition" resultType="java.lang.Integer">
+		select count(*)
+		from message m
+		LEFT OUTER JOIN employee as e1
+		ON
+		m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2
+		ON
+		m.`mes_reciver` = e2.`emp_id`
+		<where>
+			<if test="mesTitle != null and mesTitle != '' ">
+				and mes_title like
+				concat('%',#{mesTitle,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="empEmail != null and empEmail != '' ">
+				and e2.`emp_email` like
+				concat('%',#{empEmail,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="mesSendDate != null and mesSendDate != '' ">
+				and mes_send_date like concat('%', #{mesSendDate}, '%')
+			</if>
+			<if test="mesReciver != null and mesReciver != '' ">
+				and mes_reciver=#{mesReciver}
+			</if>
+			<if test="mesInfo != null and mesInfo != '' ">
+				and mes_info like
+				concat('%',#{mesInfo,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 获得最后一次添加的信息的id -->
+	<select id="getLastInsertId" resultType="java.lang.Integer">
+		SELECT LAST_INSERT_ID()
+	</select>
+
+	<!-- 根据登录名查询在线信息 -->
+	<select id="queryByLoginName" parameterType="com.icss.oa.message.pojo.Message"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email, e2.emp_email reciver_email, e1.emp_login_name sender_login_name,
+		e2.emp_login_name reciver_login_name
+		FROM message m
+			LEFT OUTER JOIN employee as e1 ON m.`mes_sender` = e1.`emp_id`
+			LEFT OUTER JOIN employee as e2 ON m.`mes_reciver` = e2.`emp_id`
+		WHERE e1.emp_login_name=#{empLoginName}
+		OR    e2.emp_login_name=#{empLoginName}
+		LIMIT #{start}, #{pageSize}
+	</select>
+	
+	<!-- 根据登录名查询响应的记录数 -->
+	<select id="getCountByEmpLoginName" resultType="java.lang.Integer">
+		select count(*)
+		from message m
+		LEFT OUTER JOIN employee as e1
+		ON
+		m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2
+		ON
+		m.`mes_reciver` = e2.`emp_id`
+		WHERE e1.emp_login_name=#{empLoginName}
+		OR    e2.emp_login_name=#{empLoginName}
 	</select>
 
 </mapper>

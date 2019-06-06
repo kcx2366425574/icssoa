@@ -24,19 +24,12 @@ public class TestSignMapper {
 	public void testInsert() {	
 		mapper.insert(1,new Date());
 	}
-	
-	@Test
-	public void testQueryByEmpId(){
-		List<Sign> list = mapper.queryByEmpId(1, 0, 5);
-		for (Sign sign : list) {
-			System.out.println(sign);
-		}
-	}
+
 	
 	//查询
 	@Test
 	public void testQuery(){
-		List<Sign> list = mapper.query( 0, 5);
+		List<Sign> list = mapper.query(1, 0, 5);
 		for (Sign sign : list) {
 			System.out.println(sign);
 		}

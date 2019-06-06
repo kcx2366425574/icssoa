@@ -62,7 +62,7 @@
 					</form>     
 	            </div>
 	            <div class="col-sm-1">
-	            	<a href="#" class="btn btn-info">切换到全文检索</a>
+	            	<a href="SearchIndexCard.html" class="btn btn-info">切换到全文检索</a>
 	            </div>
 			</div>
 			
@@ -252,7 +252,7 @@
 							title:'名片详细信息',
 						    type: 2, 				   
 						    area: ['600px', '800px'], //宽高
-						    content: 'UpdateCard.html?cardId=' + cardId
+						    content: 'UpdateCard.html?cardId=' + cardId + '&pageNum=' + v.pager.pageNum
 						});
 						
 					},
@@ -272,7 +272,7 @@
 							url: url, //请求url地址
 							async:true, //true默认表示异步请求
 							dataType:'text', //响应的数据类型	
-							data:{ids:cardId}	
+							data:{cardId:cardId}	
 						})
 						.done(function(data,status,xhr){ //请求成功回调函数
 							layer.msg('删除名片成功');	

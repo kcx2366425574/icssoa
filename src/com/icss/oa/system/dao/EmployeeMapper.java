@@ -33,5 +33,10 @@ public interface EmployeeMapper {
 	int getCountByCondition(@Param("deptId") Integer deptId, 
 			@Param("jobId") Integer jobId, @Param("empSex") String empSex,
 			@Param("empName") String empName); 
+	
+	
+	int getLastInsertId();
+	
+	List<Employee> queryByIds(@Param("ids") Integer[] ids);
 	 
 }

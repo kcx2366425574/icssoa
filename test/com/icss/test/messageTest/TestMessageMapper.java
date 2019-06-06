@@ -82,11 +82,48 @@ public class TestMessageMapper {
 	//全部的模糊查询
 	public void testQueryByCondition() {
 		
-		List<Message> list = mapper.queryByCondition(0, 2, "1998-02-19%", "44", "n");
+//		Employee mesReciver = new Employee();
+//		mesReciver.setEmpId(12);
+		
+		List<Message> list = mapper.queryByCondition(0, 2, null, null,  null, null,"放假");
 		
 		for (Message mes : list) {
 			System.out.println(mes);
 		}
 	}
 	
+	@Test
+	//全部的模糊查询
+	public void testQueryByCondition1() {
+		
+		List<Message> list = mapper.queryByCondition1(0, 2, "1998-02-19%", "zhang", "n");
+		
+		for (Message mes : list) {
+			System.out.println(mes);
+		}
+	}
+	
+	@Test
+	//根据条件获得总记录数
+	public void testGetCountByCondition() {
+//		
+//		Employee mesReciver = new Employee();
+//		mesReciver.setEmpId(12);
+		
+		int count = mapper.getCountByCondition(null, null,  null, null,"放假");
+		
+		System.out.println(count);
+	}
+	
+	@Test
+	//根据登录名查询对应的信息
+	public void testQueryByLoginName() {
+		
+		List<Message> list = mapper.queryByLoginName("zhaoyi",0,2);
+		
+		for(Message mes : list) {
+			System.out.println(mes);
+			
+		}
+	}
 }

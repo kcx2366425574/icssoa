@@ -2,10 +2,9 @@
 <html>
 
 	<head>
-		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
 		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
 		<meta charset="UTF-8">
-		<title>搜索页面</title>
+		<title>信息索引</title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
 		<style>
 			.pagination {
@@ -15,117 +14,118 @@
 	</head>
 
 	<body>
+
 		<div class="container">
 
-			<ol class="breadcrumb">
-				<li><a href="#">OA系统</a></li>
-				<li><a href="#">系统管理</a></li>
-				<li><a href="#">员工管理</a></li>
-				<li>员工列表</li>
-			</ol>
-
-			<h3 class="page-header">
-				信息列表
-			</h3>
-
-			<div class="row" style="margin-bottom: 20px;">
-				<div class="col-sm-8">
-					<form class="form-inline" id="form1">
-						<div class="form-group">
-							<label for="">收件人</label>
-							<select name="mesReciver.empId" id="mesReciver" class="form-control">
-								<option value="">请选择收件人</option>							
-							</select>
+			<!--面板组-->
+			<div class="panel-group" id="accordion" style="float: left; width: 160px;margin-top: 20px;">
+				<!--面板1-->
+				<div class="panel panel-primary">
+					<!--面板标题-->
+					<div class="panel-heading">
+						<h4 class="panel-title">
+	                    	<a href="#one" data-toggle="collapse">在线信息</a>
+	                    </h4>
+					</div>
+					<!--面板内容-->
+					<div id="one" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<a href="AddMes.html">发件箱</a>
 						</div>
-						<div class="form-group">
-							<input type="text" name="mesTitle" id="mesTitle" class="form-control" placeholder="请输入信息的关键字" />
-						</div>
-						<div class="form-group">
-							<input type="button" value="普通搜索" class="btn btn-primary" id="searchBtn" />
-						</div>
-					</form>
-				</div>
-				<div class="col-sm-4">
-					<a href="#" class="btn btn-info">切换到全文检索</a>
-				</div>
-			</div>
-			
-			<!--
-			<div class="row" style="margin-bottom: 20px;">
-				<div class="col-sm-8">
-	            	<div class="input-group">                	
-	                	<input type="text" class="form-control" id="keywords" name="keywords" placeholder="请输入部门关键字">
-	                    <span class="input-group-btn">
-	                    	<button type="button" class="btn btn-primary">全文搜索</button>
-	                    </span>
-	                </div>            
-	            </div>
-	            <div class="col-sm-4">
-	            	<a href="#" class="btn btn-info">切换到普通检索</a>
-	            </div>
-			</div>
-			-->
-
-			<table v-show="pager.recordCount!=0" class="table table-striped table-bordered table-hover table-condensed">
-				<thead>
-					<tr>
-						<th>信息编号</th>
-						<th>题目</th>
-						<th>是否已发</th>
-						<th>是否已读</th>
-						<th>时间</th>
-						<th>内容</th>
-						<td>发件人</td>
-						<th>收件人</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!--v-for循环遍历数据绑定到画面-->
-					<tr v-for="(mes,index) in mesData">
-						<td>{{mes.mesId}}</td>
-						<td>{{mes.mesTitle}}</td>
-						<td>{{mes.mesSendConfirm}}</td>
-						<td>{{mes.mesReadConfirm}}</td>
-						<td>{{mes.mesSendDate}}</td>
-						<td>{{mes.mesInfo}}</td>
-						<td>{{mes.mesSender.empName}}</td>
-						<td>{{mes.mesReciver.empName}}</td>
-						<td>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<div class="row" v-show="pager.recordCount!=0">
-				<div class="col-sm-4">
-					<div>
-						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条， 共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
 					</div>
 				</div>
-				<div class="col-sm-8">
-					<nav>
-						<ul class="pagination pull-right">
-							<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
-							<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
-
-							<li :class="{active:item==pager.pageNum}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
-
-							<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
-							<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>
-						</ul>
-					</nav>
-				</div>
 			</div>
 
+			<div style="margin-top: 20px;margin-left: 200px;">
+				<div class="row" style="margin-bottom: 20px;">
+					<div class="col-sm-8">
+						<form class="form-inline" id="form1">
+							<div class="form-group">
+								<label for="">收件人</label>
+								<select name="mesReciver.empId" id="mesReciver" class="form-control">
+								<option value="">请选择收件人</option>							
+							</select>
+							</div>
+							<div class="form-group">
+								<input type="text" name="mesTitle" id="mesTitle" class="form-control" placeholder="请输入信息的关键字" />
+							</div>
+							<div class="form-group">
+								<input type="button" value="普通搜索" class="btn btn-primary" id="searchBtn" />
+							</div>
+						</form>
+					</div>
+					<div class="col-sm-4">
+						<a href="SearchMessageIndex.html" class="btn btn-info">切换到全文检索</a>
+					</div>
+				</div>
+
+				<!--鼠标悬停-->
+				<table class="table table-hover table-bordered table-condensed" style="margin-top: 20px;">
+					<thead>
+						<tr>
+							<th>信息编号</th>
+							<th>题目</th>
+							<th>是否已发</th>
+							<th>是否已读</th>
+							<th>时间</th>
+							<th>内容</th>
+							<td>发件人</td>
+							<th>收件人</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(mes,index) in mesData">
+							<td>{{mes.mesId}}</td>
+							<td>{{mes.mesTitle}}</td>
+							<td>{{mes.mesSendConfirm}}</td>
+							<td>{{mes.mesReadConfirm}}</td>
+							<td>{{mes.mesSendDate}}</td>
+							<td>{{mes.mesInfo}}</td>
+							<td>{{mes.mesSender.empName}}</td>
+							<td>{{mes.mesReciver.empName}}</td>
+							<td>
+								<!--<a :href="'UpdateMessage.html?mesId='+mes.mesId" class="btn btn-info btn-sm">修改</a>
+								<input type="button" value="删除" class="btn btn-danger btn-sm" @click="del(mes.mesId,index);" />-->
+								<div class="dropdown">
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									操作
+									<span class="caret"></span>
+								</button>
+									<ul class="dropdown-menu">
+										<li><a href="javascript:void(0);" @click="showDetails(mes.mesId);">修改/详细</a></li>
+										<li><a href="javascript:void(0);" @click="del(mes.mesId,index);">删除</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="row">
+					<div class="col-sm-4">
+						<div>
+							共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条， 共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<nav>
+							<ul class="pagination pull-right">
+								<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
+								<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
+
+								<li :class="{active:item==pager.pageNum}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
+
+								<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+								<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+
+			</div>
 			<div class="alert alert-info" v-show="pager.recordCount==0">
 				没有任何满足条件的数据
-			</div>
-
-			<div class="row">
-				<div class="col-md-offset-8 col-md-4">
-					<a href="AddMes.html" class="btn btn-primary btn-block">增加新信息</a>
-				</div>
 			</div>
 
 		</div>
@@ -143,7 +143,7 @@
 			var mesTitlecond = '';
 
 			//动态生成收件人列表
-			$.getJSON(baseUrl + '/employee/q', {}, function(data) {
+			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
 					//遍历数据集合
 					$.each(data, function(index, el) {
 						$('#mesReciver').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
@@ -156,14 +156,14 @@
 			var v = new Vue({
 				el: '.container', //应用vue数据的范围
 				data: { //数据模型
-					mesData: [], //员工数据集合
+					mesData: [],
 					pager: {}, //分页信息
-					pageBtn: [] //分页按钮					
+					pageBtn: [] //分页按钮
 				},
 				methods: { //定义方法
 					query: function(pageNum) { //查询					
 						//发出ajax请求调用后端接口
-						var url = baseUrl + "/mes/queryByCondition";
+					var url = baseUrl + "/mes/queryByEmpLoginName";
 
 						//请求参数
 						var params = {
@@ -175,14 +175,15 @@
 						}
 
 						$.ajax({
-								type: "POST", //请求类型get post
+								type: "post", //请求类型get post
 								url: url, //请求url地址
 								async: true, //true默认表示异步请求
-								dataType: 'json', //响应的数据类型
-								data: params //请求参数
+								dataType: 'json', //响应的数据类型	
+								data: params
 							})
 							.done(function(data, status, xhr) { //请求成功回调函数
 								//把响应的数据赋值给vue数据模型中的变量
+
 								v.mesData = data.list;
 								v.pager = data.pager;
 
@@ -214,12 +215,52 @@
 							.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
 								alert(errorStatus + ',' + errorText);
 							});
+					},
+					del: function(mesId, index) { //删除
+
+						var flag = window.confirm('确定要删除此信息吗');
+
+						if (!flag)
+							return;
+
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/mes/deleteMes";
+
+						$.ajax({
+								type: "get", //请求类型get post
+								url: url, //请求url地址
+								async: true, //true默认表示异步请求
+								dataType: 'text', //响应的数据类型	
+								data: {
+									mesId: mesId
+								}
+							})
+							.done(function(data, status, xhr) { //请求成功回调函数
+								layer.msg('删除信息成功');
+								//location.reload();//刷新当前网页
+								v.mesData.splice(index, 1); //前端删除
+							})
+							.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+								alert(errorStatus + ',' + errorText);
+							});
+					},
+
+					showDetails: function(mesId) { //修改查看详细的方法
+
+						// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title: '在线信息详细信息',
+							type: 2,
+							area: ['600px', '800px'], //宽高
+							content: 'UpdateMessage.html?mesId=' + mesId
+						});
+
 					}
 
 				}
 			});
 
-			//			调用查询方法
+			//调用查询方法
 			v.query(1);
 
 			//搜索按钮单击

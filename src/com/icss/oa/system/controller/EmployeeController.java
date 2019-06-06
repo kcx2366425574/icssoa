@@ -1,5 +1,6 @@
 package com.icss.oa.system.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,11 +95,11 @@ public class EmployeeController {
 		Pager pager=new Pager(count, pageSize, pageNum);
 		List<Employee>list= service.queryEmployee(pager, empName, empSex, deptId, jobId);
 		// 在Map集合中存储分页数据和名片数据
-				HashMap<String, Object> map = new HashMap<>();
-				map.put("pager", pager);
-				map.put("list", list);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
 
-				return map;
+		return map;
 	}
 	//修改员工信息
 	@RequestMapping("/employee/update")
@@ -122,6 +125,13 @@ public class EmployeeController {
 		return service.getById(empId);
 	}
 	
+	//根据id查询员工
+		@RequestMapping("/employee/queryByLoginName")
+		@ResponseBody
+		public Employee getEmpByLoginName(HttpServletRequest request,HttpServletResponse response,String empLoginName){
+			return service.queryEmpByLoginName(empLoginName);
+		}
+	
 	//头像
 	@RequestMapping("/employee/updateHead")
 	public void updateHead(HttpServletRequest request,HttpServletResponse response,String empPhoto){
@@ -142,6 +152,19 @@ public class EmployeeController {
 		String empLoginName = (String) session.getAttribute("empLoginName");
 				
 		return service.queryHead(empLoginName);
+	}
+	
+	/**
+	 * 全文检索员工
+	 * @throws IOException 
+	 * @throws ParseException 
+	 * @throws InvalidTokenOffsetsException 
+	 */
+	@RequestMapping("employee/queryByIndex")
+	@ResponseBody
+	public List<Employee> queryByIndex(HttpServletRequest request,HttpServletResponse response,String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
+		
+		return service.queryEmpByIndex(queryStr);		
 	}
 	
 }

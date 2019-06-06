@@ -15,10 +15,8 @@ import com.icss.oa.schedule.service.ScheduleService;
 import com.icss.oa.system.pojo.Employee;
 
 public class TestScheduleService {
-	
-		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-		ScheduleService service=context.getBean(ScheduleService.class);
-		
+			ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+			ScheduleService service=context.getBean(ScheduleService.class);
 		@Test
 		public void testAddSchedule()
 		{

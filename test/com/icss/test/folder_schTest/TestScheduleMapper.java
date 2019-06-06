@@ -13,7 +13,6 @@ import com.icss.oa.schedule.pojo.Schedule;
 import com.icss.oa.system.pojo.Employee;
 
 public class TestScheduleMapper {
-	
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 	ScheduleMapper mapper = context.getBean(ScheduleMapper.class);
 

@@ -48,11 +48,12 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">选择发件人</label>
+					<label for="" class="col-md-2">发件人</label>
 					<div class="col-md-10">
-						<select name="mesSender.empId" id="mesSender" class="form-control">
+						<!--<select name="mesSender.empId" id="mesSender" class="form-control">
 							<option value="">请选择发件人</option>							
-						</select>
+						</select>-->
+						<input type="text" id="empLoginName" name="mesSender.empId" class="form-control" />
 					</div>
 				</div>
 				<div class="form-group">
@@ -81,24 +82,29 @@
 		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
 
 		<script>
-		
 			//动态生成发件人列表
-			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
-					//遍历数据集合
-					$.each(data, function(index, el) {
-						$('#mesSender').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
-					});
+			//			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
+			//					//遍历数据集合
+			//					$.each(data, function(index, el) {
+			//						$('#mesSender').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+			//					});
+			//
+			//				})
+			//				.error(function() {
+			//					alert('请求员工列表失败');
+			//				});
+			
+			var empLoginName = $('#empLoginName');
 
-				})
-				.error(function() {
-					alert('请求员工列表失败');
-				});
-
+			$.get(baseUrl + '/employee/getLoginName', function(data) {
+				$('#empLoginName').val(data);
+			});
+			
 			//动态生成收件人列表
 			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
 					//遍历数据集合
 					$.each(data, function(index, el) {
-						$('#mesReciver').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+						$('#mesReciver').append('<option value="' + el.empId + '" >' + el.empLoginName + '</option>');
 					});
 				})
 				.error(function() {
@@ -112,13 +118,13 @@
 				function checkForm() {
 
 					//验证收件人邮箱
-//					var mesReciver = $('#mesReciver');
-//
-//					if (mesReciver.val() == '' || mesReciver.val().length > 20) {
-//						alert('部门名称不能为空且最多20字符');
-//						mesReciver.focus();
-//						return false;
-//					}
+					//					var mesReciver = $('#mesReciver');
+					//
+					//					if (mesReciver.val() == '' || mesReciver.val().length > 20) {
+					//						alert('部门名称不能为空且最多20字符');
+					//						mesReciver.focus();
+					//						return false;
+					//					}
 
 					//验证信息题目
 					var mesTitle = $('#mesTitle');
@@ -138,22 +144,25 @@
 						alert('信息内容不能为空且最多100000字符');
 						mesInfo.focus();
 						return false;
-					
-					}
-					
-					var mesSender = $('#mesSender');
-					
-					var name = $('#mesReciver').val();
-					
-					return true;
-			}
 
-				
+					}
+
+					//验证收件人 发件人不可以相同
+					var mesSender = $('#mesSender');
+					var mesReciver = $('#mesReciver');
+
+					if (mesSender.val() == mesReciver.val()) {
+						alert("发件人收件人不可以相同");
+						return false;
+					}
+
+					return true;
+				}
 
 				//调用表单验证
 				if (!checkForm())
 					return;
-					
+
 				//加载层
 				layer.load(2);
 
@@ -169,7 +178,7 @@
 						data: params //请求参数数据
 					})
 					.done(function(data, status, xhr) { //请求成功回调函数
-						
+
 						layer.closeAll(); //关闭加载
 						layer.msg('增加信息成功');
 

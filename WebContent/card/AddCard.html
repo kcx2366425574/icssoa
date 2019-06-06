@@ -197,11 +197,20 @@
 					//个人介绍
 					var cardIntro = $('#cardIntro');
 					
-					if (cardIntro.val() == '' || cardIntro.val().length > 100) {
-						layer.msg('成员介绍不能为空且最多100字符');
+					if (cardIntro.val() == '' || cardIntro.val().length > 200) {
+						layer.msg('成员介绍不能为空且最多200字符');
 						cardIntro.focus();
 						return false;
 					}	
+					
+					//分组验证
+					var teamId = $('#teamId');
+					
+					if (teamId.val() == '') {
+						layer.msg('请选择分组');
+						teamId.focus();
+						return false;
+					}
 					
 					return true;					
 				}				

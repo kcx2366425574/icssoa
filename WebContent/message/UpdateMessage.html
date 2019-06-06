@@ -151,7 +151,7 @@
 			//动态生成发件人列表（同步请求）
 			$.ajax({
 					type: "get", //请求类型get post
-					url: baseUrl + "/employee/q", //请求url地址
+					url: baseUrl + "/employee/getAll", //请求url地址
 					async: false, //false默认表示同步请求
 					dataType: 'json', //响应的数据类型				
 				})
@@ -169,7 +169,7 @@
 			//动态生成收件人列表（同步请求）
 			$.ajax({
 					type: "get", //请求类型get post
-					url: baseUrl + "/employee/q", //请求url地址
+					url: baseUrl + "/employee/getAll", //请求url地址
 					async: false, //false默认表示同步请求
 					dataType: 'json', //响应的数据类型				
 				})
@@ -186,6 +186,7 @@
 
 			//获得参数id
 			var mesId = getParam('mesId');
+			var pageNum  = getParam("pageNum");
 
 			//发出ajax请求调用后端接口
 			var url = baseUrl + "/mes/queryById";

@@ -9,15 +9,13 @@ import com.icss.oa.system.pojo.Sign;
 public interface SignMapper {
 
 	//增加签到
-	void insert(@Param("signEmpId") Integer empId,@Param("signTime") Date signTime);
+	void insert(@Param("signEmpId") Integer signEmpId,@Param("signTime") Date signTime);
 	
 	//query查询结果总数
-	int getCountByEmpId(Integer signEmpId);
+	int getAllCount(@Param("signEmpId")Integer signEmpId);
 	
 	//查询所有的签到记录
-	List<Sign> query(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
+	List<Sign> query(@Param("signEmpId")Integer signEmpId, @Param("start") Integer start,@Param("pageSize") Integer pageSize);
 	
-	//查询该员工所有的签到记录
-	List<Sign> queryByEmpId(@Param("signEmpId")int signEmpId,@Param("start") Integer start,@Param("pageSize") Integer pageSize);
 	
 }

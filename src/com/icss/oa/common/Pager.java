@@ -13,6 +13,12 @@ public class Pager {
 	
 	private int start; //当前页起始记录下标
 	
+	
+	
+	public Pager() {
+		super();
+	}
+
 	public Pager(int recordCount, int pageSize, int pageNum){
 		
 		this.recordCount = recordCount;

@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import com.icss.oa.card.pojo.Card;
 
 public interface CardMapper {
+	
+	int getLastInsertId();
 
 	void insert(Card card);
 

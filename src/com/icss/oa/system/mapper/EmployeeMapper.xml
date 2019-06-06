@@ -154,4 +154,21 @@
 		select emp_photo from employee where emp_login_name=#{empLoginName}
 	</select>
 
+	<select id="getLastInsertId" resultType="java.lang.Integer">
+		SELECT LAST_INSERT_ID()
+	</select>	
+	
+	<!-- 动态形成in后面的列表 -->
+	<select id="queryByIds" resultMap="BaseResultMap">
+		select *
+		from	employee
+		<where>
+			<if test="ids.length>0">
+				emp_id in 
+				<foreach collection="ids" index="i" item="empId" open="(" close=")" separator=",">
+					#{empId}
+				</foreach>
+			</if>		
+		</where>	
+	</select>
 </mapper>

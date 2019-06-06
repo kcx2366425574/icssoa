@@ -111,7 +111,10 @@
 			
 			
 			//获得参数id
-			var cardId = getParam('cardId');			
+			var cardId = getParam('cardId');
+			
+			//获取页码
+			var pageNum = getParam('pageNum');
 			
 			//根据id返回数据
 			$.getJSON(baseUrl + '/card/get',{cardId:cardId},function(data){
@@ -203,9 +206,18 @@
 					//个人介绍
 					var cardIntro = $('#cardIntro');
 					
-					if (cardIntro.val() == '' || cardIntro.val().length > 100) {
-						layer.msg('成员介绍不能为空且最多100字符');
+					if (cardIntro.val() == '' || cardIntro.val().length > 200) {
+						layer.msg('成员介绍不能为空且最多200字符');
 						cardIntro.focus();
+						return false;
+					}
+					
+					//分组验证
+					var teamId = $('#teamId');
+					
+					if (teamId.val() == '') {
+						layer.msg('请选择分组');
+						teamId.focus();
 						return false;
 					}	
 					
@@ -236,8 +248,8 @@
 					
 					setTimeout(function(){
 //						location.href = 'QueryCard.html';
-						parent.location.reload();
-						parent.layer.closeAll();
+						window.parent.v.query(pageNum);  //刷新当前页的参数
+						window.parent.layer.closeAll();
 					},1000);
 				})
 				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数

@@ -11,6 +11,17 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
+
+
+	<!-- 引入资源文件用于在java中注入属性值 -->
+	<bean id="prop" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<array>
+				<value>classpath:db_config.properties</value>
+			</array>
+		</property>
+	</bean>
+	
 	<!-- 加载属性文件 -->
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
