@@ -23,6 +23,14 @@ public interface MeetingMapper {
 	Meeting queryById(Integer meetingId);// 根据会议编号查询会议
 	
 	Integer getMeetingCount();//查询会议数据数量
+	
+	Integer getMeetingConditionCount(    @Param("meetingId") Integer meetingId,                 /**根据ID查询**/
+                                         @Param("empName") String empName,                      /**根据会议发起人姓名查询**/
+                                         @Param("meetingState") String meetingState,            /**根据会议状态查询**/
+                                         @Param("startTime") String startTime,                  /**根据会议时间查询**/
+                                         @Param("meetingTheme") String meetingTheme,            /**根据会议主题查询**/
+                                         @Param("meetingRoomName") String meetRoomName,         /**根据会议室名字查询**/
+                                         @Param("meetingRoomLocation") String meetRoomLocation  /**根据会议室位置查询**/);//查询符合条件的会议室数量
 
 	List<Meeting> query();// 查询多条会议数据
 	

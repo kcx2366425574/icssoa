@@ -69,7 +69,7 @@ public class MeetingController {
 			pageSize = 10;
 
 		Pager pager = new Pager(service.getMeetingCount(), pageSize, pageNum);
-		List<Meeting> list = service.queryMeetingByPage(pageNum, pageSize);
+		List<Meeting> list = service.queryMeetingByPage(pager);
 
 		// 在MAP集合中存储分页数据和员工数据
 		HashMap<String, Object> map = new HashMap<>();
@@ -85,11 +85,17 @@ public class MeetingController {
 	@ResponseBody
 	public HashMap<String, Object> queryByCondition(HttpServletRequest request, HttpServletResponse response,
 			Integer pageNum, Integer pageSize, Integer meetingId, String empName, String meetingState, String startTime,
-			String meetingTheme, String meetRoomName, String meetingRoomLocation) {
+			String meetingTheme, String meetingRoomName, String meetingRoomLocation) {
+		
+		if (pageNum == null)
+			pageNum = 1;
 
-		Pager pager = new Pager(service.getMeetingCount(), pageSize, pageNum);
-		List<Meeting> list = service.queryMeetingByCondition(pageNum, pageSize, meetingId, empName, meetingState,
-				startTime, meetingTheme, meetRoomName, meetingRoomLocation);
+		if (pageSize == null)
+			pageSize = 10;
+
+		Pager pager = new Pager(service.getMeetingConditionCount(meetingId, empName, meetingState, startTime, meetingTheme, meetingRoomName, meetingRoomLocation), pageSize, pageNum);
+		List<Meeting> list = service.queryMeetingByCondition(pager, meetingId, empName, meetingState,
+				startTime, meetingTheme, meetingRoomName, meetingRoomLocation);
 
 		// 在MAP集合中存储分页数据和员工数据
 		HashMap<String, Object> map = new HashMap<>();
@@ -110,6 +116,14 @@ public class MeetingController {
 			//service.deleteMeeting(meetingId);
 			}
 		}
+		
+		// 查询会议室
+				@RequestMapping("/meeting/queryById")
+				@ResponseBody
+				public Meeting queryById(HttpServletRequest request, HttpServletResponse response,Integer meetingId) {
+					System.out.println("查詢会议室");
+					return service.queryMeetingById(meetingId);
+				}
 	
 
 }

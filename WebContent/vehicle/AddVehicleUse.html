@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+
+	<body>
+		<div class="container">
+
+			<h3 class="page-header">
+				增加新记录
+			</h3>
+
+			<form class="form-horizontal col-md-10" id="form1">
+
+				<div class="form-group">
+					<label for="" class="col-md-2">选择申请人</label>
+					<div class="col-md-10">
+						<select name="vehUseEmp.empId" id="vehUseEmp" class="form-control">
+							<option value="">请选择申请人</option>							
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-md-2">开始时间</label>
+					<div class="col-md-10">
+						<input type="text" id="vehUseStart" name="vehUseStart" placeholder="请输入开始时间" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">结束时间</label>
+					<div class="col-md-10">
+						<input type="text" id="vehUseEnd" name="vehUseEnd" placeholder="请输入结束时间" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">用车原因</label>
+					<div class="col-md-10">
+						<input type="text" id="vehUseReason" name="vehUseReason" placeholder="请输入用车原因" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">选择审批人</label>
+					<div class="col-md-10">
+						<select name="vehUseApprover.empId" id="vehUseApprover" class="form-control">
+							<option value="">选择审批人</option>							
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">审批状态</label>
+					<div class="col-md-10">
+						<select name="vehAppState" id="vehAppState" class="form-control">
+							<option value="">请选择审批状态</option>	
+							<option value="审批通过">审批通过</option>
+							<option value="未通过">未通过</option>
+							<option value="审批中">审批中</option>
+							<option value="撤销">撤销</option>
+							
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-md-2">选择车辆</label>
+					<div class="col-md-10">
+						<select name="veh.vehicleId" id="veh" class="form-control">
+							<option value="">选择车辆</option>							
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();" />
+					</div>
+					<div class="col-md-4">
+						<input type="button" value="增加" class="btn btn-primary btn-block" id="addBtn" />
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+
+		<script>
+		
+		
+			// 给文本框绑定日历控件
+			$('#vehUseStart').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d H:i:00',
+				formatDate:'Y-m-d H:i:00',
+				step:10
+			});
+
+
+			// 给文本框绑定日历控件
+			$('#vehUseEnd').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d H:i:00',
+				formatDate:'Y-m-d H:i:00',
+				step:10
+			});
+ 			
+ 			
+ 			
+			//动态生成申请人列表
+			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
+					//遍历数据集合
+					$.each(data, function(index, el) {
+						$('#vehUseEmp').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+					});
+				})
+				.error(function() {
+					alert('请求申请人列表失败');
+				});
+
+			//动态生成审批人列表
+			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
+					//遍历数据集合
+					$.each(data, function(index, el) {
+						$('#vehUseApprover').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+					});
+				})
+				.error(function() {
+					alert('请求审批人列表失败');
+				});
+
+			//动态生成车辆列表
+			$.getJSON(baseUrl + '/vehicle/query', {}, function(data) {
+					//遍历数据集合
+					$.each(data.list, function(index, el) {
+						$('#veh').append('<option value="' + el.vehicleId + '" >' + el.vehicleName + '</option>');
+					});
+				})
+				.error(function() {
+					alert('请求车辆列表失败');
+				});
+				
+			$('#vehUseStart').change(function(){
+ 				console.log($('#vehUseStart'));
+ 			})
+
+			//单击增加按钮
+			$('#addBtn').click(function() {
+				
+				//把表单的元素序列化为参数数据
+				var params = $('#form1').serialize();
+
+                console.log(params);
+
+				//表单验证函数
+				function checkForm() {
+
+					var r; //正则表达式					
+
+					//验证用车原因
+					var vehUseReason = $('#vehUseReason');
+
+					if (vehUseReason.val() == '' || vehUseReason.val().length > 20) {
+						layer.msg('用车原因不能为空且最多20字符');
+						vehUseReason.focus();
+						return false;
+					}
+
+					//验证状态
+					var vehAppState = $('#vehAppState');
+
+					if (vehAppState.val() == '') {
+						layer.msg('请选择审批状态');
+						vehAppState.focus();
+						return false;
+					}
+
+					//验证车辆
+					var vehId = $('#vehId');
+
+					if (vehId.val() == '') {
+						layer.msg('请选择车辆');
+						vehId.focus();
+						return false;
+					}
+
+					//验证申请人
+					var vehUseEmp = $('#vehUseEmp');
+
+					if (vehUseEmp.val() == '') {
+						layer.msg('请选择申请人');
+						vehUseEmp.focus();
+						return false;
+					}
+
+					//验证审批人
+					var vehUseApprover = $('#vehUseApprover');
+
+					if (vehUseApprover.val() == '') {
+						layer.msg('请选择审批人');
+						vehUseApprover.focus();
+						return false;
+					}
+
+					return true;
+				}
+
+				//				调用表单验证
+				if (!checkForm())
+					return;
+
+				//加载层
+				layer.load(2);
+
+				
+				//发出ajax请求调用后端接口
+				$.ajax({
+						type: "post", //请求类型get post
+						url: baseUrl + "/veh/add", //请求url地址
+						async: true, //true默认表示异步请求
+						dataType: 'text', //响应的数据类型
+						data: params //请求参数数据
+					})
+					.done(function(data, status, xhr) { //请求成功回调函数
+						layer.closeAll(); //关闭加载
+						layer.msg('增加员工成功');
+
+						setTimeout(function() {
+							location.href = 'QueryVehicleUse.html'; //重定向到查询画面
+						}, 1000);
+					})
+					.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+						alert(errorStatus + ',' + errorText);
+						layer.closeAll(); //关闭加载
+					});
+
+			});
+		</script>
+
+	</body>
+
+</html>

@@ -18,7 +18,6 @@ import com.icss.oa.meeting.pojo.Meeting;
 import com.icss.oa.meeting.pojo.MeetingRoom;
 import com.icss.oa.system.pojo.Employee;
 
-
 public class TestMeetingMapper {
 
 	// 获得spring核心容器对象
@@ -57,96 +56,104 @@ public class TestMeetingMapper {
 
 	}
 
-	
 	// 测试查询会议数量操作
-		@Test
-		public void testGetmeetingCount() {
-			// 调用数据
-			Integer m= mapper.getMeetingCount();
-			System.out.println("记录数是："+m);
+	@Test
+	public void testGetmeetingCount() {
+		// 调用数据
+		Integer m = mapper.getMeetingCount();
+		System.out.println("记录数是：" + m);
 
-		}
+	}
 
 	// 测试修改会议操作
 	@Test
 	public void testUpdate() throws Exception {
 		Employee promoter = new Employee();
 		promoter.setEmpId(10);
-		
+
 		MeetingRoom meetingRoom = new MeetingRoom();
 		meetingRoom.setMeetingRoomId(6);
 		// 创建pojo对象
-		Meeting meeting = new Meeting(12, inform("2019-03-20 9:35:22"), new Date(), promoter, " ", " ", meetingRoom);
+		Meeting meeting = new Meeting(14, inform("2019-03-20 9:35:22"), new Date(), promoter, " ", " ", meetingRoom);
 		// 调用数据
 		mapper.update(meeting);
 
 	}
-	
+
 	// 测试修改会议状态操作
-			@Test
-			public void testUpdateMeetingState() {
+	@Test
+	public void testUpdateMeetingState() {
 
-				// 调用数据
-				mapper.updateMeetingState(2,"未审批");
+		// 调用数据
+		mapper.updateMeetingState(2, "未审批");
 
-			}
-	
+	}
+
 	// 测试会议单条查询操作
-		@Test
-		public void testQueryById() {
-			// 数据查询操作
-			Meeting meeting= mapper.queryById(2);
+	@Test
+	public void testQueryById() {
+		// 数据查询操作
+		Meeting meeting = mapper.queryById(1);
+		System.out.println(meeting);
+	}
+
+	// 测试所有会议打印操作
+	@Test
+	public void testQuery() {
+		List<Meeting> list = mapper.query();
+		for (Meeting meeting : list) {
+			System.out.println(meeting);
+
+		}
+
+	}
+
+	// 测试会议分页查询
+	@Test
+	public void testQueryByPage() {
+
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("start", 0);
+		map.put("pageSize", 5);
+
+		List<Meeting> list = mapper.queryByPage(map);
+
+		for (Meeting meeting : list) {
 			System.out.println(meeting);
 		}
-		
-		// 测试所有会议打印操作
-		@Test
-		public void testQuery() {
-			List<Meeting> list = mapper.query();
-			for (Meeting meeting : list) {
-				System.out.println(meeting);
-				
-			}
 
+	}
+
+	// 测试会议分页查询2
+	@Test
+	public void testQueryByPage2() {
+
+		List<Meeting> list = mapper.queryByPage2(0, 10);
+
+		for (Meeting meeting : list) {
+			System.out.println(meeting);
 		}
-		
-		// 测试会议分页查询
-			@Test
-			public void testQueryByPage() {
 
-				HashMap<String, Integer> map = new HashMap<>();
-				map.put("start", 0);
-				map.put("pageSize", 5);
+	}
 
-				List<Meeting> list = mapper.queryByPage(map);
+	// 测试动态查询
+	@Test
+	public void testQueryByCondition() {
 
-				for (Meeting meeting : list) {
-					System.out.println(meeting);
-				}
+		List<Meeting> list = mapper.queryByCondition(0, 5, null, "", "", "", "", "", "");
 
-			}
-			
-			// 测试会议分页查询2
-						@Test
-						public void testQueryByPage2() {
+		for (Meeting meeting : list) {
+			System.out.println(meeting);
+		}
+	}
 
-							List<Meeting> list = mapper.queryByPage2(0,10);
-							
-							for (Meeting meeting : list) {
-								System.out.println(meeting);
-							}
+	// 测试条件查询会议数量操作
+	@Test
+	public void testGetmeetingConditionCount() {
+		// 调用数据
+		Integer m = mapper.getMeetingConditionCount(null, null, null, null, null, null, null);
+		System.out.println("记录数是：" + m);
 
-						}
-			
-			//测试动态查询
-			@Test
-			public void testQueryByCondition() {		
-						
-				List<Meeting> list = mapper.queryByCondition(0,5,null,"","","","","","东北角");
-				
-				for (Meeting meeting : list) {
-					System.out.println(meeting);
-				}
-			}
+	}
 
 }

@@ -15,8 +15,6 @@ public interface MeetingEmpMapper {
 	
 	MeetingEmp queryById(Integer meetingEmpId);// 查询参会记录
 	
-	void update(MeetingEmp meetingEmp);//更新记录
-	
 	List<MeetingEmp> queryByCondition(@Param("start") Integer start, 
 	                                  @Param("pageSize") Integer pageSize,
 			                          @Param("meetingEmpId") Integer meetingEmpId, 
@@ -26,6 +24,10 @@ public interface MeetingEmpMapper {
 	List<MeetingEmp> query();//查询所有参会记录
 	
 	Integer getMeetingEmpCount();//查询数据数量
+	
+	Integer getMeetingEmpCountCondition(@Param("meetingEmpId") Integer meetingEmpId, 
+                                        @Param("meetingId") Integer meetingId, 
+                                        @Param("empId") Integer empId);//条件查询数据数量
 	
 	List<MeetingEmp> queryByPage(@Param("start") Integer start,                         
                                  @Param("pageSize") Integer pageSize);// 分页查询数据

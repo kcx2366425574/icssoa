@@ -64,16 +64,15 @@ public class TestMeetingRoomMapper {
 		mapper.update(meetingRoom);
 
 	}
-	
+
 	// 测试修改会议室操作
-		@Test
-		public void testUpdateMeetingRoomState() {
+	@Test
+	public void testUpdateMeetingRoomState() {
 
-			
-			// 调用数据
-			mapper.updateMeetingRoomState(2,"未预约");
+		// 调用数据
+		mapper.updateMeetingRoomState(2, "未预约");
 
-		}
+	}
 
 	// 测试所有会议室打印操作
 	@Test
@@ -84,52 +83,61 @@ public class TestMeetingRoomMapper {
 		}
 
 	}
-	
+
 	// 测试会议室分页查询
-		@Test
-		public void testQueryByPage() {
+	@Test
+	public void testQueryByPage() {
 
-			HashMap<String, Integer> map = new HashMap<>();
-			map.put("start", 0);
-			map.put("pageSize", 5);
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("start", 0);
+		map.put("pageSize", 5);
 
-			List<MeetingRoom> list = mapper.queryByPage(map);
+		List<MeetingRoom> list = mapper.queryByPage(map);
 
-			for (MeetingRoom meetingRoom : list) {
-				System.out.println(meetingRoom);
-			}
-
+		for (MeetingRoom meetingRoom : list) {
+			System.out.println(meetingRoom);
 		}
-		
-		//测试动态查询
-		@Test
-		public void testQueryByCondition() {		
-					
-			List<MeetingRoom> list = mapper.queryByCondition(0,5,null,null,null,null,"有",20);
-			
-			for (MeetingRoom meetingRoom : list) {
-				System.out.println(meetingRoom);
-			}
+
+	}
+
+	// 测试动态查询
+	@Test
+	public void testQueryByCondition() {
+
+		List<MeetingRoom> list = mapper.queryByCondition(0, 5, null, "三楼", null, null, "有", 20);
+
+		for (MeetingRoom meetingRoom : list) {
+			System.out.println(meetingRoom);
 		}
-		
-		// 测试会议分页查询2
-		@Test
-		public void testQueryByPage2() {
+	}
 
-			List<MeetingRoom> list = mapper.queryByPage2(0,10);
-			
-			for (MeetingRoom meetingRoom : list) {
-				System.out.println(meetingRoom);
-			}
+	// 测试会议分页查询2
+	@Test
+	public void testQueryByPage2() {
 
+		List<MeetingRoom> list = mapper.queryByPage2(0, 10);
+
+		for (MeetingRoom meetingRoom : list) {
+			System.out.println(meetingRoom);
 		}
-		
-		// 测试查询会议室数量操作
-				@Test
-				public void testGetmeetingCount() {
-					// 调用数据
-					Integer m= mapper.getMeetingRoomCount();
-					System.out.println("记录数是："+m);
 
-				}
+	}
+
+	// 测试条件查询会议室数量操作
+	@Test
+	public void testGetmeetingRoomCount() {
+		// 调用数据
+		Integer m = mapper.getMeetingRoomConditionCount(null, "三楼", null, null, null, null);
+		System.out.println("记录数是：" + m);
+
+	}
+
+	// 测试查询会议室数量操作
+	@Test
+	public void testGetmeetingCount() {
+		// 调用数据
+		Integer m = mapper.getMeetingRoomCount();
+		System.out.println("记录数是：" + m);
+
+	}
 }

@@ -27,6 +27,13 @@ public interface MeetingRoomMapper {
 	
 	Integer getMeetingRoomCount();//查询会议室数量
 	
+	Integer getMeetingRoomConditionCount(@Param("meetingRoomId") Integer meetingRoomId,               /**根据会议室编号查询**/
+                                         @Param("meetingRoomName") String meetingRoomName,            /**根据会议室名字模糊查询**/
+                                         @Param("meetingRoomState") String meetingRoomState,          /**根据会议室状态模糊查询**/
+                                         @Param("meetingRoomLocation") String meetingRoomLocation,    /**根据会议室位置模糊查询**/
+                                         @Param("meetingRoomCondition") String meetingRoomCondition,  /**根据会议室有无空调模糊查询**/
+                                         @Param("meetingRoomSize") Integer meetingRoomSize            /**根据会议室大小查询**/);//查询符合条件的会议室数量
+	
 	List<MeetingRoom> queryByPage2(@Param("start") Integer start,                         /**开始的条数**/
                                    @Param("pageSize") Integer pageSize);                   // 分页查询会议室数据
 
@@ -36,9 +43,12 @@ public interface MeetingRoomMapper {
 	List<MeetingRoom> queryByCondition(@Param("start") Integer start, 
 			                           @Param("pageSize") Integer pageSize,
 			                           @Param("meetingRoomId") Integer meetingRoomId,               /**根据会议室编号查询**/
-			                           @Param("meetingRoomName") String MeetingRoomName,            /**根据会议室名字模糊查询**/
+			                           @Param("meetingRoomName") String meetingRoomName,            /**根据会议室名字模糊查询**/
 			                           @Param("meetingRoomState") String meetingRoomState,          /**根据会议室状态模糊查询**/
 			                           @Param("meetingRoomLocation") String meetingRoomLocation,    /**根据会议室位置模糊查询**/
 			                           @Param("meetingRoomCondition") String meetingRoomCondition,  /**根据会议室有无空调模糊查询**/
 			                           @Param("meetingRoomSize") Integer meetingRoomSize            /**根据会议室大小查询**/);
+	int getLastInsertId();
+	
+	
 }

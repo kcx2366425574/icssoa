@@ -70,7 +70,7 @@ public class MeetingEmpController {
 	@RequestMapping("/meetingEmp/queryByCondition")
 	@ResponseBody
 	public HashMap<String, Object> queryByCondition(HttpServletRequest request, HttpServletResponse response,
-			Integer pageNum, Integer pageSize, Integer meetingEmpId, Integer mId, Integer empId) {
+			Integer pageNum, Integer pageSize, Integer meetingEmpId, Integer meetingId, Integer empId) {
 
 		if (pageNum == null)
 			pageNum = 0;
@@ -78,8 +78,8 @@ public class MeetingEmpController {
 		if (pageSize == null)
 			pageSize = 10;
 
-		Pager pager = new Pager(service.getMeetingEmpCount(), pageSize, pageNum);
-		List<MeetingEmp> list = service.queryByCondition(pageNum, pageSize, meetingEmpId, mId, empId);
+		Pager pager = new Pager(service.getMeetingEmpCountCondition(meetingEmpId, meetingId, empId), pageSize, pageNum);
+		List<MeetingEmp> list = service.queryByCondition(pager, meetingEmpId, meetingId, empId);
 
 		// 在MAP集合中存储分页数据和员工数据
 		HashMap<String, Object> map = new HashMap<>();

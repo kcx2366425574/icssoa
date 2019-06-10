@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
+import com.icss.oa.common.Pager;
 import com.icss.oa.meeting.dao.MeetingEmpMapper;
 import com.icss.oa.meeting.dao.MeetingMapper;
 import com.icss.oa.meeting.pojo.Meeting;
@@ -33,12 +34,7 @@ public class MeetingEmpService {
 		
 	}
 	
-	/**
-	 * 修改参会记录
-	 */
-	public void updateMeetingEmp(MeetingEmp meetingEmp) {
-		mapper.update(meetingEmp);
-	}
+	
 
 	/**
 	 * 删除参会记录
@@ -67,8 +63,8 @@ public class MeetingEmpService {
 	 * 条件查询参会记录
 	 */
 	@Transactional(readOnly=true)
-	public List<MeetingEmp> queryByCondition(Integer start,Integer pageSize,Integer meetingEmpId,Integer mId,Integer empId) {
-		return mapper.queryByCondition(start, pageSize, meetingEmpId, mId, empId);
+	public List<MeetingEmp> queryByCondition(Pager pager,Integer meetingEmpId,Integer meetingId,Integer empId) {
+		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(), meetingEmpId, meetingId, empId);
 	}
 	
 	/**
@@ -83,8 +79,18 @@ public class MeetingEmpService {
 	 * 查询数据数量
 	 * @return 
 	 */
+	@Transactional(readOnly=true)
 	public int getMeetingEmpCount() {
 		return mapper.getMeetingEmpCount();
+	}
+	
+	/**
+	 * 条件查询数据数量
+	 * @return 
+	 */
+	@Transactional(readOnly=true)
+	public int getMeetingEmpCountCondition(Integer meetingEmpId,Integer meetingId,Integer empId) {
+		return mapper.getMeetingEmpCountCondition(meetingEmpId, meetingId, empId);
 	}
 	
 	

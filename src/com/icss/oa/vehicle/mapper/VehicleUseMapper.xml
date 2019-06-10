@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.oa.vehicle.dao.VehicleUseMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.vehicle.pojo.VehicleUse">
+		<id column="veh_use_id" property="vehUseId" jdbcType="INTEGER" />
+		<result column="veh_use_start" jdbcType="TIMESTAMP" property="vehUseStart" />
+		<result column="veh_use_end" jdbcType="TIMESTAMP" property="vehUseEnd" />
+		<result column="veh_use_reason" jdbcType="VARCHAR" property="vehUseReason" />
+		<result column="veh_app_state" jdbcType="VARCHAR" property="vehAppState" />
+
+		<association property="vehUseEmp" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="veh_use_emp" property="empId" jdbcType="INTEGER" />
+			<result column="veh_use_emp_name" property="empName" jdbcType="VARCHAR" />
+			<result column="veh_use_emp_login_name" property="empLoginName"
+				jdbcType="VARCHAR" />
+		</association>
+
+		<association property="vehUseApprover" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="veh_use_approver" property="empId" jdbcType="INTEGER" />
+			<result column="veh_use_approver_name" property="empName"
+				jdbcType="VARCHAR" />
+			<result column="veh_use_approver_login_name" property="empLoginName"
+				jdbcType="VARCHAR" />
+		</association>
+
+		<association property="veh" javaType="com.icss.oa.vehicle.pojo.Vehicle">
+			<id column="veh_id" property="vehicleId" jdbcType="INTEGER" />
+			<result column="veh_name" property="vehicleName" jdbcType="VARCHAR" />
+			<result column="veh_license" property="vehicleLicense"
+				jdbcType="VARCHAR" />
+			<result column="veh_state" property="vehicleState" jdbcType="VARCHAR" />
+		</association>
+
+	</resultMap>
+
+	<!-- 增加用车记录 -->
+	<insert id="insert" parameterType="com.icss.oa.vehicle.pojo.VehicleUse">
+		insert into vehicle_use
+		values (default, #{vehUseEmp.empId},
+		#{vehUseStart},
+		#{vehUseEnd},
+		#{vehUseReason}, #{vehUseApprover.empId},
+		#{vehAppState},#{veh.vehicleId})
+	</insert>
+
+	<!-- 更新用车记录 -->
+	<update id="update" parameterType="com.icss.oa.vehicle.pojo.VehicleUse">
+		update vehicle_use
+		set
+		veh_use_emp=#{vehUseEmp.empId},veh_use_start=#{vehUseStart},veh_use_end=#{vehUseEnd},
+		veh_use_reason=#{vehUseReason},veh_use_approver=#{vehUseApprover.empId},
+		veh_app_state=#{vehAppState},veh_id=#{veh.vehicleId}
+		where
+		veh_use_id=#{vehUseId}
+	</update>
+
+	<!-- 模糊查询 -->
+	<select id="queryByCondition" resultMap="BaseResultMap">
+		select ve.* ,e1.`emp_id`,e1.`emp_name` veh_use_emp_name,
+		e2.`emp_id`,e2.`emp_name` veh_use_approver_name,
+		v.`vehicle_id`,v.`vehicle_name` veh_name
+		from vehicle_use ve
+		LEFT OUTER
+		JOIN employee e1 on ve.`veh_use_emp` = e1.`emp_id`
+		LEFT OUTER JOIN
+		employee e2 on ve.`veh_use_approver` = e2.`emp_id`
+		LEFT OUTER JOIN
+		vehicle v on ve.`veh_id` = v.`vehicle_id`
+		<!-- 动态sql语句 -->
+		<where>
+			<if test="vehUseEmp != null and vehUseEmp != '' ">
+				and veh_use_emp = #{vehUseEmp,jdbcType=INTEGER}
+			</if>
+			<if test="vehAppEmp != null and vehAppEmp != '' ">
+				and veh_use_approver = #{vehAppEmp,jdbcType=INTEGER}
+			</if>
+			<if test="vehicleId != null and vehicleId != '' ">
+				and ve.veh_id = #{vehicleId, jdbcType=INTEGER}
+			</if>
+			<if test="vehAppState != null and vehAppState != '' ">
+				and veh_app_state = #{vehAppState, jdbcType=VARCHAR}
+			</if>
+			<!--  
+			<if test="vehUseEmp != null">
+				and veh_use_emp = #{vehUseEmp,jdbcType=INTEGER}
+			</if>
+			<if test="vehAppEmp != null">
+				and veh_use_approver = #{vehAppEmp,jdbcType=INTEGER}
+			</if>
+			<if test="veh != null">
+				and veh = #{veh.vehicleId}
+			</if>
+			-->
+		</where>
+		LIMIT #{start}, #{pageSize}
+	</select>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from vehicle_use where
+		veh_use_id=#{vehUseId}
+	</delete>
+
+	<!-- 模糊查询总记录数 -->
+	<select id="getCountByCondition" resultType="java.lang.Integer">
+		select count(*)
+		from vehicle_use ve
+		LEFT OUTER JOIN employee e1 on
+		ve.`veh_use_emp` = e1.`emp_id`
+		LEFT OUTER JOIN employee e2 on
+		ve.`veh_use_approver` = e2.`emp_id`
+		LEFT OUTER JOIN vehicle v on
+		ve.`veh_id` = v.`vehicle_id`
+		<!-- 动态sql语句 -->
+		<where>
+			<if test="vehUseEmp != null and vehUseEmp != '' ">
+				and veh_use_emp = #{vehUseEmp,jdbcType=INTEGER}
+			</if>
+			<if test="vehAppEmp != null and vehAppEmp != '' ">
+				and veh_use_approver = #{vehAppEmp,jdbcType=INTEGER}
+			</if>
+			<if test="vehicleId != null and vehicleId != '' ">
+				and ve.veh_id = #{vehicleId, jdbcType=INTEGER}
+			</if>
+			<if test="vehAppState != null and vehAppState != '' ">
+				and veh_app_state = #{vehAppState, jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据id查询用车记录 -->
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select *
+		from vehicle_use ve
+		LEFT OUTER
+		JOIN employee e1 on ve.`veh_use_emp` = e1.`emp_id`
+		LEFT OUTER JOIN
+		employee e2 on ve.`veh_use_approver` = e2.`emp_id`
+		LEFT OUTER JOIN
+		vehicle v on ve.`veh_id` = v.`vehicle_id`
+		where veh_use_id=#{vehUseId}
+	</select>
+
+</mapper>

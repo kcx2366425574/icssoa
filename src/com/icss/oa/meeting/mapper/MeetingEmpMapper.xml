@@ -1,39 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.icss.oa.meeting.dao.MeetingEmpMapper" >
-  <resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.MeetingEmp" >
-    <id column="meeting_emp_id" property="meetingEmpId" jdbcType="INTEGER" />
-    <result column="meeting" property="meeting" jdbcType="INTEGER" />
-    <result column="emp" property="emp" jdbcType="INTEGER" />
-  		
-		<association property="meeting"
-			javaType="com.icss.oa.meeting.pojo.Meeting">
+<mapper namespace="com.icss.oa.meeting.dao.MeetingEmpMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.MeetingEmp">
+		<id column="meeting_emp_id" property="meetingEmpId" jdbcType="INTEGER" />
+		<result column="meeting" property="meeting" jdbcType="INTEGER" />
+		<result column="emp" property="emp" jdbcType="INTEGER" />
+
+		<association property="meeting" javaType="com.icss.oa.meeting.pojo.Meeting">
 			<id column="meeting_id" property="meetingId" jdbcType="INTEGER" />
-		    <result column="meeting_startTime" property="startTime"
-			jdbcType="TIMESTAMP" />
-		    <result column="meeting_endTime" property="endTime" jdbcType="TIMESTAMP" />
-		    <result column="meeting_promoter" property="promoter" jdbcType="INTEGER" />
-		    <result column="meeting_room" property="meetingRoom" jdbcType="INTEGER" />
-		    <result column="meeting_theme" property="meetingTheme"
-			jdbcType="VARCHAR" />
-		    <result column="meeting_state" property="meetingState"
-			jdbcType="VARCHAR" />
-		</association>
-		
-		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
-				<id column="emp_id" property="empId" jdbcType="INTEGER" />
-		        <result column="emp_name" property="empName" jdbcType="VARCHAR" />
-		        <result column="emp_login_name" property="empLoginName" jdbcType="VARCHAR" />
-		        <result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
-		        <result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
-		        <result column="emp_birthday" property="empBirthday" jdbcType="DATE" />
-		        <result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
-		        <result column="emp_sal" property="empSal" jdbcType="INTEGER" />
-		        <result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
-		        <result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+			<result column="meeting_startTime" property="startTime"
+				jdbcType="TIMESTAMP" />
+			<result column="meeting_endTime" property="endTime" jdbcType="TIMESTAMP" />
+			<result column="meeting_promoter" property="promoter"
+				jdbcType="INTEGER" />
+			<result column="meeting_room" property="meetingRoom" jdbcType="INTEGER" />
+			<result column="meeting_theme" property="meetingTheme"
+				jdbcType="VARCHAR" />
+			<result column="meeting_state" property="meetingState"
+				jdbcType="VARCHAR" />
 		</association>
 
-	
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="emp_id" property="empId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+			<result column="emp_login_name" property="empLoginName"
+				jdbcType="VARCHAR" />
+			<result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+			<result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
+			<result column="emp_birthday" property="empBirthday" jdbcType="DATE" />
+			<result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
+			<result column="emp_sal" property="empSal" jdbcType="INTEGER" />
+			<result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
+			<result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+		</association>
+
+		<!-- 部门映射 -->
+		<association property="emp.dept" javaType="com.icss.oa.system.pojo.Department">
+			<id column="dept_id" property="deptId" jdbcType="INTEGER" />
+			<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+		</association>
+
+		<!-- 职务映射 -->
+		<association property="emp.job" javaType="com.icss.oa.system.pojo.Job">
+			<id column="job_id" property="jobId" jdbcType="INTEGER" />
+			<result column="job_name" property="jobName" jdbcType="VARCHAR" />
+		</association>
+
+
 	</resultMap>
 
 
@@ -55,29 +68,69 @@
 	</delete>
 
 	<!-- 查询会议数据数量 -->
-	<select id="getMeetingEmpCount" resultType="java.lang.Integer" >
-	    SELECT COUNT(*)
-        FROM meeting_emp 
+	<select id="getMeetingEmpCount" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM
+		meeting_emp
 	</select>
-	
+
+	<!-- 条件查询会议数据数量 -->
+	<select id="getMeetingEmpCountCondition" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM
+		meeting_emp
+		<where>
+			<if test="meetingEmpId != null ">
+				and meeting_emp_id=#{meetingEmpId,jdbcType=INTEGER}
+			</if>
+			<if test="meetingId != null ">
+				and meeting=#{meetingId,jdbcType=INTEGER}
+			</if>
+			<if test="empId!= null ">
+				and emp=#{empId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
 	<!-- 分页查询 -->
 	<select id="queryByPage" resultMap="BaseResultMap">
-		SELECT *
-		FROM
-		meeting_emp me
-		LEFT OUTER JOIN employee ON
-		employee.`emp_id`=me.`emp`
-		LEFT OUTER JOIN meeting ON
-		meeting.`meeting_id`=me.`meeting`
+		SELECT
+		me.`meeting_emp_id`,me.`emp`,me.`meeting`,e.`emp_id`,e.`emp_sex`,e.`emp_name`,e.`emp_phone`,d.`dept_name`,j.`job_name`
+		FROM meeting_emp me
+		LEFT OUTER JOIN employee e ON e.`emp_id`=me.`emp`
+		LEFT OUTER JOIN meeting m ON m.`meeting_id`=me.`meeting`
+		LEFT OUTER
+		JOIN department d ON d.`dept_id`=e.`emp_dept_id`
+		LEFT OUTER JOIN job j
+		ON j.`job_id`=e.`emp_job_id`
 		LIMIT
 		#{start},#{pageSize}
 	</select>
 
+	<!-- 查询所有参会记录 -->
+	<select id="query" resultMap="BaseResultMap">
+		SELECT
+		me.`meeting_emp_id`,me.`emp`,me.`meeting`,e.`emp_id`,e.`emp_sex`,e.`emp_name`,e.`emp_phone`,d.`dept_name`,j.`job_name`
+		FROM meeting_emp me
+		LEFT OUTER JOIN employee e ON e.`emp_id`=me.`emp`
+		LEFT OUTER JOIN meeting m ON m.`meeting_id`=me.`meeting`
+		LEFT OUTER
+		JOIN department d ON d.`dept_id`=e.`emp_dept_id`
+		LEFT OUTER JOIN job j
+		ON j.`job_id`=e.`emp_job_id`
+
+	</select>
+
 	<!-- 使用mysql的concat函数动态查询参会人员 -->
 	<select id="queryByCondition" resultMap="BaseResultMap">
-		SELECT *
-		FROM
-		meeting_emp me
+		SELECT
+		me.`meeting_emp_id`,me.`emp`,m.`meeting_id`,e.`emp_id`,e.`emp_sex`,e.`emp_name`,e.`emp_phone`,d.`dept_name`,j.`job_name`
+		FROM meeting_emp me
+		LEFT OUTER JOIN employee e ON e.`emp_id`=me.`emp`
+		LEFT OUTER JOIN meeting m ON m.`meeting_id`=me.`meeting`
+		LEFT OUTER JOIN department d ON d.`dept_id`=e.`emp_dept_id`
+		LEFT OUTER JOIN job j ON j.`job_id`=e.`emp_job_id`
+
 		<where>
 			<if test="meetingEmpId != null ">
 				and meeting_emp_id=#{meetingEmpId,jdbcType=INTEGER}

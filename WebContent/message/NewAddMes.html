@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title>增加信息,自动获取收件人</title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+
+	<body>
+
+		<div class="container">
+
+			<form class="form-horizontal col-md-10" id="form1" style="margin-top: 40px;">
+
+				<div class="form-group">
+					<label for="" class="col-md-2">信息题目</label>
+					<div class="col-md-10">
+						<input type="text" id="mesTitle" name="mesTitle" placeholder="请输入信息题目" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">是否发送</label>
+					<div class="col-md-10">
+						<input type="text" id="mesSendConfirm" name="mesSendConfirm" placeholder="请输入信息题目" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">是否已读</label>
+					<div class="col-md-10">
+						<input type="text" id="mesReadConfirm" name="mesReadConfirm" placeholder="请输入信息题目" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">时间</label>
+					<div class="col-md-10">
+						<input type="text" id="mesSendDate" name="mesSendDate" placeholder="请输入信息题目" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<input type="hidden" id="mesSendDate" name="mesSendDate" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">信息内容</label>
+					<div class="col-md-10">
+						<textarea name="mesInfo" id="mesInfo" rows="15" cols="" class="form-control" placeholder="请输入信息内容"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">发件人</label>
+					<div class="col-md-10">
+						<!--<select name="mesSender.empId" id="mesSender" class="form-control">
+							<option value="">请选择发件人</option>							
+						</select>-->
+						<input type="text" id="empLoginName" name="mesSender.empId" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">选择收件人</label>
+					<div class="col-md-10">
+						<select name="mesReciver.empId" id="mesReciver" class="form-control">
+							<option value="">请选择收件人</option>							
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();" />
+					</div>
+					<div class="col-md-4">
+						<input type="button" value="增加" class="btn btn-primary btn-block" id="addBtn" />
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+
+		<script>
+//			动态生成发件人列表
+//						$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
+//								//遍历数据集合
+//								$.each(data, function(index, el) {
+//									$('#mesSender').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+//								});
+//			
+//							})
+//							.error(function() {
+//								alert('请求员工列表失败');
+//							});
+			
+			var empLoginName = $('#empLoginName');
+
+			$.get(baseUrl + '/employee/getLoginName', function(data) {
+				$('#empLoginName').val(data);
+			});
+			
+			//动态生成收件人列表
+			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
+					//遍历数据集合
+					$.each(data, function(index, el) {
+						$('#mesReciver').append('<option value="' + el.empId + '" >' + el.empLoginName + '</option>');
+					});
+				})
+				.error(function() {
+					alert('请求员工列表失败');
+				});
+
+			//单击增加按钮
+			$('#addBtn').click(function() {
+
+				//表单验证函数
+				function checkForm() {
+
+					//验证收件人邮箱
+					//					var mesReciver = $('#mesReciver');
+					//
+					//					if (mesReciver.val() == '' || mesReciver.val().length > 20) {
+					//						alert('部门名称不能为空且最多20字符');
+					//						mesReciver.focus();
+					//						return false;
+					//					}
+
+					//验证信息题目
+					var mesTitle = $('#mesTitle');
+
+					if (mesTitle.val() == '' || mesTitle.val().length > 100) {
+						alert('信息题目不能为空且最多100字符');
+						mesTitle.focus();
+						return false;
+					}
+
+					var mesSendDate = $('#mesSendDate');
+
+					//验证信息内容
+					var mesInfo = $('#mesInfo');
+
+					if (mesInfo.val() == '' || mesInfo.val().length > 100000) {
+						alert('信息内容不能为空且最多100000字符');
+						mesInfo.focus();
+						return false;
+
+					}
+
+					//验证收件人 发件人不可以相同
+					var mesSender = $('#mesSender');
+					var mesReciver = $('#mesReciver');
+
+					if (mesSender.val() == mesReciver.val()) {
+						alert("发件人收件人不可以相同");
+						return false;
+					}
+
+					return true;
+				}
+
+				//调用表单验证
+				if (!checkForm())
+					return;
+
+				//加载层
+				layer.load(2);
+
+				//把表单元素序列化为参数数据
+				var params = $('#form1').serialize();
+
+				//发出ajax请求调用后端接口
+				$.ajax({
+						type: "post", //请求类型get post
+						url: baseUrl + "/mes/addMesByLoginName", //请求url地址
+						async: true, //true默认表示异步请求
+						dataType: 'text', //响应的数据类型
+						data: params //请求参数数据
+					})
+					.done(function(data, status, xhr) { //请求成功回调函数
+
+						layer.closeAll(); //关闭加载
+						layer.msg('增加信息成功');
+
+						setTimeout(function() {
+							location.href = 'SearchMessage.html'; //重定向到查询画面
+						}, 1000);
+					})
+					.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+						alert(errorStatus + ',' + errorText);
+						layer.closeAll(); //关闭加载
+					});
+			});
+		</script>
+
+	</body>
+
+</html>

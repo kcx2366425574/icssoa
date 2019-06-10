@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
+import com.icss.oa.common.Pager;
 import com.icss.oa.meeting.dao.MeetingMapper;
 import com.icss.oa.meeting.pojo.Meeting;
 
@@ -73,16 +74,24 @@ public class MeetingService {
 	 * 分页查询所有会议
 	 */
 	@Transactional(readOnly=true)
-	public List<Meeting> queryMeetingByPage(Integer start,Integer pageSize) {
-		return mapper.queryByPage2(start,pageSize);
+	public List<Meeting> queryMeetingByPage(Pager pager) {
+		return mapper.queryByPage2(pager.getStart(),pager.getPageSize());
 	}
 	
 	/**
 	 * 条件查询所有会议
 	 */
 	@Transactional(readOnly=true)
-	public List<Meeting> queryMeetingByCondition(Integer start,Integer pageSize,Integer meetingId,String empName,String meetingState,String startTime,String meetingTheme, String meetRoomName,String meetingRoomLocation) {
-		return mapper.queryByCondition(start, pageSize, meetingId, empName, meetingState, startTime, meetingTheme, meetRoomName, meetingRoomLocation);
+	public List<Meeting> queryMeetingByCondition(Pager pager,Integer meetingId,String empName,String meetingState,String startTime,String meetingTheme, String meetingRoomName,String meetingRoomLocation) {
+		return mapper.queryByCondition(pager.getStart(),pager.getPageSize(), meetingId, empName, meetingState, startTime, meetingTheme, meetingRoomName, meetingRoomLocation);
+	}
+	
+	/**
+	 * 获得符合条件的会议室数量
+	 */
+	@Transactional(readOnly=true)
+	public int getMeetingConditionCount(Integer meetingId,String empName,String meetingState,String startTime,String meetingTheme, String meetingRoomName,String meetingRoomLocation) {
+		return mapper.getMeetingConditionCount(meetingId, empName, meetingState, startTime, meetingTheme, meetingRoomName, meetingRoomLocation);
 	}
 
 }

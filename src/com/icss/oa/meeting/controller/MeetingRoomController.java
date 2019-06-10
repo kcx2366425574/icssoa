@@ -1,11 +1,14 @@
 package com.icss.oa.meeting.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import com.icss.oa.meeting.pojo.Meeting;
 import com.icss.oa.meeting.pojo.MeetingRoom;
 import com.icss.oa.meeting.service.MeetingRoomService;
 import com.icss.oa.system.pojo.Department;
+import com.icss.oa.system.pojo.Employee;
 
 /**
  * 会议室控制器
@@ -73,13 +77,13 @@ public class MeetingRoomController {
 			Integer pageNum, Integer pageSize) {
 
 		if (pageNum == null)
-			pageNum = 0;
+			pageNum = 1;
 
 		if (pageSize == null)
 			pageSize = 10;
 
 		Pager pager = new Pager(service.getMeetingRoomCount(), pageSize, pageNum);
-		List<MeetingRoom> list = service.queryMeetingRoomByPage(pageNum, pageSize);
+		List<MeetingRoom> list = service.queryMeetingRoomByPage(pager);
 
 		// 在MAP集合中存储分页数据和员工数据
 		HashMap<String, Object> map = new HashMap<>();
@@ -98,13 +102,13 @@ public class MeetingRoomController {
 			String meetingRoomLocation, String meetingRoomCondition, Integer meetingRoomSize) {
 		
 		if (pageNum == null)
-			pageNum = 0;
+			pageNum = 1;
 
 		if (pageSize == null)
 			pageSize = 10;
 
-		Pager pager = new Pager(service.getMeetingRoomCount(), pageSize, pageNum);
-		List<MeetingRoom> list = service.queryByCondition(pageNum, pageSize, meetingRoomId, meetingRoomName,
+		Pager pager = new Pager(service.getMeetingRoomConditionCount(meetingRoomId,meetingRoomName,meetingRoomState,meetingRoomLocation,meetingRoomCondition,meetingRoomSize), pageSize, pageNum);
+		List<MeetingRoom> list = service.queryByCondition(pager, meetingRoomId, meetingRoomName,
 				meetingRoomState, meetingRoomLocation, meetingRoomCondition, meetingRoomSize);
 
 		// 在MAP集合中存储分页数据和员工数据
@@ -115,5 +119,20 @@ public class MeetingRoomController {
 		return map;
 
 	}
+	
+	/**
+	 * 全文检索会议室
+	 * @throws IOException 
+	 * @throws ParseException 
+	 * @throws InvalidTokenOffsetsException 
+	 */
+	@RequestMapping("meetingRoom/queryByIndex")
+	@ResponseBody
+	public List<MeetingRoom> queryByIndex(HttpServletRequest request,HttpServletResponse response,String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
+		
+		return service.queryMeetingRoomByIndex(queryStr);		
+	}
+	
+
 
 }

@@ -41,8 +41,7 @@
 
 	<!-- 根据会议室编号查询会议室信息 -->
 	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-		select
-		*
+		select *
 		from meeting_room
 		where meeting_room_id =
 		#{meetingRoomId,jdbcType=INTEGER}
@@ -106,8 +105,8 @@
 			<if test="meetingRoomId != null">
 				and meeting_room_id=#{meetingRoomId,jdbcType=INTEGER}
 			</if>
-			<if test="meetingRoomName != null and empName!='' ">
-				and meeting__room_name LIKE
+			<if test="meetingRoomName != null and meetingRoomName!='' ">
+				and meeting_room_name LIKE
 				CONCAT('%',#{meetingRoomName,jdbcType=VARCHAR},'%')
 			</if>
 			<if test="meetingRoomState != null and meetingRoomState !='' ">
@@ -128,4 +127,44 @@
 		</where>
 		LIMIT #{start},#{pageSize}
 	</select>
+	
+	
+	<!-- 查询符合条件的会议室数量 -->
+	<select id="getMeetingRoomConditionCount" parameterType="com.icss.oa.meeting.pojo.Meeting"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		from meeting_room
+		<where>
+			<if test="meetingRoomId != null">
+				and meeting_room_id=#{meetingRoomId,jdbcType=INTEGER}
+			</if>
+			<if test="meetingRoomName != null and meetingRoomName!='' ">
+				and meeting_room_name LIKE
+				CONCAT('%',#{meetingRoomName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomState != null and meetingRoomState !='' ">
+				and meeting_room_state LIKE
+				CONCAT('%',#{meetingRoomState,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomLocation != null and meetingRoomLocation !='' ">
+				and meeting_room_location LIKE
+				CONCAT('%',#{meetingRoomLocation,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomCondition != null and meetingRoomCondition !='' ">
+				and meeting_room_condition LIKE
+				CONCAT('%',#{meetingRoomCondition,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="meetingRoomSize!=null">
+				and meeting_room_size=#{meetingRoomSize,jdbcType=INTEGER}
+			</if>
+		</where>
+		
+	</select>
+	
+	<!-- 获得最后一次添加的信息的id-->
+	<select id="getLastInsertId" resultType="java.lang.Integer">
+		SELECT LAST_INSERT_ID()
+	</select>
+	 
+	
 </mapper>

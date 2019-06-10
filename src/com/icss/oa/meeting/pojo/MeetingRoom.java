@@ -10,7 +10,7 @@ public class MeetingRoom {
 	private String meetingRoomName;//会议室名称
 	private String meetingRoomState;//会议室状态：空闲、已有预约、已停用
 	private String meetingRoomLocation;//会议室位置
-	private int meetingRoomSize;//会议室容量
+	private Integer meetingRoomSize;//会议室容量
 	private String meetingRoomCondition;//会议室是否有空调
 	
 	public MeetingRoom() {
@@ -71,7 +71,7 @@ public class MeetingRoom {
 		this.meetingRoomLocation = meetingRoomLocation;
 	}
 
-	public int getMeetingRoomSize() {
+	public Integer getMeetingRoomSize() {
 		return meetingRoomSize;
 	}
 

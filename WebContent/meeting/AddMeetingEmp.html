@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+<meta name="viewport"
+	content="width=width-device,initial-scale=1,user-scalable=no" />
+<meta charset="UTF-8">
+<title>添加会议室</title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+
+</head>
+	<body>
+		<div class="container">
+	
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">会议管理</a></li>
+				<li><a href="#">参会人员管理</a></li>
+				<li>增加参会人员</li>
+			</ol>
+	
+			<h3 class="page-header">增加参会人员</h3>
+	
+			<form class="form-horizontal col-md-10" id="form1">
+				<div class="form-group">
+					<label for="" class="col-md-2">部门名称</label>
+					<div class="col-md-10" id="form2">
+						<select id='deptId' name="dept.deptId"  class="form-control">
+							<option value="">请选择部门</option>
+						</select>
+					</div>
+				</div>
+			</form>
+			
+			<form class="form-horizontal col-md-10" id='form3'>
+				
+				<div class="form-group">
+					<label for="" class="col-md-2">选择参会人员</label>
+					<div class="col-md-10">
+						<select id='empId' name="emp.empId" class="form-control">
+							<option value="">请选择参会人员</option>
+							
+						</select>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="" class="col-md-2">会议</label>
+					<div class="col-md-10">
+						<input type="text" id="meetingId" name="meeting.meetingId" readonly="readonly" class="form-control"></input>
+							
+						</select>
+					</div>
+				</div>
+					
+			</form>	
+	
+	
+	
+			<div class="form-group">
+				<div class="form-group">
+					<div class="col-lg-offset-8 col-md-2">
+						<input type="button" value="返回" class="btn btn-warning btn-block"
+							onclick="history.back();" />
+					</div>
+					<div class="col-md-2">
+						<input id="addBtn" type="button" value="增加" class="btn btn-primary btn-block"
+							onclick="onsubmit" />
+					</div>
+			    </div>
+		
+	        </div>
+		</div>
+	
+	
+	
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		
+		<script type="text/javascript" src="../js/param.js"></script>
+		<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
+		<script type="text/javascript">
+		
+			
+		
+			var meetingId = getParam('meetingId');
+			$('#meetingId').val(meetingId);
+			
+			//动态列表（同步请求）
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + "/dept/query", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//遍历数据集合
+				data=data.list;
+				$.each(data, function(index,el) {	
+					$('#deptId').append('<option value="' + el.deptId + '" >' + el.deptName + '</option>');					
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
+			});
+			
+	
+		   
+		    $('#form2').change(function(){
+			    //动态生成员工列表
+			   
+			    url = baseUrl + '/employee/query';
+				var params = {
+					deptId : $('#deptId').val()
+				}
+			
+				$.ajax({
+					type:"POST", //请求类型get post
+					url: url, //请求url地址
+					async:false, //true默认表示异步请求
+					dataType:'json', //响应的数据类型
+					data:params
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					data = data.list;
+					$.each(data, function(index,el) {	
+						$('#empId').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
+					});
+				})
+		    	
+				    	
+			})
+		    
+		    
+		   
+		    
+		    //单击增加按钮
+			$('#addBtn').click(function(){
+				
+				
+				//参数数据
+				var params = $('#form3').serialize();
+				
+				
+				
+				
+				
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/meetingEmp/add", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params   //请求参数数据
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('增加参会人员成功');
+					setTimeout(function(){
+						url = 'QueryMeetingEmp.html?meetingId='+ meetingId;
+						location.href = url;//重定向到查询画面
+					},1000);
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll();//关闭加载
+				});				
+				
+			});	
+			
+			    
+			
+		</script>
+	</body>
+</html>

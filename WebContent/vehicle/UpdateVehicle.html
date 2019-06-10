@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title>修改车</title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>
+		
+		<div class="container">
+		
+			<form class="form-horizontal col-md-10" id="form1">
+				<div class="form-group">
+					<label for="" class="col-md-2">车辆名称</label>
+					<div class="col-md-10">
+						<input type="text" id="vehicleName" name="vehicleName" placeholder="请输入车辆名称" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">车牌号</label>
+					<div class="col-md-10">
+						<input type="text" id="vehicleLicense" name="vehicleLicense" placeholder="请输入车牌号" class="form-control" />
+					</div>
+				</div>
+				
+				<!--<div class="form-group">
+					<label for="" class="col-md-2">选择车辆状态</label>
+					<div class="col-md-10">
+						<div class="radio">
+							<label for="">
+								<input type="radio" name="vehicleState" value="已使用"/>已使用
+							</label>
+							<label for="">
+								<input type="radio" name="vehicleState" value="空闲"/>空闲
+							</label>							
+						</div>
+					</div>					
+				</div>-->
+			
+				<div class="form-group">
+					<label for="" class="col-md-2">选择车辆状态</label>
+					<div class="col-md-10">
+						<select name="vehicleState" id="vehicleState" class="form-control">
+							<option value="">请选择车辆状态</option>	
+							<option value="已使用">已使用</option>	
+							<option value="空闲">空闲</option>	
+						</select>
+					</div>					
+				</div>
+				
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="关闭" class="btn btn-warning" onclick="parent.layer.closeAll()"/>
+						<input type="button" value="修改" class="btn btn-primary" id="updateBtn"/>
+						<input type="hidden" id="vehicleId" name="vehicleId"/>
+					</div>									
+				</div>
+
+			</form>			
+		</div>
+		
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		
+		<script>
+			
+			//获得参数id
+			var vehicleId = getParam('vehicleId');	
+			
+			//获取页码
+			var pageNum = getParam('pageNum');
+			
+			//根据id返回数据
+			$.getJSON(baseUrl + '/vehicle/get',{vehicleId:vehicleId},function(data){
+				
+				//表单回显
+				$('#vehicleId').val(data.vehicleId);
+				$('#vehicleName').val(data.vehicleName);
+				$('#vehicleLicense').val(data.vehicleLicense);
+//				var stateCheck = [];
+//				stateCheck.push(data.vehicleState);				
+//				$(':radio[name=vehicleState]').val(stateCheck);
+				$('#vehicleState').val(data.vehicleState);
+				
+				
+			})
+			.error(function(){
+				alert('请求车辆数据失败');				
+			});			
+						
+			//单击修改按钮
+			$('#updateBtn').click(function(){
+				
+				//表单验证函数
+				function checkForm() {
+					
+					var r;//正则表达式					
+					
+					//姓名验证
+					var vehicleName = $('#vehicleName');
+					
+					if (vehicleName.val() == '' || vehicleName.val().length > 20) {
+						layer.msg('车辆姓名不能为空且最多20字符');
+						vehicleName.focus();
+						return false;
+					}	
+					
+					//车牌号验证
+					var vehicleLicense = $('#vehicleLicense');
+					
+					r = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
+					
+					if ( !r.test( vehicleLicense.val() ) ) {
+						layer.msg('车牌号格式不正确');
+						vehicleLicense.focus();
+						return false;
+					}
+					
+//					//使用状态验证
+//					var vehicleState = $(':radio[name=vehicleState]:checked');
+//					
+//					if (vehicleState.val() == undefined) {
+//						layer.msg('必须选择使用状态');						
+//						return false;
+//					}
+					
+					//使用状态验证
+					var vehicleState = $('#vehicleState');
+					
+					if (vehicleState.val() == '') {
+						layer.msg('车辆使用状态不能为空');
+						vehicleState.focus();
+						return false;
+					}	
+					
+					return true;					
+				}				
+				
+//				调用表单验证
+				if ( !checkForm() )
+					return;	
+					
+				//加载层
+				layer.load(2);
+				
+				//把表单的元素序列化为参数数据
+				var params = $('#form1').serialize();
+								
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/vehicle/update", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params   //请求参数数据
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('修改车辆成功');	
+					
+					setTimeout(function(){
+//						location.href = 'QueryCard.html';
+						window.parent.v.query(pageNum);  //刷新当前页的参数
+						window.parent.layer.closeAll();
+					},1000);
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll();//关闭加载
+				});				
+				
+			});	
+						
+		</script>
+
+	</body>
+</html>

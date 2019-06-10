@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<style>
+			.pagination {
+				margin-top: 0!important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">会议管理</a></li>
+				<li><a href="#">会议室管理</a></li>
+				<li>会议室列表</li>
+			</ol>
+
+			<h3 class="page-header">会议室列表</h3>
+
+			<div class="row" style="margin-bottom: 20px;">
+				<div class="col-lg-4">
+					<form class="form-group-md" id="form1">
+						<div class="form-group">
+							<label for="">会议室状态</label>
+							<select name="meetingRoomState" id="meetingRoomState" class="form-control">
+								<option value="">请选择会议室状态</option>
+								<option value="未预约">未预约</option>	
+								<option value="已预约">已预约</option>
+								<option value="已停用">已停用</option>
+							</select>
+						</div>
+						
+						<div class="form-group">
+							<label for="">会议室空调</label>
+							<select name="meetingRoomCondition" id="meetingRoomCondition" class="form-control">
+								<option value="">请选择会议室空调</option>
+								<option value="有">有</option>	
+								<option value="无">无</option>	
+							</select>
+						</div>
+						
+						<div class="form-group">
+							<label for="">会议室大小</label>
+							<select name="meetingRoomSize" id="meetingRoomSize" class="form-control">
+								<option value="">请选择会议室容量</option>
+								<option value="20">20</option>	
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+							</select>
+						</div>
+						
+						<div class="form-group">
+							<label for="">会议室名称</label>
+							<input type="text" name="meetingRoomName" id="meetingRoomName" class="form-control" placeholder="请输入会议室名称关键字" />
+						</div>
+						<div class="form-group">
+							<label for="">会议室位置</label>
+							<input type="text" name="meetingRoomLocation" id="meetingRoomLocation" class="form-control" placeholder="请输入会议室位置关键字" />
+						</div>
+						<div class="form-group" >
+							<input type="button" value="普通搜索" class="btn btn-primary" id="searchBtn" />
+						</div>
+					</form>
+				</div>
+				
+				<div class="col-lg-8" align="right">
+					<a href="SearchIndexMeetingRoom.html" class="btn btn-info">切换到全文检索</a>
+				</div>
+			</div>
+
+
+			<table v-show="pager.recordCount!=0" class="table table-striped table-bordered table-hover table-condensed">
+				<thead>
+					<tr>
+						<th>会议室编号</th>
+						<th>会议室名字</th>
+						<th>会议室大小</th>
+						<th>会议室位置</th>
+						<th>会议室空调情况</th>
+						<th>会议室状态</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!--v-for循环遍历数据绑定到画面-->
+					<tr v-for="(meetingRoom,index) in meetingRoomData">
+						<td>{{meetingRoom.meetingRoomId}}</td>
+						<td>{{meetingRoom.meetingRoomName}}</td>
+						<td>{{meetingRoom.meetingRoomSize}}</td>
+						<td>{{meetingRoom.meetingRoomLocation}}</td>
+						<td>{{meetingRoom.meetingRoomCondition}}</td>
+						<td>{{meetingRoom.meetingRoomState}}</td>
+						<td>
+							<a :href="'UpdateMeetingRoom.html?meetingRoomId='+meetingRoom.meetingRoomId" class="btn btn-info btn-sm">修改</a>
+							<input type="button" value="删除" class="btn btn-danger btn-sm" @click="del(meetingRoom.meetingRoomId,index);" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="row" v-show="pager.recordCount!=0">
+				
+				<div class=" col-sm-4 ">
+					<div>
+						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条，
+						共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+					</div>
+				</div>
+				
+				<div class="col-sm-8 " >
+					<nav>
+			        	<ul class="pagination pull-right ">
+			        		<li v-show="pager.pageNum!=1 "><a href="javascript:void(0); " @click="query(1); ">首页</a></li>
+			                <li v-show="pager.pageNum!=1 "><a href="javascript:void(0); " @click="query(pager.pageNum-1); ">上页</a></li>
+			                
+			                <li :class="{active:item==pager.pageNum} " v-for="(item,index) in pageBtn "><a href="javascript:void(0); " @click="query(item); ">{{item}}</a></li>
+			                			                
+			                <li v-show="pager.pageNum!=pager.pageCount "><a href="javascript:void(0); " @click="query(pager.pageNum+1); ">下页</a></li>
+			                <li v-show="pager.pageNum!=pager.pageCount "><a href="javascript:void(0); " @click="query(pager.pageCount); ">末页</a></li>			                
+			        	</ul>
+			        </nav>
+				</div>				
+			</div>
+			
+		<div class="alert alert-info " v-show="pager.recordCount==0 ">
+				没有任何满足条件的数据
+		</div>	
+
+		<div class="row ">
+			<div class="col-md-offset-8 col-md-4 ">
+				<a href="AddMeetingRoom.html " class=" btn btn-primary btn-block ">增加新会议室</a>
+			</div>
+		</div>
+
+	</div>
+
+
+	<script type="text/javascript " src="../js/jquery.js "></script>
+	<script type="text/javascript " src="../js/global.js "></script>
+	<script type="text/javascript " src="../js/bootstrap/js/bootstrap.js "></script>
+	<script src="../js/layer/layer.js " type="text/javascript " charset="utf-8 "></script>
+	<script type="text/javascript " src="../js/vue/vue2.5.js "></script>
+	
+	<script>	
+		
+			//搜索条件
+			var meetingRoomState = $('#meetingRoomState').val();
+			var meetingRoomSize = $('#meetingRoomSize').val();
+			var meetingRoomCondition = $('#meetingRoomCondition').val();
+			var meetingRoomName= $('#meetingRoomName').val();
+			var meetingRoomLocation=$('#meetingRoomLocation').val();
+			
+			
+			var v = new Vue({
+				el:'.container', //应用vue数据的范围
+				data:{  //数据模型
+					meetingRoomData:[], //员工数据集合
+					pager:{},   //分页信息
+					pageBtn:[]  //分页按钮					
+				},
+				methods:{ //定义方法
+					query:function(pageNum) {	 //查询					
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/meetingRoom/queryByCondition ";
+						
+						//请求参数
+						var params = {
+							pageNum:pageNum,
+							pageSize:10,
+							meetingRoomState:meetingRoomState,
+			                meetingRoomSize:meetingRoomSize,
+			                meetingRoomCondition:meetingRoomCondition,
+			                meetingRoomName:meetingRoomName,
+			                meetingRoomLocation:meetingRoomLocation
+						}
+						
+						$.ajax({
+							type:"POST", //请求类型get post
+							url: url, //请求url地址
+							async:true, //true默认表示异步请求
+							dataType:'json', //响应的数据类型
+							data:params     //请求参数
+						})
+						.done(function(data,status,xhr){ //请求成功回调函数
+							//把响应的数据赋值给vue数据模型中的变量
+							v.meetingRoomData = data.list;	
+							v.pager = data.pager;
+							
+							//生成分页按钮
+							var start = v.pager.pageNum - 2;
+							var end = v.pager.pageNum + 2;
+							
+							if (v.pager.pageNum < 3) {
+								start = 1;
+								end = 5;
+							}
+							
+							if (end > v.pager.pageCount) {
+								end = v.pager.pageCount;								
+							}
+							
+							if (v.pager.pageCount < 5) {
+								start = 1;
+								end = v.pager.pageCount;
+							}
+							
+							v.pageBtn = [];//初始化清空
+							
+							for (var i = start;i <= end;i ++) {
+								v.pageBtn.push(i);
+							}						
+							
+						})
+						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+							alert(errorStatus + ',' + errorText);				
+						});							
+					},
+					
+					del:function(meetingRoomId,index) {  //删除
+						var flag = window.confirm('确定要删除此会议室吗');
+						
+						if (!flag)
+							return;						
+												
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/meetingRoom/delete";
+						
+						$.ajax({
+							type:"get", //请求类型get post
+							url: url, //请求url地址
+							async:true, //true默认表示异步请求
+							dataType:'text', //响应的数据类型	
+							data:{meetingRoomId:meetingRoomId}							
+						})
+						.done(function(data,status,xhr){ //请求成功回调函数
+							layer.msg('删除会议成功');	
+							
+							setTimeout(function(){
+						        location.reload();//刷新当前网页
+					        },1000);
+						
+							
+							
+						
+							
+							//v.meetingData.splice(index,1);//前端删除
+						})
+						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+							alert(errorStatus + ',' + errorText);				
+						});			
+						
+					}
+									
+					
+				}
+			});				
+			
+//			调用查询方法
+			v.query(1);		
+			
+			
+			//搜索按钮单击
+			$('#searchBtn').click(function(){
+				
+				//条件赋值
+				meetingRoomState = $('#meetingRoomState').val();
+				meetingRoomSize = $('#meetingRoomSize').val();
+				meetingRoomCondition = $('#meetingRoomCondition').val();
+				meetingRoomName = $('#meetingRoomName').val();
+				meetingRoomLocation = $('#meetingRoomLocation').val();
+				
+				v.query(1);				
+			});
+			
+		</script>
+</body>
+</html>

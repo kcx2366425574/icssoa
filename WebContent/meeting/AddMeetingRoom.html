@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+<meta name="viewport"
+	content="width=width-device,initial-scale=1,user-scalable=no" />
+<meta charset="UTF-8">
+<title>添加会议室</title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css"
+	href="../js/bootstrap/js/date/datetimepicker/jquery.datetimepicker.css">
+<link rel="stylesheet" type="text/css" href="css/select.css" />
+</head>
+<body>
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="#">OA系统</a></li>
+			<li><a href="#">会议管理</a></li>
+			<li><a href="#">会议室管理</a></li>
+			<li>增加会议室</li>
+		</ol>
+
+		<h3 class="page-header">增加新会议室</h3>
+
+		<form class="form-horizontal col-md-10">
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室名称</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomName" name="meetingRoomName"
+						placeholder="请输入会议室名称" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室位置</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomLocation" name="meetingRoomLocation"
+						placeholder="请输入会议室位置" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室大小</label>
+				<div class="col-md-10">
+					<select id="meetingRoomSize" name="meetingRoomSize" value="meetingRoomSize" class="form-control">
+						<option value="30">30</option>
+						<option value="30">50</option>
+						<option value="100">100</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室空调</label>
+				<div class="col-md-10">
+					<select id="meetingRoomCondition" name="meetingRoomCondition" value="meetingRoomCondition"
+						class="form-control">
+						<option value="有">有</option>
+						<option value="无">无</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室状态</label>
+				<div class="col-md-10">
+					<select id="meetingRoomState" name="meetingRoomState" value="meetingRoomState"
+						class="form-control">
+						<option value="未预约">未预约</option>
+						<option value="已预约">已预约</option>
+						<option value="已停用">已停用</option>
+					</select>
+				</div>
+			</div>
+
+
+			<div class="form-group">
+				<div class="form-group">
+					<div class="col-lg-offset-6 col-md-2">
+						<input type="button" value="返回" class="btn btn-warning btn-block"
+							onclick="history.back();" />
+					</div>
+					<div class="col-md-2">
+						<input type="button" value="增加" class="btn btn-primary btn-block"
+							id="addBtn"/>
+					</div>
+					<div class="col-md-2">
+						<input type="reset" value="重置" class="btn btn-default btn-block"
+							onclick="reset" />
+					</div>
+				</div>
+		</form>
+	</div>
+
+
+
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/global.js"></script>
+	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/select.js"></script>
+	<script type="text/javascript" src="../js/layer/layer.js"></script>
+	<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
+	
+	<script>
+	
+	        //动态生成会议室列表
+			$.getJSON(baseUrl + '/meetingRoom/query',{},function(data) {				
+				//遍历数据集合
+				$.each(data, function(index,el) {				
+					$('#meetingRoomId').append('<option value="' + el.meetingRoomId + '" >' + el.meetingRoomName + '</option>');					
+				});				
+			})
+			.error(function(){
+				alert('请求部门列表失败');				
+			});
+			
+			//动态生成职务列表
+			$.getJSON(baseUrl + '/employee/query',{},function(data) {				
+				//遍历数据集合
+				$.each(data, function(index,el) {				
+					$('#jobId').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
+				});				
+			})
+			.error(function(){
+				alert('请求部门列表失败');				
+			});		
+	        
+			//单击增加按钮
+			$('#addBtn').click(function(){
+				
+				//表单验证函数
+				function checkForm() {
+					
+					//验证会议主题
+					var meetingRoomName = $('#meetingRoomName');
+					
+					if (meetingRoomName.val() == '' || meetingRoomName.val().length > 20) {
+						alert('会议室名称不能为空且最多20字符');
+						meetingRoomName.focus();
+						return false;
+					}
+					
+					var meetingRoomLocation = $('#meetingRoomLocation');
+					
+					if (meetingRoomLocation.val() == '') {
+						alert('会议室位置不能为空且最多20字符');
+						meetingRoomLocation.focus();
+						return false;
+					}
+					
+					var meetingRoomSize = $('#meetingRoomSize');
+					
+					if (meetingRoomSize.val() == '') {
+						alert('会议室大小不能为空');
+						meetingRoomSize.focus();
+						return false;
+					}
+					
+					var meetingRoomCondition = $('#meetingRoomCondition');
+					if (meetingRoomCondition.val() == '') {
+						alert('会议室空调状态不能为空');
+						meetingRoomCondition.focus();
+						return false;
+					}
+
+					var meetingRoomState = $('#meetingRoomState');
+					if (meetingRoomState.val() == '') {
+						alert('会议室状态不能为空');
+						meetingRoomState.focus();
+						return false;
+					}
+	
+					return true;					
+				}				
+				
+//				调用表单验证
+				if ( !checkForm() )
+					return;	
+					
+				//加载层
+				layer.load(2);
+				
+				//参数数据
+				var params = {
+					meetingRoomName: $('#meetingRoomName').val(),
+					meetingRoomLocation:$('#meetingRoomLocation').val(),
+					meetingRoomSize:$('#meetingRoomSize').val(),
+					meetingRoomCondition:$('#meetingRoomCondition').val(),
+					meetingRoomState:$('#meetingRoomState').val()
+					
+				}
+				
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/meetingRoom/add", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params   //请求参数数据
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('增加会议室成功');
+					setTimeout(function(){
+						location.href = 'SearchMeetingRoom.html';//重定向到查询画面
+					},1000);
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll();//关闭加载
+				});				
+				
+			});			
+		</script>
+		
+	
+		
+	</body>
+</html>
