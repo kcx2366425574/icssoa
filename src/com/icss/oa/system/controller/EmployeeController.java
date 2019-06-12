@@ -66,6 +66,15 @@ public class EmployeeController {
 		return empLoginName;
 	}
 	
+	//得到员工id
+	@RequestMapping("/employee/getId")	
+	@ResponseBody
+	public Integer getId(HttpServletRequest request,HttpServletResponse response){
+		HttpSession session = request.getSession();
+		String empLoginName = (String) session.getAttribute("empLoginName");
+		return service.getId(empLoginName);
+	}
+	
 	//增加员工
 	@RequestMapping("/employee/add")
 	public void addEmployee(HttpServletRequest request,HttpServletResponse response,Employee emp){
@@ -76,6 +85,12 @@ public class EmployeeController {
 	@RequestMapping("/employee/delete")
 	public void delete(HttpServletRequest request,HttpServletResponse response,Integer empId){
 		service.deleteEmployee(empId);
+	}
+	
+	//根据id删除员工
+	@RequestMapping("/employee/deleteMany")
+	public void deleteMany(HttpServletRequest request,HttpServletResponse response,Integer[] ids){
+		service.deleteMany(ids);
 	}
 	
 	@RequestMapping("/employee/getAll")
@@ -125,13 +140,25 @@ public class EmployeeController {
 		return service.getById(empId);
 	}
 	
-	//根据id查询员工
+	//根据登录名查询员工
 		@RequestMapping("/employee/queryByLoginName")
 		@ResponseBody
-		public Employee getEmpByLoginName(HttpServletRequest request,HttpServletResponse response,String empLoginName){
+		public Employee getEmpByLoginName(HttpServletRequest request,HttpServletResponse response){
+			HttpSession session = request.getSession();
+			
+			String empLoginName = (String) session.getAttribute("empLoginName");
 			return service.queryEmpByLoginName(empLoginName);
 		}
 	
+		//修改密码
+		@RequestMapping("/employee/updatePwd")
+		public void updatePwd(HttpServletRequest request,HttpServletResponse response,String empPwd){
+			HttpSession session = request.getSession();
+			
+			String empLoginName = (String) session.getAttribute("empLoginName");
+			service.updatePwd(empLoginName, empPwd);
+		}
+		
 	//头像
 	@RequestMapping("/employee/updateHead")
 	public void updateHead(HttpServletRequest request,HttpServletResponse response,String empPhoto){

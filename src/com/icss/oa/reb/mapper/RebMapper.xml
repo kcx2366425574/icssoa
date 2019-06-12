@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.reb.dao.RebMapper">
+
+	<!-- 查询结果集映射 -->
+	<resultMap id="BaseResultMap" type="com.icss.oa.reb.pojo.Reb">
+		<id column="Reb_id" property="RebId" jdbcType="INTEGER" />
+		<result column="Reb_reason" property="RebReason" jdbcType="VARCHAR" />
+		<result column="Reb_amount" property="RebAmount" jdbcType="INTEGER" />
+		<result column="Reb_approval_status" property="RebApprovalStatus" jdbcType="VARCHAR" />
+		<result column="Reb_time" property="RebTime" jdbcType="DATE" />
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="emp_id" property="empId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		</association>
+		<association property="approver" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="approver_id" property="empId" jdbcType="INTEGER" />
+			<result column="approver_name" property="empName" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.reb.pojo.Reb">
+		insert into reb (reb_id,reb_reason, reb_amount,reb_time,Reb_approval_status,reb_employee,reb_aprover) values
+		(default,#{rebReason,jdbcType=VARCHAR},#{rebAmount,jdbcType=INTEGER},#{rebTime,jdbcType=DATE},#{RebApprovalStatus,jdbcType=VARCHAR},#{emp.empId,jdbcType=INTEGER},#{approver.empId,jdbcType=INTEGER})
+	</insert>
+
+	<update id="update" parameterType="com.icss.oa.reb.pojo.Reb">
+		update department set
+		reb_reason=#{rebReason},reb_amount=#{rebAmount},reb_time=#{rebTime},Reb_approval_status=#{RebApprovalStatus}
+		where reb_id=#{rebId}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from reb where
+		 reb_id=#{rebId}
+	</delete>
+	
+	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from reb r
+		LEFT OUTER JOIN employee e
+		ON r.`reb_employee`
+		= e.`emp_id`
+		LEFT OUTER JOIN employee a
+		ON r.`reb_approver`
+		= a.`emp_id`
+		where reb_id=#{rebId}
+	</select>
+	
+	<select id="query" resultMap="BaseResultMap">
+		select * from reb order by reb_id
+		LEFT OUTER JOIN employee e
+		ON r.`reb_employee`
+		= e.`emp_id`
+		LEFT OUTER JOIN employee a
+		ON r.`reb_approver`
+		= a.`emp_id
+		LIMIT #{start},#{pageSize}	
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from reb
+	</select>
+
+</mapper>

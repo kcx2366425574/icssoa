@@ -1,6 +1,7 @@
 package com.icss.test.card_teamTest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.document.Document;
@@ -50,6 +51,13 @@ public class TestCardService {
 		service.deleteCard(44);
 	}
 	
+	//批量删除
+	@Test
+	public void testDeleteManyCard() {
+		Integer[] ids = {78, 79};
+		service.deleteManyCard(ids);
+	}
+	
 	//修改数据
 	@Test
 	public void testUpdateCard() {
@@ -66,32 +74,15 @@ public class TestCardService {
 		Card card = service.queryCardById(1);
 		System.out.println(card);
 	}
-	  
-	//条件获取记录数
-	@Test
-	public void testGetCardCountByCondition() {
-		int count = service.getCardCountByCondition(1, null, null, null);
-		System.out.println(count);
-	}
-	
-	//条件查询 (分页、分组、姓名、性别、介绍)
-	@Test
-	public void testQueryCardByCondition() {
-		Pager page = new Pager(service.getCardCountByCondition(1, null, null, null), 5, 0);
-		List<Card> list = service.queryCardByCondition(page, 1, null, null, null);
-		for(Card card : list) {
-			System.out.println(card);
-		}
-	}
 	
 	/**
 	 * 重建名片的索引
 	 */
 	@Test
 	public void testCreateIndex(){
-		
-		Pager pager = new Pager(service.getCardCountByCondition(null, null, null, null),service.getCardCountByCondition(null, null, null, null) ,1);
-		List<Card> list = service.queryCardByCondition(pager, null, null, null, null);
+		Integer[] ids = {1, 2, 3, 4};
+		Pager pager = new Pager(service.getCardCountByCond(ids, null, null, null, null),service.getCardCountByCond(ids, null, null, null, null) ,1);
+		List<Card> list = service.queryCardByCond(ids, pager, null, null, null, null);
 		
 		for (Card card : list) {
 						
@@ -138,5 +129,33 @@ public class TestCardService {
 		}	
 		
 	}
-
+	
+	//根据teamId查询
+	@Test
+	public void testQueryCardByEmp() {
+		Integer[] ids = {1, 2, 3, 4};
+		List<Card> list = service.queryCardByEmp(ids);
+		for (Card card : list) {
+			System.out.println(card);
+		}
+	}
+	
+	//获取teamId数组
+	@Test
+	public void testGetTeamIds() {
+		ArrayList<Integer> ids = service.getTeamIds("zhangsan");
+		System.out.println(ids);
+	}
+	
+	//登录后条件查询
+	@Test
+	public void testQueryCardByCond() {
+		Integer[] ids = {1, 4};
+		Pager page = new Pager(service.getCardCountByCond(ids, null, null, null, null), 5, 0);
+		List<Card> list = service.queryCardByCond(ids, page, null, null, "男", null);
+		for(Card card : list) {
+			System.out.println(card);
+		}
+	}
+	
 }

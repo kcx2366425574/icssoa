@@ -239,29 +239,196 @@
 	<!-- 根据登录名查询在线信息 -->
 	<select id="queryByLoginName" parameterType="com.icss.oa.message.pojo.Message"
 		resultMap="BaseResultMap">
-		SELECT m.*,e1.emp_id mes_sender,e2.emp_id mes_reciver,e1.emp_name sender_name,e2.emp_name reciver_name,
-		e1.emp_email sender_email, e2.emp_email reciver_email, e1.emp_login_name sender_login_name,
-		e2.emp_login_name reciver_login_name
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email,
+		e1.emp_login_name sender_login_name,
+		e2.emp_login_name
+		reciver_login_name
 		FROM message m
-			LEFT OUTER JOIN employee as e1 ON m.`mes_sender` = e1.`emp_id`
-			LEFT OUTER JOIN employee as e2 ON m.`mes_reciver` = e2.`emp_id`
-		WHERE e1.emp_login_name=#{empLoginName}
-		OR    e2.emp_login_name=#{empLoginName}
+		LEFT OUTER JOIN
+		employee as e1 ON
+		m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee
+		as e2 ON
+		m.`mes_reciver` = e2.`emp_id`
+		<!-- where e1.emp_login_name=#{empLoginName} OR e2.emp_login_name=#{empLoginName} -->
+		<where>
+			(e1.emp_login_name=#{empLoginName}
+			OR
+			e2.emp_login_name=#{empLoginName})
+			<if test="mesTitle != null and mesTitle != '' ">
+				and mes_title like
+				concat('%',#{mesTitle,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="empEmail != null and empEmail != '' ">
+				and e2.`emp_email` like
+				concat('%',#{empEmail,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="mesSendDate != null and mesSendDate != '' ">
+				and mes_send_date like concat('%', #{mesSendDate}, '%')
+			</if>
+			<if test="mesReciver != null and mesReciver != '' ">
+				and mes_reciver = #{mesReciver}
+			</if>
+			<if test="mesInfo != null and mesInfo != '' ">
+				and mes_info like
+				concat('%',#{mesInfo,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
 		LIMIT #{start}, #{pageSize}
 	</select>
-	
+
 	<!-- 根据登录名查询响应的记录数 -->
 	<select id="getCountByEmpLoginName" resultType="java.lang.Integer">
 		select count(*)
 		from message m
 		LEFT OUTER JOIN employee as e1
 		ON
-		m.`mes_sender` = e1.`emp_id`
+		m.`mes_sender` =
+		e1.`emp_id`
 		LEFT OUTER JOIN employee as e2
 		ON
+		m.`mes_reciver` =
+		e2.`emp_id`
+		<where>
+			(e1.emp_login_name=#{empLoginName}
+			OR
+			e2.emp_login_name=#{empLoginName})
+			<if test="mesTitle != null and mesTitle != '' ">
+				and mes_title like
+				concat('%',#{mesTitle,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="empEmail != null and empEmail != '' ">
+				and e2.`emp_email` like
+				concat('%',#{empEmail,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="mesSendDate != null and mesSendDate != '' ">
+				and mes_send_date like concat('%', #{mesSendDate}, '%')
+			</if>
+			<if test="mesReciver != null and mesReciver != '' ">
+				and mes_reciver = #{mesReciver}
+			</if>
+			<if test="mesInfo != null and mesInfo != '' ">
+				and mes_info like
+				concat('%',#{mesInfo,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 草稿箱以及发件箱的查询 -->
+	<select id="queryDraft" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email,
+		e1.emp_login_name sender_login_name,
+		e2.emp_login_name
+		reciver_login_name
+		FROM message m
+		LEFT OUTER JOIN employee as e1 ON
+		m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2 ON
 		m.`mes_reciver` = e2.`emp_id`
-		WHERE e1.emp_login_name=#{empLoginName}
-		OR    e2.emp_login_name=#{empLoginName}
+		WHERE
+		mes_send_confirm=#{mesSendConfirm}
+		and
+		e1.emp_login_name=#{empLoginName}
+		LIMIT #{start}, #{pageSize}
+	</select>
+
+	<!-- 查询草稿箱以及发件箱的个数 -->
+	<select id="getCountDraft" resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM
+		message m
+		LEFT OUTER JOIN employee as e1 ON m.`mes_sender` =
+		e1.`emp_id`
+		LEFT OUTER JOIN employee as e2 ON m.`mes_reciver` =
+		e2.`emp_id`
+		WHERE
+		mes_send_confirm=#{mesSendConfirm}
+		and
+		e1.emp_login_name=#{empLoginName}
+	</select>
+
+	<!-- 收件箱的查询 -->
+	<select id="queryInbox" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email,
+		e1.emp_login_name sender_login_name,
+		e2.emp_login_name
+		reciver_login_name
+		FROM message m
+		LEFT OUTER JOIN employee as e1 ON
+		m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2 ON
+		m.`mes_reciver` = e2.`emp_id`
+		WHERE
+		e2.emp_login_name=#{empLoginName}
+		LIMIT #{start}, #{pageSize}
+	</select>
+
+	<!-- 查询收件箱的个数 -->
+	<select id="getCountInbox" resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM
+		message m
+		LEFT OUTER JOIN employee as e1 ON m.`mes_sender` =
+		e1.`emp_id`
+		LEFT OUTER JOIN employee as e2 ON m.`mes_reciver` =
+		e2.`emp_id`
+		WHERE
+		e2.emp_login_name=#{empLoginName}
+	</select>
+
+	<!-- 未读消息的查询 -->
+	<select id="queryUnread" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT m.*,e1.emp_id mes_sender,e2.emp_id
+		mes_reciver,e1.emp_name
+		sender_name,e2.emp_name reciver_name,
+		e1.emp_email sender_email,
+		e2.emp_email reciver_email,
+		e1.emp_login_name sender_login_name,
+		e2.emp_login_name
+		reciver_login_name
+		FROM message m
+		LEFT OUTER JOIN employee as e1 ON
+		m.`mes_sender` = e1.`emp_id`
+		LEFT OUTER JOIN employee as e2 ON
+		m.`mes_reciver` = e2.`emp_id`
+		WHERE
+		e2.emp_login_name=#{empLoginName}
+		AND mes_send_confirm=#{mesSendConfirm}
+		AND
+		mes_read_confirm=#{mesReadConfirm}
+		LIMIT #{start}, #{pageSize}
+	</select>
+
+	<!-- 查询未读消息的个数 -->
+	<select id="getCountUnread" resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM
+		message m
+		LEFT OUTER JOIN employee as e1 ON m.`mes_sender` =
+		e1.`emp_id`
+		LEFT OUTER JOIN employee as e2 ON m.`mes_reciver` =
+		e2.`emp_id`
+		WHERE
+		e2.emp_login_name=#{empLoginName}
+		AND
+		mes_send_confirm=#{mesSendConfirm}
+		AND
+		mes_read_confirm=#{mesReadConfirm}
 	</select>
 
 </mapper>

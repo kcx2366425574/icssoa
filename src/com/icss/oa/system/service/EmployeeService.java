@@ -1,6 +1,7 @@
 package com.icss.oa.system.service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,6 +53,17 @@ public class EmployeeService {
 		else
 			return 3;
 	}
+	//批量删除
+	public void deleteMany(Integer[] ids){
+	    System.out.println(Arrays.toString(ids));
+		
+		mapper.deleteMany(ids);
+	}
+	
+	//修改密码
+	public void updatePwd(String empLoginName,String empPwd){
+		mapper.updatePwd(empLoginName, empPwd);
+	}
 	
 	public void addEmployee(Employee emp){
 		//插入数据库
@@ -74,6 +86,11 @@ public class EmployeeService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	//得到员工id
+	public Integer getId(String empLoginName){
+		return mapper.getId(empLoginName);
 	}
 	
 	//删除员工

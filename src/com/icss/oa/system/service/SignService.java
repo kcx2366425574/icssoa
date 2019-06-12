@@ -37,4 +37,9 @@ public class SignService {
 		return mapper.getAllCount(signEmpId);
 	}
 	
+	//查询员工本月签到数
+	public List<Sign> queryByMonth(Integer signEmpId){
+		return mapper.queryByMonth(signEmpId);
+	}
+	
 }

@@ -29,7 +29,7 @@ public class TestMeetingRoomService {
 		MeetingRoomIndexDao indexDao = context.getBean(MeetingRoomIndexDao.class);
 		
 		/**
-		 * 重建员工的索引
+		 * 重建会议室的索引
 		 */
 		@Test
 		public void testCreateIndex(){

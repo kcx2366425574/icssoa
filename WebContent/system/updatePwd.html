@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title>修改密码</title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>
+		<div class="container">
+			
+			<h3 class="page-header">
+				修改密码
+			</h3>
+			
+			<form class="form-horizontal col-md-10">
+				<div class="form-group">
+					<label for="" class="col-md-2">旧密码</label>
+					<div class="col-md-10">
+						<input type="text" id="oldEmpPwd" name="oldEmpPwd"  class="form-control"/>
+					</div>					
+				</div>
+				
+				<div class="form-group">
+					<label for="" class="col-md-2">请输入新密码</label>
+					<div class="col-md-10">
+						<input type="password" id="newEmpPwd" name="newEmpPwd" placeholder="请输入新密码" class="form-control"/>
+					</div>					
+				</div>
+				
+				<div class="form-group">
+					<label for="" class="col-md-2">请确认密码</label>
+					<div class="col-md-10">
+						<input type="password" id="newEmpPwd2" name="newEmpPwd2" placeholder="请确认密码" class="form-control"/>
+					</div>					
+				</div>
+				
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
+					</div>
+					<div class="col-md-4">
+						<input type="button" value="修改" id="updateBtn" class="btn btn-primary btn-block"/>
+					</div>				
+				</div>
+			</form>			
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		
+		<script>
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + '/employee/queryByLoginName', //请求url地址
+				async:true, //true默认表示异步请求
+				dataType:'json', //响应的数据类型
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				$('#oldEmpPwd').val(data.empPwd);		
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});	
+			
+			
+			
+			
+			
+						
+			//单击修改按钮
+			$('#updateBtn').click(function() {
+				
+				//验证密码（字母数字，6~8）
+				var newEmpPwd = $('#newEmpPwd');
+				
+				r = /^[a-zA-Z0-9]{6,8}$/;
+				
+				if (!r.test(newEmpPwd.val())) {
+					layer.msg('密码必须是字母数字，6-8位');
+					newEmpPwd.focus();
+					return false;
+				}		
+					
+				//确认密码
+				
+				var newEmpPwd2 = $('#newEmpPwd2');
+				
+				if ( newEmpPwd.val() != newEmpPwd2.val() ){
+					layer.msg('两次输入的密码不一致，请重新输入');
+					
+					return false;
+				}
+				
+				//加载层
+				layer.load(2);
+				
+				//发出ajax请求调用后端接口
+				var url = baseUrl + "/employee/updatePwd";
+				
+				//请求参数
+			//	var params = newEmpPwd.val();
+				
+				var params = $('#newEmpPwd').val();
+				
+				
+				alert(params);
+				
+				
+				$.ajax({
+					type:"post", //请求类型get post
+					url: url, //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:{empPwd:params}  //传递的请求参数
+				})
+				.done(function(status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('修改密码成功');			
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});									
+				
+			});
+		</script>
+	</body>
+</html>

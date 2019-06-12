@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.icss.oa.plan.pojo.Plan;
+import com.icss.oa.system.pojo.Job;
 
 public interface PlanMapper {
  
@@ -14,7 +15,9 @@ public interface PlanMapper {
 	
 	int getQueryCount(@Param("planTime")String planTime,@Param("planName") String planName,@Param ("deptId")Integer deptId);
 	
-	void delete(String planName);
+	void delete(Integer planId);
 	
 	void update(Plan plan);
+
+	Plan queryById(Integer planId);
 }

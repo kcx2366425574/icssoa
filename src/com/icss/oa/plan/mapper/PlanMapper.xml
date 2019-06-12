@@ -15,11 +15,11 @@
 	
 	
 	<insert id="insert" parameterType="com.icss.oa.plan.pojo.Plan">
-	    insert into plan values(default,#{planName,jdbcType=VARCHAR},#{planTime},#{planInfo,jdbcType=VARCHAR},#{dept.deptId})
+	    insert into plan values(default,#{planName,jdbcType=VARCHAR},#{planTime,jdbcType=DATE},#{planInfo,jdbcType=VARCHAR},#{dept.deptId,jdbcType=INTEGER})
 	</insert>
 	
 	<select id="queryByCondition" parameterType="java.lang.String" resultMap="BaseResultMap">
-	    select p.*,de.dept_name from plan p INNER JOIN department de on p.dept_id=de.dept_id 
+	    select *,de.dept_name from plan p LEFT OUTER JOIN department de on p.dept_id=de.dept_id 
 	    <where>
 	      <if test="planTime != null and planTime !='' ">
 	          and plan_time like #{planTime}
@@ -29,34 +29,40 @@
 	      </if>
 	      
 	      <if test="deptId != null and deptId !='' ">
-	          and instr(dept_id,#{deptId,jdbcType=VARCHAR})!=0
+	          and p.dept_id=#{deptId}
 	      </if>
 	    </where>
 	    LIMIT #{start}, #{pageSize}
 	</select>
 	
-	<select id="getQueryCount" resultType="java.lang.Integer">
-	   select COUNT(*) from plan p INNER JOIN department de on p.dept_id=de.dept_id 
+	<select id="getQueryCount" resultType="java.lang.Integer" >
+	   select COUNT(*) from plan p LEFT OUTER JOIN department de on p.dept_id=de.dept_id 
 	    <where>
 	      <if test="planTime != null and planTime !='' ">
-	          and plan_time like #{planTime}
+	          and plan_time like #{planTime,jdbcType=Date}
 	      </if>
 	      <if test="planName != null and planName !='' ">
 	          and instr(plan_name,#{planName,jdbcType=VARCHAR})!=0
 	      </if>
 	      
 	      <if test="deptId != null and deptId !='' ">
-	          and instr(dept_id,#{deptId,jdbcType=VARCHAR})!=0
+	          and p.dept_id=#{deptId}
 	      </if>
 	    </where>
 	</select>
 	
-	<delete id="delete" parameterType="java.lang.String">
-	    delete from plan where plan_name=#{planName,jdbcType=VARCHAR}
+	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from plan where plan_id=#{planId}
+	</select>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+	    delete from plan where plan_id=#{planId}
 	</delete>
 	
 	<update id="update" parameterType="com.icss.oa.plan.pojo.Plan">
 	    update plan set plan_name=#{planName},plan_time=#{planTime},
-	    plan_info=#{planInfo},dept_id=#{dept.deptId}
+	    plan_info=#{planInfo}
+	    where plan_id=#{planId}
 	</update>
+	
 </mapper>

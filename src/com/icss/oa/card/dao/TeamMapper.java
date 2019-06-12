@@ -6,7 +6,7 @@ import com.icss.oa.card.pojo.Team;
 
 public interface TeamMapper {
 
-	void insert(String teamName);
+	void insert(Team team);
 
 	void delete(Integer teamId);
 	
@@ -14,5 +14,8 @@ public interface TeamMapper {
 	
 	Team queryById(Integer teamId);
 	
-	List<Team> query();
+	List<Team> query(Integer empId);
+	
+	int getEmpId(String empLoginName);
+
 }

@@ -145,7 +145,7 @@
 			var schNameCond = '';
 		
 			//动态生成授予人列表
-			$.getJSON(baseUrl + '/emp/query',{},function(data) {		
+			$.getJSON(baseUrl + '/employee/query',{},function(data) {		
 				//遍历数据集合
 				list = data.list;
 				$.each(list, function(index,el) {	
@@ -157,7 +157,7 @@
 			});
 			
 			//动态生成被授予人列表
-			$.getJSON(baseUrl + '/emp/query',{},function(data) {				
+			$.getJSON(baseUrl + '/employee/query',{},function(data) {				
 				//遍历数据集合
 				list=data.list;
 				$.each(list, function(index,el) {				

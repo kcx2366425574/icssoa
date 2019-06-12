@@ -1,11 +1,14 @@
 package com.icss.oa.schedule.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,5 +110,18 @@ public class ScheduleController {
 		map.put("list", list);
 		
 		return map;		
+	}
+	/**
+	 * 全文检索员工
+	 * @throws IOException 
+	 * @throws ParseException 
+	 * @throws InvalidTokenOffsetsException 
+	 */
+	@RequestMapping("/sch/queryByIndex")
+	@ResponseBody
+	public List<Schedule> queryByIndex(HttpServletRequest request,HttpServletResponse response,String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
+	
+			
+		return service.querySchByIndex(queryStr);		
 	}
 }

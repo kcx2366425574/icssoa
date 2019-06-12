@@ -15,13 +15,6 @@
 	<body>		
 		<div class="container">
 			
-			<ol class="breadcrumb">
-				<li><a href="#">OA系统</a></li>
-				<li><a href="#">系统管理</a></li>
-				<li><a href="QueryEmployee.html">员工管理</a></li>
-				<li>员工列表</li>
-			</ol>
-			
 			<h3 class="page-header">
 				员工列表
 			</h3>
@@ -50,19 +43,15 @@
 						</div>										
 					</form>     
 	            </div>
-				<div class="col-md-12">
-	            	<div class="input-group">                	
-	                	<input type="text" class="form-control" id="keywords" name="keywords" placeholder="请输入要查询的关键字">
-	                    <span class="input-group-btn">
-	                    	<button type="button" class="btn btn-primary">全文搜索</button>
-	                    </span>
-	                </div>            
+				<div class="col-sm-4">
+	            	<a href="SearchIndexEmp.html" class="btn btn-info">切换到全文检索</a>
 	            </div>
 			</div>
 			
 			<table class="table table-striped table-bordered table-hover table-condensed">
 				<thead>
 					<tr>
+						<th>选择</th>
 						<th>员工编号</th>
 						<th>姓名</th>
 						<th>性别</th>
@@ -76,6 +65,9 @@
 				<tbody>
 					<!--v-for循环遍历数据绑定到画面-->
 					<tr v-for="(emp,index) in empData">
+						<td>
+							<input type="checkbox" name="ids" :value="emp.empId" />
+						</td>
 						<td>{{emp.empId}}</td>
 						<td>{{emp.empName}}</td>
 						<td>{{emp.empSex}}</td>
@@ -92,8 +84,7 @@
 								<ul class="dropdown-menu">
 									<li><a href="javascript:void(0);" @click="showDetails(emp.empId);">修改/详细</a></li>
 									<li><a href="javascript:void(0);" @click="del(emp.empId,index);">删除</a></li>
-									<li><a href="#">XXX</a></li>
-									<li><a href="#">XXX</a></li>
+									
 								</ul>				
 							</div>
 						</td>
@@ -127,8 +118,12 @@
 				没有任何满足条件的数据
 			</div>
 			<div class="row">
-				<div class="col-md-offset-8 col-md-4">
+				<div class="col-md-4">
 					<a href="AddEmployee.html" class="btn btn-primary btn-block">增加新员工</a>
+				</div>
+				
+				<div class="col-md-4">
+					<input type="button" disabled value="批量删除" id="delManyBtn" class="btn btn-danger  btn-block"/>
 				</div>
 			</div>
 			
@@ -170,6 +165,7 @@
 				alert('请求部门列表失败');				
 			});	
 			
+
 			var v = new Vue({
 				el:'.container', //应用vue数据的范围
 				data:{  //数据模型
@@ -182,6 +178,12 @@
 					query:function(pageNum) {	 //查询					
 						//发出ajax请求调用后端接口
 						var url = baseUrl + "/employee/query";
+						
+						
+				
+					    
+					    //清除上页选择的复选框
+						$('input[name=ids]').prop('checked',false);
 						
 						//请求参数
 						var params = {
@@ -246,7 +248,7 @@
 					},
 					del:function(empId,index){
 						
-						var flag = window.confirm('确定要删除此部门吗');
+						var flag = window.confirm('确定要删除此员工吗');
 						
 						if ( !flag )
 							return;
@@ -262,7 +264,7 @@
 							data:{empId:empId}
 						})
 						.done(function(data,status,xhr){
-							layer.msg('删除部门成功');	
+							layer.msg('删除员工成功');	
 							v.deptData.splice(index,1);//前端删除
 						})
 						.fail(function(xhr,errorStatus,errorText){
@@ -286,6 +288,67 @@
 				
 				v.query(1);				
 			});
+			
+			
+			//批量删除1
+			$('#delManyBtn').click(function(){
+				
+				var ids = $(':checkbox[name=ids]:checked');
+				
+				if (ids.length == 0) {
+					alert('没有选择任何员工');
+					return;
+				}
+				
+				var idsStr = '';
+				
+				for (var i = 0;i < ids.length;i ++) {
+					idsStr += ids.eq(i).val() + ',';
+				}
+				
+				idsStr = idsStr.substr(0,idsStr.length-1);
+				
+				var flag = window.confirm('确定要删除此员工吗');
+						
+				if ( !flag )
+					return;
+					
+				//发出ajax请求
+				var url = baseUrl + "/employee/deleteMany";
+				
+				$.ajax({
+						type: "get", //请求类型get post
+						url: url, //请求url地址
+						async: true, //true默认表示异步请求
+						dataType: 'text', //响应的数据类型	
+						data: {
+							ids: idsStr
+						}
+					})
+					.done(function(data, status, xhr) { //请求成功回调函数
+						layer.msg('删除员工成功');
+						setTimeout(function() {
+							window.v.query(v.pager.pageNum);
+						}, 1000);
+					})
+					.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+						alert(errorStatus + ',' + errorText);
+					});
+				
+			});	
+			
+			//删除按钮的状态						
+			$('.container').on('click',':checkbox[name=ids]',function(){
+				
+				var ids = $(':checkbox[name=ids]:checked');
+												
+				if (ids.length == 0)
+					$('#delManyBtn').prop('disabled',true);
+				else
+					$('#delManyBtn').prop('disabled',false);
+
+				
+			});	
 		</script>
 		
 	</body>

@@ -3,6 +3,8 @@ package com.icss.test.meetingTest;
  * 测试会议类Mapper
  */
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -140,7 +142,7 @@ public class TestMeetingMapper {
 	@Test
 	public void testQueryByCondition() {
 
-		List<Meeting> list = mapper.queryByCondition(0, 5, null, "", "", "", "", "", "");
+		List<Meeting> list = mapper.queryByCondition(0,null, 5, null, "", "", "", "", "", "");
 
 		for (Meeting meeting : list) {
 			System.out.println(meeting);
@@ -151,7 +153,7 @@ public class TestMeetingMapper {
 	@Test
 	public void testGetmeetingConditionCount() {
 		// 调用数据
-		Integer m = mapper.getMeetingConditionCount(null, null, null, null, null, null, null);
+		Integer m = mapper.getMeetingConditionCount(0,null, null, null, null, null, null, null);
 		System.out.println("记录数是：" + m);
 
 	}

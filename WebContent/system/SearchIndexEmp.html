@@ -15,12 +15,7 @@
 	<body>		
 		<div class="container">
 			
-			<ol class="breadcrumb">
-				<li><a href="#">OA系统</a></li>
-				<li><a href="#">系统管理</a></li>
-				<li><a href="#">员工管理</a></li>
-				<li>员工列表</li>
-			</ol>
+			
 			
 			<h3 class="page-header">
 				员工列表
@@ -37,7 +32,7 @@
 	                </div>            
 	            </div>
 	            <div class="col-sm-4">
-	            	<a href="SearchEmp.html" class="btn btn-info">切换到普通检索</a>
+	            	<a href="QueryEmployee.html" class="btn btn-info">切换到普通检索</a>
 	            </div>
 			</div>
 			
@@ -99,7 +94,7 @@
 				methods:{ //定义方法
 					query:function() {	 //查询					
 						//发出ajax请求调用后端接口
-						var url = baseUrl + "/emp/queryByIndex";
+						var url = baseUrl + "/employee/queryByIndex";
 						
 						//请求参数
 						var params = {
@@ -129,7 +124,7 @@
 							title:'员工详细信息',
 						    type: 2, 				   
 						    area: ['600px', '800px'], //宽高
-						    content: 'UpdateEmp.html?empId=' + empId
+						    content: 'UpdateEmployee.html?empId=' + empId
 						});
 						
 					}

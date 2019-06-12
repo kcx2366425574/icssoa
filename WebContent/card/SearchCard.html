@@ -84,7 +84,8 @@
 
 			<table class="table table-striped table-bordered table-hover table-condensed">
 				<thead>
-					<tr>
+					<tr v-show="pager.recordCount!=0">
+						<th>选择</th>
 						<th>成员编号</th>
 						<th>成员名称</th>
 						<th>成员性别</th>
@@ -96,6 +97,9 @@
 				</thead>
 				<tbody>
 					<tr v-for="(card, index) in cardData">
+						<td>
+							<input type="checkbox" name="ids" :value="card.cardId" />
+						</td>
 						<td>{{card.cardId}}</td>
 						<td>{{card.cardName}}</td>
 						<td>{{card.cardSex}}</td>
@@ -148,7 +152,10 @@
 			
 			
 			<div class="row">
-				<div class="col-md-offset-8 col-md-4">
+				<div class="col-md-offset-4 col-md-4">
+					<input type="button" disabled value="批量删除" id="delManyBtn" class="btn btn-danger  btn-block"/>
+				</div>
+				<div class="col-md-4">
 					<a href="AddCard.html" class="btn btn-primary btn-block">增加新名片</a>
 				</div>
 			</div>
@@ -192,12 +199,15 @@
 				methods:{ //定义方法
 					query:function(pageNum) {	 //查询					
 						//发出ajax请求调用后端接口
-						var url = baseUrl + "/card/query";
+						var url = baseUrl + "/card/queryByCond";
 						
+						$('input[name=ids]').prop('checked',false);
+						
+				
 						//请求参数
 						var params = {
 							pageNum:pageNum,
-							pageSize:4,
+							pageSize:5,
 							teamId:teamCond,
 							cardName:cardNameCond,
 							cardSex:cardSexCond,
@@ -301,6 +311,83 @@
 				
 				v.query(1);				
 			});
+			
+			
+			//批量删除
+			$('#delManyBtn').click(function(){
+				
+				var ids = $(':checkbox[name=ids]:checked');
+				
+				if (ids.length == 0) {
+					alert('没有选择任何名片');
+					return;
+				}
+				
+				var idsStr = '';
+				
+				for (var i = 0;i < ids.length;i ++) {
+					idsStr += ids.eq(i).val() + ',';
+				}
+				
+				idsStr = idsStr.substr(0,idsStr.length-1);
+				
+				alert(idsStr);
+				
+				var $boxes = $("#delManyBtn");				
+			    for(var i = 0;i < idsStr.length;i ++){
+			        var id = $boxes[i].id;
+			        if(idsStr.indexOf(id,0)!=-1){
+			            $boxes[i].checked = true;
+			        }else{
+			            $boxes[i].checked = false;
+			        }
+			    }
+//				$.post(baseUrl + '/card/deleteMany',{ids:idsStr},function(){
+//															
+//				});
+				
+				var flag = window.confirm('确定要批量删除这些名片吗');
+						
+				if (!flag)
+					return;						
+										
+				//发出ajax请求调用后端接口
+				var url = baseUrl + "/card/deleteMany";
+				
+				$.ajax({
+					type:"get", //请求类型get post
+					url: url, //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型	
+					data:{ids:idsStr}	
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.msg('批量删除名片成功');	
+					setTimeout(function(){
+						location.reload();//刷新当前网页
+					},1000);
+					//location.reload();//刷新当前网页
+					//v.cardData.splice(index,1);//前端删除
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});
+				
+			});	
+			
+			//删除按钮的状态						
+			$('.container').on('click',':checkbox[name=ids]',function(){
+				
+				var ids = $(':checkbox[name=ids]:checked');
+												
+				if (ids.length == 0)
+					$('#delManyBtn').prop('disabled',true);
+				else
+					$('#delManyBtn').prop('disabled',false);
+				
+			});	
+			
+			
 			
 		</script>	
 		

@@ -25,6 +25,7 @@ public interface MeetingMapper {
 	Integer getMeetingCount();//查询会议数据数量
 	
 	Integer getMeetingConditionCount(    @Param("meetingId") Integer meetingId,                 /**根据ID查询**/
+			                             @Param("empId") Integer empId,                         /**根据ID查询**/
                                          @Param("empName") String empName,                      /**根据会议发起人姓名查询**/
                                          @Param("meetingState") String meetingState,            /**根据会议状态查询**/
                                          @Param("startTime") String startTime,                  /**根据会议时间查询**/
@@ -43,10 +44,13 @@ public interface MeetingMapper {
 	List<Meeting> queryByCondition(@Param("start") Integer start,                         /**开始的条数**/
 			                       @Param("pageSize") Integer pageSize,                   /**结束的条数**/
 			                       @Param("meetingId") Integer meetingId,                 /**根据ID查询**/
+			                       @Param("empId") Integer empId,                         /**根据ID查询**/
 			                       @Param("empName") String empName,                      /**根据会议发起人姓名查询**/
 			                       @Param("meetingState") String meetingState,            /**根据会议状态查询**/
 			                       @Param("startTime") String startTime,                  /**根据会议时间查询**/
 			                       @Param("meetingTheme") String meetingTheme,            /**根据会议主题查询**/
 			                       @Param("meetingRoomName") String meetRoomName,         /**根据会议室名字查询**/
 			                       @Param("meetingRoomLocation") String meetRoomLocation  /**根据会议室位置查询**/);
+	
+	int getLastInsertId();
 }

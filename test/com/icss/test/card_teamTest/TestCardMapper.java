@@ -1,5 +1,6 @@
 package com.icss.test.card_teamTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -34,12 +35,23 @@ public class TestCardMapper {
 	// 删除数据
 	@Test
 	public void testDelete() {
-		Integer[] ids = {36, 37};
+		Integer[] ids = {74, 75};
 		for (Integer id : ids) {
 			int id0 = mapper.queryTeamIdById(id);
 			mapper.delete(id);
 			mapper.lowTeamNum(id0);
 		}
+	}
+	
+	//批量删除
+	@Test
+	public void testDeleteMany() {
+		Integer[] ids = {76, 77};
+		for (Integer id : ids) {
+			Integer id0 = mapper.queryTeamIdById(id);
+			mapper.lowTeamNum(id0);
+		}
+		mapper.deleteMany(ids);
 	}
 
 	// 修改数据
@@ -56,27 +68,47 @@ public class TestCardMapper {
 		mapper.lowTeamNum(id0);
 	}
 	
-	//条件获取记录数
-	@Test
-	public void testGetCountByCondition() {
-		int count = mapper.getCountByCondition(1, null, null, null);
-		System.out.println(count);
-	}
-	
 	//通过id查询
 	@Test
 	public void testQueryById() {
 		Card card = mapper.queryById(1);
 		System.out.println(card);
 	}
-
-	// 条件查询(分页、分组、姓名、性别、介绍)
+	
+	//根据员工登陆查询
 	@Test
-	public void testQueryByCondition() {
-		List<Card> list = mapper.queryByCondition(0, 5, 1, null, null, null);
+	public void testQueryByEmp() {
+		Integer[] ids = {1, 2, 3, 4};
+		List<Card> list = mapper.queryByEmp(ids);
+		for (Card card : list) {
+			System.out.println(card);
+		}
+		
+	}
+	
+	//根据员工登录名查询teamId
+	@Test
+	public void testGetIds() {
+		ArrayList<Integer> ids = mapper.getIds("zhangsan");
+		System.out.println(ids);
+	}
+	
+	//登录后条件查询
+	@Test
+	public void testQueryByCond() {
+		Integer[] ids = {1, 4};
+		List<Card> list = mapper.queryByCond(ids, 0, 10, null, "刘", null, null);
 		for (Card card : list) {
 			System.out.println(card);
 		}
 	}
-
+	
+	//登录后条件获取记录数
+	@Test
+	public void testGetCountByCond() {
+		Integer[] ids = {1, 4};
+		int count = mapper.getCountByCond(ids, null, "周", null, null);
+		System.out.println(count);
+	}
+			
 }

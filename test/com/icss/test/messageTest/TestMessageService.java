@@ -10,7 +10,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
-import org.hibernate.id.AbstractPostInsertGenerator;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.queryparser.classic.ParseException;
 import com.icss.oa.common.Pager;
@@ -32,10 +31,16 @@ public class TestMessageService {
 
 	// 获得Service对象
 	MessageService service = context.getBean(MessageService.class);
-	
+
 	MessageIndexDao indexDao = context.getBean(MessageIndexDao.class);
 
-	// 日期转换
+	/**
+	 * 日期转换
+	 * 
+	 * @param str
+	 * @return
+	 * @throws ParseException
+	 */
 	public Date inform(String str) throws ParseException {
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -49,8 +54,10 @@ public class TestMessageService {
 		return date;
 	}
 
+	/**
+	 * 根据id查询信息
+	 */
 	@Test
-	// 根据id查询信息
 	public void testQueryMesById() {
 
 		Message mes = service.queryMesById(11);
@@ -58,8 +65,12 @@ public class TestMessageService {
 		System.out.println(mes);
 	}
 
+	/**
+	 * 添加信息
+	 * 
+	 * @throws ParseException
+	 */
 	@Test
-	// 添加信息
 	public void testAddMes() throws ParseException {
 
 		Date date = new Date(); // 获得当前系统的时间
@@ -74,8 +85,12 @@ public class TestMessageService {
 		service.addMes(mes);
 	}
 
+	/**
+	 * 修改信息
+	 * 
+	 * @throws ParseException
+	 */
 	@Test
-	// 修改信息
 	public void testUpdateMes() throws ParseException {
 
 		Employee mesSender = new Employee();
@@ -88,14 +103,18 @@ public class TestMessageService {
 		service.updateMes(mes);
 	}
 
+	/**
+	 * 删除信息
+	 */
 	@Test
-	// 删除信息
 	public void testDeleteMes() {
 		service.deleteMes(12);
 	}
 
+	/**
+	 * 全部的模糊查询
+	 */
 	@Test
-	// 全部的模糊查询
 	public void testQueryMesByCondition() {
 
 		// Employee mesReciver = new Employee();
@@ -106,15 +125,17 @@ public class TestMessageService {
 		pager.setStart(0);
 		pager.setPageSize(2);
 
-		List<Message> list = service.queryMesByCondition(pager, null, null, null, null,"放假");
+		List<Message> list = service.queryMesByCondition(pager, null, null, null, null, "放假");
 
 		for (Message mes : list) {
 			System.out.println(mes);
 		}
 	}
 
+	/**
+	 * 全部的模糊查询 没有收件人
+	 */
 	@Test
-	// 全部的模糊查询 没有收件人
 	public void testQueryMesByCondition1() {
 
 		Pager pager = new Pager();
@@ -129,26 +150,28 @@ public class TestMessageService {
 		}
 	}
 
+	/**
+	 * 根据条件获得总记录数
+	 */
 	@Test
-	// 根据条件获得总记录数
 	public void testGetMesCountByCondition() {
 
 		// Employee mesReciver = new Employee();
 		//
 		// mesReciver.setEmpId(12);
 		//
-		int count = service.getMesCountByCondition(null, null, null, null,"放假");
+		int count = service.getMesCountByCondition(null, null, null, null, "放假");
 		System.out.println(count);
 	}
 
 	/**
-	 * 重建员工的索引
+	 * 重建信息的索引
 	 */
 	@Test
 	public void testCreateIndex() {
 
 		Pager pager = new Pager(service.getMesCount(), service.getMesCount(), 1);
-		List<Message> list = service.queryMesByCondition(pager,null,null,null,null,"放假");
+		List<Message> list = service.queryMesByCondition(pager, null, null, null, null, null);
 
 		for (Message mes : list) {
 
@@ -176,13 +199,14 @@ public class TestMessageService {
 
 	/**
 	 * 测试全文检索
-	 * @throws InvalidTokenOffsetsException 
-	 * @throws IOException 
-	 * @throws ParseException 
+	 * 
+	 * @throws InvalidTokenOffsetsException
+	 * @throws IOException
+	 * @throws ParseException
 	 *
 	 */
 	@Test
-	public void testQueryByIndex() throws IOException, InvalidTokenOffsetsException, ParseException{
+	public void testQueryByIndex() throws IOException, InvalidTokenOffsetsException, ParseException {
 
 		List<Message> list = service.queryMesByIndex("哈哈");
 
@@ -191,21 +215,113 @@ public class TestMessageService {
 		}
 
 	}
-	
-	//根据登录名查询信息
+
+	/**
+	 * 根据登录名查询信息
+	 */
 	@Test
 	public void testQueryMesByLoginName() {
-		
+
 		Pager pager = new Pager();
-		
+
 		pager.setStart(0);
 		pager.setPageSize(2);
-		
-		List<Message> list = service.queryMesByLoginName("zhaoyi",pager);
-		
-		for(Message mes : list) {
+
+		List<Message> list = service.queryMesByLoginName("zhaoyi", pager,"1998-02-19%", null, null, null,null);
+
+		for (Message mes : list) {
 			System.out.println(mes);
 		}
+	}
+
+	/**
+	 * 根据登录名获得总记录数
+	 */
+	@Test
+	public void testGetMesCountByEmpLoginName() {
+		int count = service.getMesCountByEmpLoginName("zhaoyi","1998-02-19%", null, null, null,null);
+		System.out.println(count);
+	}
+
+	@Test
+	/**
+	 * 草稿箱和发件箱
+	 */
+	public void testQueryMesDraft() {
+
+		Pager pager = new Pager();
+		pager.setStart(0);
+		pager.setPageSize(2);
+
+		List<Message> list = service.queryMesDraft("未发", pager, "zhaoyi");
+
+		for (Message mes : list) {
+			System.out.println(mes);
+		}
+
+	}
+
+	/**
+	 * 草稿箱和发件箱个数
+	 */
+	@Test
+	public void testGetMesDraftCount() {
+		int count = service.getMesDraftCount("未发", "zhaoyi");
+		System.out.println(count);
+	}
+
+	@Test
+	/**
+	 * 收件箱
+	 */
+	public void testQueryMesInbox() {
+
+		Pager pager = new Pager();
+		pager.setStart(0);
+		pager.setPageSize(2);
+
+		List<Message> list = service.queryMesInbox(pager, "zhaoyi");
+
+		for (Message mes : list) {
+			System.out.println(mes);
+		}
+
+	}
+
+	/**
+	 * 收件箱个数
+	 */
+	@Test
+	public void testGetMesInboxCount() {
+		int count = service.getMesInboxCount("zhaoyi");
+		System.out.println(count);
+	}
+
+	@Test
+	/**
+	 * 未读消息
+	 */
+	public void testQueryMesUnread() {
+
+		Pager pager = new Pager();
+		pager.setStart(0);
+		pager.setPageSize(2);
+
+		List<Message> list = service.queryMesUnread("已发", "未读",pager, "zhaoyi" );
+
+		for (Message mes : list) {
+			System.out.println(mes);
+		}
+
+	}
+
+	/**
+	 * 未读消息个数
+	 */
+	@Test
+	public void testGetMesUnreadCount() {
+		int count = service.getMesUnreadCount("已发", "未读", "zhaoyi" );
+		System.out.println(count);
 	}
 
 }

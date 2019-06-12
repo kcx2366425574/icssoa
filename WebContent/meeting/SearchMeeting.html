@@ -68,7 +68,7 @@
 				</div>
 				
 				<div class="col-lg-8" align="right">
-					<a href="#" class="btn btn-info">切换到全文检索</a>
+					<a href="SearchIndexMeeting.html" class="btn btn-info">切换到全文检索</a>
 				</div>
 			</div>
 
@@ -157,7 +157,7 @@
 	<script type="text/javascript " src="../js/bootstrap/js/bootstrap.js "></script>
 	<script src="../js/layer/layer.js " type="text/javascript " charset="utf-8 "></script>
 	<script type="text/javascript " src="../js/vue/vue2.5.js "></script>
-	<script type="text/javascript" src="../js/bootstrap/js/date/datetimepicker/jquery.datetimepicker.js"></script>
+	<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
 	
 	
 	<script>	
@@ -166,8 +166,9 @@
 			    // 给文本框绑定日历控件
 			    $('#startTime').datetimepicker({
 				lang:'ch',
-				format:'Y-m-d H:i:00',
-				formatDate:'Y-m-d H:i:00',
+				format:'Y-m-d%',
+				formatDate:'Y-m-d%',
+				timepicker:false,
 				step:10
 			    });
 

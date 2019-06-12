@@ -13,10 +13,74 @@
 	</head>
 
 	<body>
+		
+		
 		<div class="panel-group" id="accordion" style="float: left; width: 160px;">
-			<p><a href="system/QueryDept.html" target="content">部门管理</a></p>
-			<p><a href="system/QueryEmployee.html"  target="content">员工管理</a></p>
-			<p><a href="system/UpdateHead.html" target="content">更新头像</a></p>
+			
+			<!--部门管理面板组-->
+			<div class="panel-group" id="accordion" style="float: left; width: 160px;">
+				<!--面板1-->
+				<div class="panel panel-primary">
+					<!--面板标题-->
+					<div class="panel-heading">
+						<h4 class="panel-title">
+	                    	<a href="#dept" data-toggle="collapse" >部门管理</a>
+	                    </h4>
+					</div>
+					<!--面板内容-->					
+					<div id="dept" class="panel-collapse collapse">
+						<div class="panel-body">
+							<a href="system/QueryDept.html" target="content">部门管理</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!--员工管理面板组-->
+			<div class="panel-group" id="accordion" style="float: left; width: 160px;">
+				<!--面板1-->
+				<div class="panel panel-primary">
+					<!--面板标题-->
+					<div class="panel-heading">
+						<h4 class="panel-title">
+	                    	<a href="#employee" data-toggle="collapse" >员工管理</a>
+	                    </h4>
+					</div>
+					<!--面板内容-->					
+					<div id="employee" class="panel-collapse collapse ">
+						<div class="panel-body">
+							<a href="system/QueryEmployee.html" target="content">员工管理</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!--个人中心面板组-->
+			<div class="panel-group" id="accordion" style="float: left; width: 160px;">
+				<!--面板1-->
+				<div class="panel panel-primary">
+					<!--面板标题-->
+					<div class="panel-heading">
+						<h4 class="panel-title">
+	                    	<a href="#sign" data-toggle="collapse" >个人中心</a>
+	                    </h4>
+					</div>
+					<!--面板内容-->					
+					<div id="sign" class="panel-collapse collapse ">
+						<div class="panel-body">
+							<a href="system/sign.html" target="content">签到</a>
+						</div>
+						
+						<div class="panel-body">
+							<a href="system/updatePwd.html" target="content">修改密码</a>
+						</div>
+						
+						<div class="panel-body">
+							<a href="system/UpdateHead.html" target="content">更新头像</a>
+						</div>
+					</div>
+				</div>
+			</div>
 			
 			<!--<p><a href="pic/UploadPic.html" target="content">上传图片</a></p>-->
 			
@@ -31,9 +95,24 @@
 	                    </h4>
 					</div>
 					<!--面板内容-->					
-					<div id="message" class="panel-collapse collapse in">
+					<div id="message" class="panel-collapse collapse">
 						<div class="panel-body">
-							<a href="message/MessageIndex.html" target="content">信息管理</a>
+							<a href="message/SearchMessage.html" target="content">信息管理</a>
+						</div>
+						<div class="panel-body" >
+							<a href="message/NewAddMes.html" target="content">发送新消息</a>
+						</div>
+						<div class="panel-body">
+							<a href="message/Draft.html" target="content">草稿箱</a>
+						</div>
+						<div class="panel-body">
+							<a href="message/Outbox.html" target="content">发件箱</a>
+						</div>
+						<div class="panel-body">
+							<a href="message/Inbox.html" target="content">收件箱</a>
+						</div>
+						<div class="panel-body">
+							<a href="message/Unread.html" target="content">未阅消息</a>
 						</div>
 					</div>
 				</div>
@@ -51,9 +130,13 @@
 					</div>
 					<!--面板内容-->
 					
-					<div id="vehicle" class="panel-collapse collapse in">
+					<div id="vehicle" class="panel-collapse collapse ">
 						<div class="panel-body">
 							<a href="vehicle/SearchVehicle.html" target="content">车辆管理</a>
+						</div>
+						
+						<div class="panel-body">
+							<a href="vehicle/QueryVehicleUse.html" target="content">车辆使用管理</a>
 						</div>
 					</div>
 				</div>
@@ -70,7 +153,7 @@
 	                    </h4>
 					</div>
 					<!--面板内容-->
-					<div id="queryTeam" class="panel-collapse collapse in">
+					<div id="queryTeam" class="panel-collapse collapse ">
 						<div class="panel-body">
 							<a href="card/QueryTeam.html" target="content">分组管理</a>
 						</div>
@@ -81,6 +164,31 @@
 					</div>
 				</div>
 			</div>
+			
+			<!--工作计划面板组-->
+			<div class="panel-group" id="accordion" style="float: left; width: 160px;margin-top: 0px;">
+				<!--面板1-->
+				<div class="panel panel-primary">
+					<!--面板标题-->
+					<div class="panel-heading">
+						<h4 class="panel-title">
+	                    	<a href="#sch" data-toggle="collapse">工作计划管理</a>
+	                    </h4>
+					</div>
+					<!--面板内容-->
+					<div id="sch" class="panel-collapse collapse ">
+						<div class="panel-body">
+							<a href="schedule/SearchSch.html" target="content">工作计划</a>
+						</div>
+					
+						<div class="panel-body">
+							<a href="folder/FileMenu.html" target="content">文件目录</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
 			
 			<!--会议面板组-->
 			<div class="panel-group" id="accordion" style="float: left; width: 160px;margin-top: 0px;">
@@ -94,13 +202,29 @@
 					</div>
 					<!--面板内容-->
 					
-					<div id="meeting" class="panel-collapse collapse in">
-						<div class="panel-body">
-							<a href="meeting/SearchMeeting.html" target="content">会议管理</a>
+					<div id="meeting" class="panel-collapse collapse ">
+						
+						<div class="panel-heading">
+							<h4 class="panel-title">
+		                    	<a href="#meeting1" data-toggle="collapse" >会议管理</a>
+		                    </h4>
 						</div>
+						
+						<div id="meeting1" class="panel-collapse collapse ">
+							<div class="panel-body">
+								<a href="meeting/SearchMeeting.html" target="content">查询所有会议</a>
+							</div>
+							<div class="panel-body">
+								<a href="meeting/ParticipatedMeeting.html" target="content">查看我参加的会议</a>
+							</div>
+							<div class="panel-body">
+								<a href="meeting/LaunchedMeeting.html" target="content">查看我发起的会议</a>
+							</div>
+						
+					    </div>
 					
 						<div class="panel-body">
-							<a href="meeting/SearchMeetingRoom.html" target="content">会议管理</a>
+							<a href="meeting/SearchMeetingRoom.html" target="content">会议室管理</a>
 						</div>
 					</div>
 				</div>
@@ -126,5 +250,6 @@
 		<script type="text/javascript" src="js/bootstrap/js/bootstrap.js"></script>
 		<script type="text/javascript" src="js/layer/layer.js"></script>
 		<script type="text/javascript" src="js/vue/vue2.5.js"></script>
+		
 	</body>
 </html>

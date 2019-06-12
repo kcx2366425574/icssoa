@@ -5,35 +5,54 @@
 		<id column="team_id" property="teamId" jdbcType="INTEGER" />
 		<result column="team_name" property="teamName" jdbcType="VARCHAR" />
 		<result column="team_num" property="teamNum" jdbcType="INTEGER" />
+		
+		<!-- 多对一映射必须写在resultMap最后面 -->
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="emp_id" property="empId" jdbcType="INTEGER" />
+			<result column="emp_login_name" property="empLoginName" jdbcType="VARCHAR" />
+		</association>
+		
 	</resultMap>
 
 	<insert id="insert" parameterType="com.icss.oa.card.pojo.Team">
-		insert into team (team_id,
-		team_name, team_num)
-		values (default, #{teamName,jdbcType=VARCHAR}, 0)
+		insert into team (team_id, team_name, team_num, team_emp_id)
+		values (default, #{teamName,jdbcType=VARCHAR}, 0, #{emp.empId,jdbcType=INTEGER})
 	</insert>
 
 	<delete id="delete" parameterType="java.lang.Integer">
 		delete from team
 		where
-		team_id = #{teamId,jdbcType=INTEGER}
+		team_id =
+		#{teamId,jdbcType=INTEGER}
 	</delete>
 
 	<update id="update" parameterType="com.icss.oa.card.pojo.Team">
 		update team
-		set team_name = #{teamName,jdbcType=VARCHAR}
+		set team_name = #{teamName,jdbcType=VARCHAR},
+		team_emp_id = #{emp.empId,jdbcType=INTEGER}
 		where team_id = #{teamId,jdbcType=INTEGER}
 	</update>
-	
+
 	<select id="queryById" resultMap="BaseResultMap">
 		select *
-		from team
-		where team_id = #{teamId,jdbcType=INTEGER} 
+		from team t
+		left outer join employee e on t.team_emp_id = e.emp_id
+		where team_id
+		= #{teamId,jdbcType=INTEGER}
 	</select>
-	
+
 	<select id="query" resultMap="BaseResultMap">
 		select *
-		from team order by team_id
+		from team t
+		left outer join employee e on t.team_emp_id = e.emp_id
+		where t.team_emp_id = #{emp.empId,jdbcType=INTEGER}
 	</select>
+	
+	<select id="getEmpId" resultType="java.lang.Integer">
+		select emp_id
+		from employee
+		where emp_login_name = #{empLoginName,jdbcType=VARCHAR}
+	</select>
+	
 
 </mapper>

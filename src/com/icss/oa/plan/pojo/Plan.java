@@ -2,13 +2,15 @@ package com.icss.oa.plan.pojo;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.icss.oa.system.pojo.Department;
 
 public class Plan {
     private Integer planId;
 
     private String planName;
-
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date planTime;
 
     private String planInfo;
@@ -74,12 +76,12 @@ public class Plan {
         this.planInfo = planInfo == null ? null : planInfo.trim();
     }
 
-    public Department getDeptId() {
+    public Department getDept() {
         return dept;
     }
 
-    public void setDeptId(Department deptId) {
-        this.dept = deptId;
+    public void setDept(Department dept) {
+        this.dept = dept;
     }
 
 

@@ -7,8 +7,7 @@
 <meta charset="UTF-8">
 <title>修改会议室</title>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
-<link rel="stylesheet" type="text/css"
-	href="../js/bootstrap/js/date/datetimepicker/jquery.datetimepicker.css">
+<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css">
 
 </head>
 <body>
@@ -95,6 +94,7 @@
 							onclick="reset" />
 					</div>
 				</div>
+			</div>
 		</form>
 	</div>
 
@@ -108,42 +108,6 @@
 	
 	<script>
 	
-	        
-//	        //动态生成部门列表（同步请求）
-//			$.ajax({
-//				type:"get", //请求类型get post
-//				url: baseUrl + "/meetingRoom/query", //请求url地址
-//				async:false, //false默认表示同步请求
-//				dataType:'json', //响应的数据类型				
-//			})
-//			.done(function(data,status,xhr){ //请求成功回调函数
-//				//遍历数据集合
-//				$.each(data, function(index,el) {				
-//					$('#meetingRoomId').append('<option value="' + el.meetingRoomId + '" >' + el.meetingRoomName + '</option>');					
-//				});
-//			})
-//			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
-//				alert(errorStatus + ',' + errorText);
-//				layer.closeAll();//关闭加载
-//			});		
-//							
-//			//动态生成职务列表（同步请求）
-//			$.ajax({
-//				type:"get", //请求类型get post
-//				url: baseUrl + "/employee/getAll", //请求url地址
-//				async:false, //false默认表示同步请求
-//				dataType:'json', //响应的数据类型				
-//			})
-//			.done(function(data,status,xhr){ //请求成功回调函数
-//				//遍历数据集合
-//				$.each(data, function(index,el) {				
-//					$('#empId').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
-//				});
-//			})
-//			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
-//				alert(errorStatus + ',' + errorText);
-//				layer.closeAll();//关闭加载
-//			});
 	        
 			//获得参数id
 			var meetingRoomId = getParam('meetingRoomId');

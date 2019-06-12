@@ -1,11 +1,13 @@
 package com.icss.oa.card.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
@@ -53,6 +55,18 @@ public class CardController {
 	public void delete(HttpServletRequest request, HttpServletResponse response, Integer cardId) {
 		service.deleteCard(cardId);
 	}
+	
+	/**
+	 * 批量删除名片
+	 * 
+	 * @param request
+	 * @param response
+	 * @param card
+	 */
+	@RequestMapping("/card/deleteMany")
+	public void deleteMany(HttpServletRequest request, HttpServletResponse response, Integer[] ids) {
+		service.deleteManyCard(ids);
+	}
 
 	/**
 	 * 修改名片
@@ -77,40 +91,9 @@ public class CardController {
 	public Card queryById(HttpServletRequest request,HttpServletResponse response,Integer cardId) {
 		return service.queryCardById(cardId);
 	}
-
-	/**
-	 * 条件查询
-	 * 
-	 * @param request
-	 * @param response
-	 * @param card
-	 */
-	@RequestMapping("/card/query")
-	@ResponseBody
-	public HashMap<String, Object> query(HttpServletRequest request, HttpServletResponse response, Integer pageSize,
-			Integer pageNum, Integer teamId, String cardName, String cardSex, String cardIntro) {
-		// return service.queryCardByCondition(page, teamName, cardName, cardSex, cardIntro);
-
-		if (pageNum == null)
-			pageNum = 1;
-		
-		if (pageSize == null)
-			pageSize = 10;
-		
-		Pager pager = new Pager(service.getCardCountByCondition(teamId, cardName, cardSex, cardIntro),
-				pageSize, pageNum);
-		List<Card> list = service.queryCardByCondition(pager, teamId, cardName, cardSex, cardIntro);
-
-		// 在Map集合中存储分页数据和名片数据
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("pager", pager);
-		map.put("list", list);
-
-		return map;
-	}
 	
 	/**
-	 * 全文检索员工
+	 * 全文检索
 	 * @throws IOException 
 	 * @throws ParseException 
 	 * @throws InvalidTokenOffsetsException 
@@ -121,5 +104,60 @@ public class CardController {
 		
 		return service.queryCardByIndex(queryStr);		
 	}
+	
+	/**
+	 * 根据登录名条件查询
+	 */
+	@RequestMapping("card/queryByCond")
+	@ResponseBody
+	public HashMap<String, Object> queryByCond(HttpServletRequest request, HttpServletResponse response, String empLoginName, Integer pageSize,
+			Integer pageNum, Integer teamId, String cardName, String cardSex, String cardIntro) {
+		HttpSession session = request.getSession();
+		String empLoginName0 = (String) session.getAttribute("empLoginName");
+		
+		ArrayList<Integer> ids0 = service.getTeamIds(empLoginName0);
+		int size = ids0.size();
+		
+		if (size == 0) {
+			Integer[] ids = {-1};
+			if (pageNum == null)
+				pageNum = 1;
+			
+			if (pageSize == null)
+				pageSize = 10;
+			
+			Pager pager = new Pager(service.getCardCountByCond(ids, teamId, cardName, cardSex, cardIntro),
+					pageSize, pageNum);
+			List<Card> list = service.queryCardByCond(ids, pager, teamId, cardName, cardSex, cardIntro);
 
+			// 在Map集合中存储分页数据和名片数据
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("pager", pager);
+			map.put("list", list);
+
+			return map;
+		}
+		
+		Integer[] ids = (Integer[])ids0.toArray(new Integer[size]);
+	
+		//System.out.println(ids);
+
+		if (pageNum == null)
+			pageNum = 1;
+		
+		if (pageSize == null)
+			pageSize = 10;
+		
+		Pager pager = new Pager(service.getCardCountByCond(ids, teamId, cardName, cardSex, cardIntro),
+				pageSize, pageNum);
+		List<Card> list = service.queryCardByCond(ids, pager, teamId, cardName, cardSex, cardIntro);
+
+		// 在Map集合中存储分页数据和名片数据
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
+
+		return map;
+	}
+	
 }

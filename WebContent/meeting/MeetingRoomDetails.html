@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+<meta name="viewport"
+	content="width=width-device,initial-scale=1,user-scalable=no" />
+<meta charset="UTF-8">
+<title>修改会议室</title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css">
+
+</head>
+<body>
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="#">OA系统</a></li>
+			<li><a href="#">会议管理</a></li>
+			<li><a href="#">会议室管理</a></li>
+			<li>查看会议室详细信息</li>
+		</ol>
+
+		<h3 class="page-header">查看会议室详细信息</h3>
+
+		<form class="form-horizontal col-md-10" id="form1">
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室ID</label>
+				<div class="col-md-10">
+					<input type="text"  readonly="readonly" id="meetingRoomId" name="meetingRoomId"
+						 class="form-control" />
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室名称</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomName" name="meetingRoomName"
+						placeholder="请输入会议室名称" class="form-control" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室位置</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomLocation" name="meetingRoomLocation"
+						placeholder="请输入会议室位置" class="form-control" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室大小</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomSize" name="meetingRoomSize"
+						placeholder="请输入会议室大小" class="form-control" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室空调</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomCondition" name="meetingRoomCondition"
+						placeholder="请输入会议室空调" class="form-control" readonly="readonly" />
+					
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室状态</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomState" name="meetingRoomState"
+						placeholder="请输入会议室状态" class="form-control" readonly="readonly" />
+					
+				</div>
+			</div>
+
+
+			
+		</form>
+	</div>
+
+
+
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/global.js"></script>
+	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/layer/layer.js"></script>
+	<script type="text/javascript" src="../js/param.js"></script>
+	
+	<script>
+	
+	        
+	        
+			//获得参数id
+			var meetingRoomId = getParam('meetingRoomId');
+			
+			//发出ajax请求调用后端接口
+			var url = baseUrl + "/meetingRoom/queryById";
+			
+			$.ajax({
+				type:"get", //请求类型get post
+				url: url, //请求url地址
+				async:true, //true默认表示异步请求
+				dataType:'json', //响应的数据类型
+				data:{meetingRoomId:meetingRoomId} //传递的请求参数
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//表单数据回显
+				
+				$('#meetingRoomId').val(data.meetingRoomId);
+				$('#meetingRoomName').val(data.meetingRoomName);
+				$('#meetingRoomLocation').val(data.meetingRoomLocation);
+				$('#meetingRoomSize').val(data.meetingRoomSize);
+				$('#meetingRoomCondition').val(data.meetingRoomCondition);
+				$('#meetingRoomState').val(data.meetingRoomState);
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});	
+			
+						
+			
+						
+		</script>
+		
+		
+	</body>
+</html>

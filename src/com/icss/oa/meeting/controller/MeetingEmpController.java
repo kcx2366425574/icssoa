@@ -1,5 +1,6 @@
 package com.icss.oa.meeting.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class MeetingEmpController {
 			Integer pageNum, Integer pageSize, Integer meetingEmpId, Integer meetingId, Integer empId) {
 
 		if (pageNum == null)
-			pageNum = 0;
+			pageNum = 1;
 
 		if (pageSize == null)
 			pageSize = 10;
@@ -89,5 +90,16 @@ public class MeetingEmpController {
 		return map;
 
 	}
+	
+	    //批量删除参会人员
+			@RequestMapping("/meetingEmp/deleteMany")
+			public void deleteMany(HttpServletRequest request, HttpServletResponse response, Integer[] ids) {
+				System.out.println("删除参会人员");
+				System.out.println(Arrays.toString(ids));
+//				for(Integer meetingEmpId:meetingEmpIds){
+//					System.out.println(meetingEmpId);
+//				//service.deleteMeeting(meetingId);
+//				}
+			}
 
 }

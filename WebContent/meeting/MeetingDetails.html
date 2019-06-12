@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+<meta name="viewport"
+	content="width=width-device,initial-scale=1,user-scalable=no" />
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css" >
+</head>
+<body>
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="#">OA系统</a></li>
+			<li><a href="#">会议管理</a></li>
+			<li><a href="#">会议管理</a></li>
+			<li>查看会议详细信息</li>
+		</ol>
+
+		<h3 class="page-header">查看会议详细信息</h3>
+
+		<form class="form-horizontal col-md-10" id="form1">
+			
+			<div class="form-group">
+				<label for="" class="col-md-2">会议ID</label>
+				<div class="col-md-10">
+					<input type="text"  readonly="readonly" id="meetingId" name="meetingId"
+						 class="form-control" />
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="" class="col-md-2">会议主题</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingTheme" name="meetingTheme"
+						placeholder="请输入会议主题" class="form-control" readonly="readonly"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">开始时间</label>
+				<div class="col-md-10">
+					<input type="text" id="startTime" name="startTime"
+						placeholder="请选择会议开始时间" class="form-control" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">结束时间</label>
+				<div class="col-md-10">
+					<input type="text" id="endTime" name="endTime"
+						placeholder="请选择会议结束时间" class="form-control" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议发起人:</label>
+				<div class="col-md-10">
+					<input type="text" id="empName" name="promoter.empName" value="promoter"
+						placeholder="请选择会议发起人" class="form-control" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室:</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingRoomName" name="meetingRoom.meetingRoomName" value="meetingRoom"
+						placeholder="请选择会议室" class="form-control" readonly="readonly" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议状态</label>
+				<div class="col-md-10">
+					<input type="text" id="meetingState" name="meetingState" 
+						placeholder="请选择会议状态" class="form-control" readonly="readonly" />
+					
+				</div>
+			</div>
+
+		</form>
+	</div>
+
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/global.js"></script>
+	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/layer/layer.js"></script>
+	<script type="text/javascript" src="../js/param.js"></script>
+	<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+	<script>
+			
+			//获得id
+			
+			var meetingId = getParam('meetingId');
+			var pageNum=getParam('pageNum');
+			
+			
+			//根据id返回会议数据
+			$.getJSON(baseUrl + '/meeting/queryById',{meetingId:meetingId},function(data){
+				
+				$('#meetingId').val(data.meetingId);
+				$('#meetingTheme').val(data.meetingTheme);
+				$('#startTime').val(data.startTime);
+				$('#endTime').val(data.endTime);
+				$('#empName').val(data.promoter.empName);
+				$('#meetingRoomName').val(data.meetingRoom.meetingRoomName);
+				$('#meetingState').val(data.meetingState);
+				
+			})
+			.error(function(){
+				alert('请求会议数据失败');				
+			});			
+	     
+
+		
+		</script>
+</body>
+</html>

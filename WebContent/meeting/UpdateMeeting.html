@@ -7,8 +7,7 @@
 <meta charset="UTF-8">
 <title></title>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
-<link rel="stylesheet" type="text/css"
-	href="../js/bootstrap/js/date/datetimepicker/jquery.datetimepicker.css">
+<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css">
 </head>
 <body>
 	<div class="container">
@@ -87,7 +86,7 @@
 							onclick="history.back();" />
 					</div>
 					<div class="col-md-2">
-						<input type="hidden" value="1" id="meetingRoomId" name="meetingRoomId" />
+						<input type="hidden" value="1" id="meetingId" name="meetingId" />
 						<input type="button" value="修改" class="btn btn-primary" id="updateBtn"/>
 					</div>
 					<div class="col-md-2">
@@ -102,12 +101,9 @@
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/global.js"></script>
 	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
-	<script type="text/javascript" src="../js/layer/layer.js">
-		
-	</script>
+	<script type="text/javascript" src="../js/layer/layer.js"></script>
 	<script type="text/javascript" src="../js/param.js"></script>
-	<script type="text/javascript"
-		src="../js/bootstrap/js/date/datetimepicker/jquery.datetimepicker.js"></script>
+	<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
 	<script>
 	
 	        
@@ -214,10 +210,10 @@
 				})
 				.done(function(data,status,xhr){ //请求成功回调函数
 					layer.closeAll();//关闭加载
-					layer.msg('修改会议室成功');	
+					layer.msg('修改会议成功');	
 					
 					setTimeout(function(){
-						location.href = 'SearchMeeting.html';//重定向到查询画面
+						history.back();//重定向到查询画面
 					},1000);		
 				})
 				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数

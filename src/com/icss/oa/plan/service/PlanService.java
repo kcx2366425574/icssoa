@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.icss.oa.common.Pager;
 import com.icss.oa.plan.dao.PlanMapper;
 import com.icss.oa.plan.pojo.Plan;
+import com.icss.oa.system.pojo.Job;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
@@ -27,8 +28,8 @@ public class PlanService {
 	}
 	
 	//删除部门计划
-	public void deletePlan(String planName){
-		mapper.delete(planName);
+	public void deletePlan(Integer planId){
+		mapper.delete(planId);
 	}
 	
 	//修改部门计划
@@ -46,5 +47,9 @@ public class PlanService {
 	@Transactional(readOnly=true)
 	public List<Plan> queryPlan(Pager pager,String planTime,String planName,Integer deptId){
 		return mapper.queryByCondition(pager.getStart(),pager.getPageSize(),planTime, planName, deptId);
+	}
+
+	public Plan queryById(Integer planId) {
+		return mapper.queryById(planId);
 	}
 }

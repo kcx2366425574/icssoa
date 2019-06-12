@@ -1,11 +1,14 @@
 package com.icss.oa.meeting.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -84,7 +87,7 @@ public class MeetingController {
 	@RequestMapping("/meeting/queryByCondition")
 	@ResponseBody
 	public HashMap<String, Object> queryByCondition(HttpServletRequest request, HttpServletResponse response,
-			Integer pageNum, Integer pageSize, Integer meetingId, String empName, String meetingState, String startTime,
+			Integer pageNum, Integer pageSize, Integer meetingId, Integer empId,String empName, String meetingState, String startTime,
 			String meetingTheme, String meetingRoomName, String meetingRoomLocation) {
 		
 		if (pageNum == null)
@@ -93,8 +96,8 @@ public class MeetingController {
 		if (pageSize == null)
 			pageSize = 10;
 
-		Pager pager = new Pager(service.getMeetingConditionCount(meetingId, empName, meetingState, startTime, meetingTheme, meetingRoomName, meetingRoomLocation), pageSize, pageNum);
-		List<Meeting> list = service.queryMeetingByCondition(pager, meetingId, empName, meetingState,
+		Pager pager = new Pager(service.getMeetingConditionCount(meetingId,empId, empName, meetingState, startTime, meetingTheme, meetingRoomName, meetingRoomLocation), pageSize, pageNum);
+		List<Meeting> list = service.queryMeetingByCondition(pager, meetingId,empId, empName, meetingState,
 				startTime, meetingTheme, meetingRoomName, meetingRoomLocation);
 
 		// 在MAP集合中存储分页数据和员工数据
@@ -117,13 +120,27 @@ public class MeetingController {
 			}
 		}
 		
-		// 查询会议室
-				@RequestMapping("/meeting/queryById")
+// 查询会议室
+		@RequestMapping("/meeting/queryById")
+		@ResponseBody
+		public Meeting queryById(HttpServletRequest request, HttpServletResponse response,Integer meetingId) {
+			System.out.println("查詢会议室");
+			return service.queryMeetingById(meetingId);
+		}
+				
+/**
+ * 全文检索会议
+ * @throws IOException 
+ * @throws ParseException 
+ * @throws InvalidTokenOffsetsException 
+ */
+				@RequestMapping("meeting/queryByIndex")
 				@ResponseBody
-				public Meeting queryById(HttpServletRequest request, HttpServletResponse response,Integer meetingId) {
-					System.out.println("查詢会议室");
-					return service.queryMeetingById(meetingId);
+				public List<Meeting> queryByIndex(HttpServletRequest request,HttpServletResponse response,String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
+					
+					return service.queryMeetingByIndex(queryStr);		
 				}
+				
 	
 
 }

@@ -124,12 +124,12 @@
 	<!-- 使用mysql的concat函数动态查询参会人员 -->
 	<select id="queryByCondition" resultMap="BaseResultMap">
 		SELECT
-		me.`meeting_emp_id`,me.`emp`,m.`meeting_id`,e.`emp_id`,e.`emp_sex`,e.`emp_name`,e.`emp_phone`,d.`dept_name`,j.`job_name`
-		FROM meeting_emp me
-		LEFT OUTER JOIN employee e ON e.`emp_id`=me.`emp`
-		LEFT OUTER JOIN meeting m ON m.`meeting_id`=me.`meeting`
-		LEFT OUTER JOIN department d ON d.`dept_id`=e.`emp_dept_id`
-		LEFT OUTER JOIN job j ON j.`job_id`=e.`emp_job_id`
+         me.`meeting_emp_id`,me.`emp`,m.`meeting_id`,e.`emp_id`,e.`emp_sex`,e.`emp_name`,e.`emp_phone`,d.`dept_name`,j.`job_name`,m.`meeting_startTime`,m.`meeting_endTime`,m.`meeting_state`,m.`meeting_theme`
+         FROM meeting_emp me
+         LEFT OUTER JOIN employee e ON e.`emp_id`=me.`emp`
+         LEFT OUTER JOIN meeting m ON m.`meeting_id`=me.`meeting`
+         LEFT OUTER JOIN department d ON d.`dept_id`=e.`emp_dept_id`
+         LEFT OUTER JOIN job j ON j.`job_id`=e.`emp_job_id`
 
 		<where>
 			<if test="meetingEmpId != null ">

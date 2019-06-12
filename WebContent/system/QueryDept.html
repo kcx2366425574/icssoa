@@ -4,7 +4,7 @@
 		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
 		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
 		<meta charset="UTF-8">
-		<title>部门管理</title>
+		<title></title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
 	</head>
 	<body>		
@@ -48,12 +48,35 @@
 						<td>{{dept.deptName}}</td>
 						<td>{{dept.deptInfo}}</td>
 						<td>
-							<a :href="'UpdateDept.html?deptId='+dept.deptId" value="修改" class="btn btn-info btn-sm">修改</a>
+							<a :href="'UpdateDept.html?deptId='+dept.deptId" class="btn btn-info btn-sm">修改</a>
 							<input type="button" value="删除" class="btn btn-danger btn-sm" @click="del(dept.deptId,index);"/>
+							<a :href="'../plan/QueryPlan.html?deptId='+dept.deptId" class="btn btn-info btn-sm">计划</a>
 						</td>
 					</tr>					
 				</tbody>
 			</table>	
+			
+			<div class="row">
+				<div class="col-sm-4">
+					<div>
+						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条，
+						共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<nav>
+			        	<ul class="pagination pull-right">
+			        		<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
+			                <li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
+			                
+			                <li :class="{active:item==pager.pageNum}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
+			                			                
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>			                
+			        	</ul>
+			        </nav>
+				</div>				
+			</div>
 			
 			<div class="row">
 				<div class="col-md-offset-8 col-md-4">
@@ -75,22 +98,56 @@
 			var v = new Vue({
 				el:'.container', //应用vue数据的范围
 				data:{  //数据模型
-					deptData:[]
+					deptData:[], //员工数据集合
+					pager:{},   //分页信息
+					pageBtn:[]  //分页按钮
+					
 				},
 				methods:{ //定义方法
-					query:function() {	 //查询					
+					query:function(pageNum) {	 //查询					
 						//发出ajax请求调用后端接口
 						var url = baseUrl + "/dept/query";
-						
+						//请求参数
+						var params = {
+							pageNum:pageNum,
+							pageSize:10
+						}
 						$.ajax({
 							type:"get", //请求类型get post
 							url: url, //请求url地址
 							async:true, //true默认表示异步请求
-							dataType:'json', //响应的数据类型				
+							dataType:'json', //响应的数据类型
+							data:params     //请求参数
 						})
 						.done(function(data,status,xhr){ //请求成功回调函数
 							//把响应的数据赋值给vue数据模型中的变量
-							v.deptData = data.list;							
+							v.deptData = data.list;	
+							v.pager = data.pager;
+							
+							//生成分页按钮
+							var start = v.pager.pageNum - 2;
+							var end = v.pager.pageNum + 2;
+							
+							if (v.pager.pageNum < 3) {
+								start = 1;
+								end = 5;
+							}
+							
+							if (end > v.pager.pageCount) {
+								end = v.pager.pageCount;								
+							}
+							
+							if (v.pager.pageCount < 5) {
+								start = 1;
+								end = v.pager.pageCount;
+							}
+							
+							v.pageBtn = [];//初始化清空
+							
+							for (var i = start;i <= end;i ++) {
+								v.pageBtn.push(i);
+							}						
+							
 						})
 						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
 							alert(errorStatus + ',' + errorText);				
@@ -126,7 +183,7 @@
 			});				
 			
 //			调用查询方法
-			v.query();		
+			v.query(1);		
 			
 		</script>
 		

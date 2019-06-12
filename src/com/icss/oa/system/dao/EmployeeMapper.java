@@ -17,6 +17,11 @@ public interface EmployeeMapper {
 	//查看头像
 	String queryHead(String empLoginName);
 	
+	//根据登录名得到id
+	Integer getId(String empLoginName);
+	
+	void updatePwd(@Param("empLoginName")String empLoginName,@Param("empPwd")String empPwd);
+	
 	//更新头像
 	void updateHead(@Param("empLoginName")String empLoginName,@Param("empPhoto")String empPhoto);
 	
@@ -37,6 +42,6 @@ public interface EmployeeMapper {
 	
 	int getLastInsertId();
 	
-	List<Employee> queryByIds(@Param("ids") Integer[] ids);
+	void deleteMany(Integer[] ids);
 	 
 }

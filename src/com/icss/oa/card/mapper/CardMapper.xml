@@ -60,6 +60,14 @@
 		card_id = #{cardId,jdbcType=INTEGER}
 	</delete>
 	
+	<delete id="deleteMany" parameterType="Integer[]">
+		delete from card where card_id in
+		<foreach collection="array" index="i" item="cardId" open="("
+			close=")" separator=",">
+			#{cardId}
+		</foreach>
+	</delete>
+	
 	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
 		SELECT *
 		FROM card c
@@ -90,26 +98,6 @@
 	<select id="getCount" resultType="java.lang.Integer">
 		select count(*) from card
 	</select>
-	
-	<select id="getCountByCondition" resultType="java.lang.Integer">
-		select count(*)
-		from card
-		<where>
-			<if test="teamId != null and teamId != '' ">
-				and card_team_id = #{teamId, jdbcType=INTEGER}
-			</if>
-			
-			<if test="cardName != null and cardName != '' ">
-				and instr (card_name, #{cardName, jdbcType=VARCHAR}) != 0
-			</if>
-			<if test="cardSex != null and cardSex != '' ">
-				and card_sex = #{cardSex, jdbcType=VARCHAR}
-			</if>
-			<if test="cardIntro != null and cardIntro != '' ">
-				and instr (card_intro, #{cardIntro, jdbcType=VARCHAR}) != 0
-			</if>
-		</where>
-	</select>
 
 	<!-- 使用mysql的instr函数判断是否包含数据 -->
 	<select id="queryByCondition" resultMap="BaseResultMap">
@@ -132,19 +120,87 @@
 		</where>
 		LIMIT #{start}, #{pageSize}
 	</select>
-
-	<!-- 动态形成in后面列表 
-	<select id="queryByNames" resultMap="BaseResultMap"> 
-		select * from card 
-		<where> 
-			<if test="names.length > 0"> 
-				card_name in 
-				<foreach collection="names" index="i" item="cardName" open="(" close=")" separator=","> 
-					#{cardName} 
-				</foreach> 
-			</if> 
-		</where> 
-	</select> 
-	-->
+	
+	<!-- 查询多个id -->
+	<select id="queryByEmp" resultMap="BaseResultMap">
+		select *
+		from card c
+		left outer join team t on c.card_team_id = t.team_id
+		<where>
+			<if test="ids.length > 0">
+				card_team_id in
+				<foreach collection="ids" index="i" item="cardTeamId" open="("
+					close=")" separator=",">
+					#{cardTeamId}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getIds" resultType="java.lang.Integer">
+		select t.team_id
+		from team t
+		left outer join employee e on t.team_emp_id = e.emp_id
+		where e.emp_login_name = #{empLoginName,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 使用mysql的instr函数判断是否包含数据 -->
+	<select id="queryByCond" resultMap="BaseResultMap">
+		SELECT *
+		FROM card c
+		LEFT OUTER JOIN team t ON c.`card_team_id` = t.`team_id`
+		<where>
+			<if test="ids.length > 0">
+				card_team_id in
+				<foreach collection="ids" index="i" item="cardTeamId" open="("
+					close=")" separator=",">
+					#{cardTeamId}
+				</foreach>
+			</if>
+			<if test="teamId != null and teamId != '' ">
+				and c.card_team_id = #{teamId, jdbcType=INTEGER}
+			</if>
+			<if test="cardName != null and cardName != '' ">
+				and instr (card_name, #{cardName, jdbcType=VARCHAR}) != 0
+			</if>
+			<if test="cardSex != null and cardSex != '' ">
+				and card_sex = #{cardSex, jdbcType=VARCHAR}
+			</if>
+			<if test="cardIntro != null and cardIntro != '' ">
+				and instr (card_intro, #{cardIntro, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+		order by c.card_id
+		LIMIT #{start}, #{pageSize}
+	</select>
+	
+	<select id="getCountByCond" resultType="java.lang.Integer">
+		select count(*)
+		from card
+		
+		<where>
+			<if test="ids.length > 0">
+				card_team_id in
+				<foreach collection="ids" index="i" item="cardTeamId" open="("
+					close=")" separator=",">
+					#{cardTeamId}
+				</foreach>
+			</if>
+			<if test="teamId != null and teamId != '' ">
+				and card_team_id = #{teamId, jdbcType=INTEGER}
+			</if>
+			
+			<if test="cardName != null and cardName != '' ">
+				and instr (card_name, #{cardName, jdbcType=VARCHAR}) != 0
+			</if>
+			<if test="cardSex != null and cardSex != '' ">
+				and card_sex = #{cardSex, jdbcType=VARCHAR}
+			</if>
+			<if test="cardIntro != null and cardIntro != '' ">
+				and instr (card_intro, #{cardIntro, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+	</select>
+	
 
 </mapper>

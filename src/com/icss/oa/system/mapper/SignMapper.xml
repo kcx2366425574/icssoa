@@ -19,7 +19,14 @@
 		insert into sign 
 		values(default,#{signTime},#{signEmpId})
 	</insert>
-
+	
+	<select id="queryByMonth" resultMap="BaseResultMap">
+		select s.* ,e.emp_id,e.emp_name from sign s
+		left outer join employee e
+		on s.sign_emp_id=e.emp_id
+		where sign_emp_id=#{signEmpId} and DATE_FORMAT(sign_time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+			
+	</select>
 
 	
 	<select id="query" resultMap="BaseResultMap">

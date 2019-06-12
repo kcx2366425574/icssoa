@@ -32,6 +32,6 @@ public interface ScheduleMapper {
     
     int getCountByCondition(@Param("empId1") Integer empId1,@Param("empId2") Integer empId2,@Param("schName")String schName);
     
-    
+	int getLastInsertId();
 
 }

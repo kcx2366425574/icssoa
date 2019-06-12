@@ -28,9 +28,7 @@
 		set notice_name =
 		#{noticeName,jdbcType=VARCHAR},
 		notice_info =
-		#{noticeInfo,jdbcType=INTEGER},
-		notice_emp_id =
-		#{emp.empId,jdbcType=INTEGER}
+		#{noticeInfo,jdbcType=INTEGER}
 		where notice_id = #{noticeId,jdbcType=INTEGER}
 	</update>
 

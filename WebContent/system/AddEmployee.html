@@ -40,15 +40,10 @@
 				<div class="form-group">
 					<label for="" class="col-md-2">设置密码</label>
 					<div class="col-md-10">
-						<input type="password" id="empPwd" name="empPwd" placeholder="请设置登录密码" class="form-control"/>
+						<input readonly  id="empPwd" name="empPwd" placeholder="123456" class="form-control"/>
 					</div>					
 				</div>
-				<div class="form-group">
-					<label for="" class="col-md-2">确认密码</label>
-					<div class="col-md-10">
-						<input type="password" id="empPwd2" name="empPwd2" placeholder="重新输入登录密码" class="form-control"/>
-					</div>					
-				</div>
+				
 				<div class="form-group">
 					<label for="" class="col-md-2">性别</label>
 					<div class="col-md-10">
@@ -188,10 +183,10 @@
 				})
 				.done(function(data,status,xhr){ //请求成功回调函数
 					layer.closeAll();//关闭加载
-					if (data == 'true')
+					if ($('#empLoginName').val() !='' && data == 'true')
 						layer.msg('用户名可以使用');
 					else {
-						layer.msg('用户名已经被占用');
+						layer.msg('用户名为空或已经被占用');
 						$('#empLoginName').focus();
 					}
 					
@@ -218,25 +213,7 @@
 		    			return false;
 		    		}
 		    		
-		    		//员工密码验证(只能字母数字，6-8位)
-		    		var empPwd = $('#empPwd');
 		    		
-		    		r=/^[a-zA-Z0-9]{6,8}$/
-		    		
-		    		if(!r.test(empPwd.val())){
-		    			layer.msg('密码必须是字母数字，6-8位');
-						empPwd.focus();
-						return false;
-		    		}
-		    		
-		    		
-		    		//确认密码验证		    		
-		    		var empPwd2 = $('#empPwd2');
-		    		if (empPwd.val() != empPwd2.val() ){
-		    			layer.msg('两次密码输入不一致');
-		    			empPwd2.focus();
-		    			return false;
-		    	    }
 		    		
 		    		//性别验证
 		    		var empSex = $(':radio[name=empSex]:checked');

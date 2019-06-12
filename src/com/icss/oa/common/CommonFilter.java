@@ -37,41 +37,41 @@ public class CommonFilter implements Filter {
 		response.setHeader("Access-Control-Allow-Origin", "*");	
 		
 		//登录验证
-				String uri = request.getRequestURI();
+		String uri = request.getRequestURI();
+		
+		//web应用名称
+		String app = request.getContextPath();
+		
+		
+		//判断是否是不需要登录验证的uri	
+		
+		if (!uri.equals(app + "/") 
+				&& !uri.equals(app + "/login.html")
+				&& !uri.equals(app + "/logout.jsp")
+				&& !uri.equals(app + "/employee/login")
+				&& !uri.startsWith(app + "/css")
+				&& !uri.startsWith(app + "/js")
+				&& !uri.startsWith(app + "/images")) {
+			
+			//登录判断
+			HttpSession session = request.getSession();			
+			String empLoginName = (String) session.getAttribute("empLoginName");
+						
+			if (empLoginName == null) {
 				
-				//web应用名称
-				String app = request.getContextPath();
-				
-				
-				//判断是否是不需要登录验证的uri	
-				
-				if (!uri.equals(app + "/") 
-						&& !uri.equals(app + "/login.html")
-						&& !uri.equals(app + "/logout.jsp")
-						&& !uri.equals(app + "/employee/login")
-						&& !uri.startsWith(app + "/css")
-						&& !uri.startsWith(app + "/js")
-						&& !uri.startsWith(app + "/images")) {
-					
-					//登录判断
-					HttpSession session = request.getSession();			
-					String empLoginName = (String) session.getAttribute("empLoginName");
+				//判断是否是ajax请求
+				String xhr = request.getHeader("x-requested-with");
 								
-					if (empLoginName == null) {
-						
-						//判断是否是ajax请求
-						String xhr = request.getHeader("x-requested-with");
-										
-						if (xhr != null && xhr.equals("XMLHttpRequest")) {					
-							response.setHeader("sessionStatus", "timeout");	//响应前端一个自定义报头信息					
-						} else {
-							response.sendRedirect(app + "/logout.jsp"); //重定向到登录页
-						}
-						
-						return;
-					}			
-					
+				if (xhr != null && xhr.equals("XMLHttpRequest")) {					
+					response.setHeader("sessionStatus", "timeout");	//响应前端一个自定义报头信息					
+				} else {
+					response.sendRedirect(app + "/logout.jsp"); //重定向到登录页
 				}
+				
+				return;
+			}			
+			
+		}
 		
 		//继续向下执行没写
 		chain.doFilter(request, response);

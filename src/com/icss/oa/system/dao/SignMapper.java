@@ -17,5 +17,6 @@ public interface SignMapper {
 	//查询所有的签到记录
 	List<Sign> query(@Param("signEmpId")Integer signEmpId, @Param("start") Integer start,@Param("pageSize") Integer pageSize);
 	
+	List<Sign> queryByMonth(@Param("signEmpId")Integer signEmpId);
 	
 }

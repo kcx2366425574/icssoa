@@ -67,6 +67,10 @@
    		where emp_id=#{empId}
    	</select>
    	
+   	<select id="getId" parameterType="java.lang.String" resultType="java.lang.Integer">
+   		select emp_id from employee  where emp_login_name=#{empLoginName}
+   	</select>
+   	
 	<delete id="delete" parameterType="java.lang.Integer">
 	  delete from employee where emp_id = #{empId}
 	</delete>
@@ -129,6 +133,10 @@
 		where	emp_login_name=#{empLoginName}
 	</select>
 	
+	<update id="updatePwd" parameterType="java.lang.String">
+		update employee set emp_pwd=#{empPwd} where emp_login_name=#{empLoginName}
+	</update>
+	
 	<update id="update" parameterType="com.icss.oa.system.pojo.Employee">
 	  update employee set emp_name=#{empName}, emp_login_name=#{empLoginName},
 	   emp_pwd=#{empPwd}, emp_sex=#{empSex},
@@ -159,16 +167,11 @@
 	</select>	
 	
 	<!-- 动态形成in后面的列表 -->
-	<select id="queryByIds" resultMap="BaseResultMap">
-		select *
-		from	employee
-		<where>
-			<if test="ids.length>0">
-				emp_id in 
-				<foreach collection="ids" index="i" item="empId" open="(" close=")" separator=",">
-					#{empId}
-				</foreach>
-			</if>		
-		</where>	
-	</select>
+	<delete id="deleteMany" parameterType="Integer[]">
+		delete from employee where emp_id in
+		<foreach collection="array" index="i" item="empId" open="("
+			close=")" separator=",">
+			#{empId}
+		</foreach>
+	</delete>
 </mapper>

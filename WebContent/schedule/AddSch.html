@@ -115,7 +115,7 @@
 			
 						
 			//动态生成员工列表
-			$.getJSON(baseUrl + '/emp/query',{},function(data) {				
+			$.getJSON(baseUrl + '/employee/query',{},function(data) {				
 				//遍历数据集合
 				$.each(data.list, function(index,el) {				
 					$('#empId').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
@@ -124,7 +124,7 @@
 			.error(function(){
 				alert('请求员工列表失败');				
 			});
-			$.getJSON(baseUrl + '/emp/query',{},function(data) {				
+			$.getJSON(baseUrl + '/employee/query',{},function(data) {				
 				//遍历数据集合
 				$.each(data.list, function(index,el) {				
 					$('#empId2').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
@@ -153,13 +153,35 @@
 						return false;
 					}
 					//任务姓名
-					var schName = $('#schInfo');
+					var schInfo = $('#schInfo');
 					
-					if (schName.val() == '' || schName.val().length > 1000) {
+					if (schInfo.val() == '' || schInfo.val().length > 1000) {
 						layer.msg('任务名称不能为空且最多1000字符');
-						schName.focus();
+						schInfo.focus();
 						return false;
 					}	
+					var schGrantDate=$('#schGrantDate');
+					if(schGrantDate.val()=='')
+					{
+						layer.msg('授予日期不能为空');
+						schGrantDate.focus();
+						return false;
+					}
+					var schStartDate=$('#schStartDate');
+					if(schStartDate.val()=='')
+					{
+						layer.msg('开始日期不能为空');
+						schStartDate.focus();
+						return false;
+					}
+					var schEndDate=$('#schEndDate');
+					if(schEndDate.val()=='')
+					{
+						layer.msg('结束日期不能为空');
+						schEndDate.focus();
+						return false;
+					}
+					
 					//验证日期的早晚有效性
 					var grantdate=new Date(document.getElementById("schGrantDate").value.replace(/\-/g, "\/"));
 					var startdate=new Date(document.getElementById("schStartDate").value.replace(/\-/g, "\/"));

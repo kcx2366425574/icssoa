@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title>草稿箱</title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<style>
+			.pagination {
+				margin-top: 0!important;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="container">
+			
+			<!--面板组-->
+			<div class="panel-group" id="accordion" style="float: left; width: 160px;margin-top: 20px;">
+				<!--面板1-->
+				<div class="panel panel-primary">
+					<!--面板标题-->
+					<div class="panel-heading">
+						<h4 class="panel-title">
+	                    	草稿箱
+	                    </h4>
+					</div>
+				</div>
+			</div>
+
+			<!--鼠标悬停-->
+			<table class="table table-hover table-bordered table-condensed" style="margin-top: 20px;">
+				<thead>
+					<tr>
+						<th>信息编号</th>
+						<th>题目</th>
+						<th>是否已发</th>
+						<th>是否已读</th>
+						<th>时间</th>
+						<th>内容</th>
+						<td>发件人</td>
+						<th>收件人</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(mes,index) in mesData">
+						<td>{{mes.mesId}}</td>
+						<td>{{mes.mesTitle}}</td>
+						<td>{{mes.mesSendConfirm}}</td>
+						<td>{{mes.mesReadConfirm}}</td>
+						<td>{{mes.mesSendDate}}</td>
+						<td>{{mes.mesInfo}}</td>
+						<td>{{mes.mesSender.empName}}</td>
+						<td>{{mes.mesReciver.empName}}</td>
+						<td>
+							<!--<a :href="'UpdateMessage.html?mesId='+mes.mesId" class="btn btn-info btn-sm">修改</a>
+								<input type="button" value="删除" class="btn btn-danger btn-sm" @click="del(mes.mesId,index);" />-->
+							<div class="dropdown">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									操作
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a href="javascript:void(0);" @click="showDetails(mes.mesId);">修改/详细</a></li>
+									<li><a href="javascript:void(0);" @click="del(mes.mesId,index);">删除</a></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="row">
+				<div class="col-sm-4">
+					<div>
+						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条， 共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<nav>
+						<ul class="pagination pull-right">
+							<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
+							<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
+
+							<li :class="{active:item==pager.pageNum}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
+
+							<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+							<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+
+		</div>
+
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
+		
+		<script>
+			
+			var v = new Vue({
+				el: '.container', //应用vue数据的范围
+				data: { //数据模型
+					mesData: [],
+					pager: {}, //分页信息
+					pageBtn: [] //分页按钮
+				},
+				methods: { //定义方法
+					query: function(pageNum) { //查询					
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/mes/queryDraft";
+//						var url = baseUrl + "/mes/queryByEmpLoginName";
+
+						//请求参数
+						var params = {
+							pageNum: pageNum,
+							pageSize: 2
+						}
+
+						$.ajax({
+								type: "post", //请求类型get post
+								url: url, //请求url地址
+								async: true, //true默认表示异步请求
+								dataType: 'json', //响应的数据类型	
+								data: params
+							})
+							.done(function(data, status, xhr) { //请求成功回调函数
+								//把响应的数据赋值给vue数据模型中的变量
+
+								v.mesData = data.list;
+								v.pager = data.pager;
+
+								//生成分页按钮
+								var start = v.pager.pageNum - 2;
+								var end = v.pager.pageNum + 2;
+
+								if (v.pager.pageNum < 3) {
+									start = 1;
+									end = 5;
+								}
+
+								if (end > v.pager.pageCount) {
+									end = v.pager.pageCount;
+								}
+
+								if (v.pager.pageCount < 5) {
+									start = 1;
+									end = v.pager.pageCount;
+								}
+
+								v.pageBtn = []; //初始化清空
+
+								for (var i = start; i <= end; i++) {
+									v.pageBtn.push(i);
+								}
+
+							})
+							.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+								alert(errorStatus + ',' + errorText);
+							});
+					},
+					del: function(mesId, index) { //删除
+
+						var flag = window.confirm('确定要删除此信息吗');
+
+						if (!flag)
+							return;
+
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/mes/deleteMes";
+
+						$.ajax({
+								type: "get", //请求类型get post
+								url: url, //请求url地址
+								async: true, //true默认表示异步请求
+								dataType: 'text', //响应的数据类型	
+								data: {
+									mesId: mesId
+								}
+							})
+							.done(function(data, status, xhr) { //请求成功回调函数
+								layer.msg('删除信息成功');
+								//location.reload();//刷新当前网页
+								v.mesData.splice(index, 1); //前端删除
+							})
+							.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+								alert(errorStatus + ',' + errorText);
+							});
+					},
+
+					showDetails: function(mesId) { //修改查看详细的方法
+
+						// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title: '在线信息详细信息',
+							type: 2,
+							area: ['600px', '800px'], //宽高
+							content: 'UpdateMessage.html?mesId=' + mesId
+						});
+
+					}
+
+				}
+			});
+
+			//调用查询方法
+			v.query(1);
+			
+		</script>
+
+	</body>
+
+</html>

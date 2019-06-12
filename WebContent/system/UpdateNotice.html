@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">公告管理</a></li>
+				<li>修改公告</li>
+			</ol>
+			
+			<h3 class="page-header">
+				修改公告
+			</h3>
+			
+			<form class="form-horizontal col-md-10" id="form1">
+				<div class="form-group">
+					<label for="" class="col-md-2">公告名称</label>
+					<div class="col-md-10">
+						<input type="text" id="noticeName" name="noticeName" placeholder="请输入公告名称" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">公告描述</label>
+					<div class="col-md-10">
+						<input type="text" id="noticeInfo" name="noticeInfo" placeholder="请输入公告描述" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
+					</div>
+					<div class="col-md-4">
+						<input type="hidden" value="1" id="noticeId" name="noticeId" />
+
+						<input type="button" value="修改" class="btn btn-primary btn-block" id="updateBtn"/>
+					</div>				
+				</div>
+			</form>			
+		</div>			.
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		
+		<script>
+			//获得参数id
+			var noticeId = getParam('noticeId');
+			
+			//发出ajax请求调用后端接口
+			var url = baseUrl + "/notice/get";
+			
+			$.ajax({
+				type:"get", //请求类型get post
+				url: url, //请求url地址
+				async:true, //true默认表示异步请求
+				dataType:'json', //响应的数据类型
+				data:{noticeId:noticeId} //传递的请求参数
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//表单数据回显
+				$('#noticeName').val(data.noticeName);
+				$('#noticeInfo').val(data.noticeInfo);
+				$('#noticeId').val(data.noticeId);
+					
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});	
+			
+						
+			//单击修改按钮
+			$('#updateBtn').click(function() {
+				
+				//加载层
+				layer.load(2);
+				
+				//发出ajax请求调用后端接口
+				var url = baseUrl + "/notice/update";
+				
+				//请求参数
+				var params = $('#form1').serialize();
+				console.log(params);
+				$.ajax({
+					type:"post", //请求类型get post
+					url: url, //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params //传递的请求参数
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('修改公告成功');	
+					setTimeout(function(){
+						location.href = 'QueryNotice.html';//重定向到查询画面
+					},1000);		
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});									
+				
+			});
+						
+		</script>
+		
+		
+	</body>
+</html>

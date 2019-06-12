@@ -22,8 +22,8 @@ public class TeamService {
 	private TeamMapper mapper;
 	
 	//增加数据
-	public void addTeam(String teamName) { 
-		mapper.insert(teamName);
+	public void addTeam(Team team) { 
+		mapper.insert(team);
 	}
 	
 	//删除数据
@@ -44,8 +44,14 @@ public class TeamService {
 	
 	//查询全部数据
 	@Transactional(readOnly = true)
-	public List<Team> queryTeam() {
-		return mapper.query();
+	public List<Team> queryTeam(Integer empId) {
+		return mapper.query(empId);
+	}
+	
+	//通过登录名获取员工id
+	@Transactional(readOnly = true)
+	public int getEmpIdByLname(String empLoginName) {
+		return mapper.getEmpId(empLoginName);
 	}
 
 }

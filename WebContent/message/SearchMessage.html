@@ -24,14 +24,8 @@
 					<!--面板标题-->
 					<div class="panel-heading">
 						<h4 class="panel-title">
-	                    	<a href="#one" data-toggle="collapse">在线信息</a>
+	                    	在线信息
 	                    </h4>
-					</div>
-					<!--面板内容-->
-					<div id="one" class="panel-collapse collapse in">
-						<div class="panel-body">
-							<a href="NewAddMes.html">发件箱</a>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -48,6 +42,7 @@
 							</div>
 							<div class="form-group">
 								<input type="text" name="mesTitle" id="mesTitle" class="form-control" placeholder="请输入信息的关键字" />
+								<input type="text" id="mesSendDate" name="mesSendDate" placeholder="请选择时间" class="form-control" />
 							</div>
 							<div class="form-group">
 								<input type="button" value="普通搜索" class="btn btn-primary" id="searchBtn" />
@@ -63,6 +58,7 @@
 				<table class="table table-hover table-bordered table-condensed" style="margin-top: 20px;">
 					<thead>
 						<tr>
+							<th>选择</th>
 							<th>信息编号</th>
 							<th>题目</th>
 							<th>是否已发</th>
@@ -76,6 +72,9 @@
 					</thead>
 					<tbody>
 						<tr v-for="(mes,index) in mesData">
+							<td>
+								<input type="checkbox" name="ids" :value="mes.mesId" />
+							</td>
 							<td>{{mes.mesId}}</td>
 							<td>{{mes.mesTitle}}</td>
 							<td>{{mes.mesSendConfirm}}</td>
@@ -128,6 +127,10 @@
 				没有任何满足条件的数据
 			</div>
 
+			<div class="col-md-4">
+				<input type="button" disabled value="批量删除" id="delManyBtn" class="btn btn-danger  btn-block" />
+			</div>
+
 		</div>
 
 		<script type="text/javascript" src="../js/jquery.js"></script>
@@ -163,12 +166,12 @@
 				methods: { //定义方法
 					query: function(pageNum) { //查询					
 						//发出ajax请求调用后端接口
-					var url = baseUrl + "/mes/queryByEmpLoginName";
+						var url = baseUrl + "/mes/queryByEmpLoginName";
 
 						//请求参数
 						var params = {
 							pageNum: pageNum,
-							pageSize: 2,
+							pageSize: 8,
 							empId: mesRecivercond,
 							mesSendDate: mesSendDatecond,
 							mesTitle: mesTitlecond
@@ -267,12 +270,64 @@
 			$('#searchBtn').click(function() {
 
 				//条件赋值
-				mesSendercond = $('#mesSender').val();
 				mesRecivercond = $('#mesReciver').val();
 				mesSendDatecond = $('#mesSendDate').val();
 				mesTitlecond = $('#mesTitle').val();
 
 				v.query(1);
+			});
+
+			//批量删除1
+			$('#delManyBtn').click(function() {
+
+				var ids = $(':checkbox[name=ids]:checked');
+
+				if (ids.length == 0) {
+					alert('没有选择任何员工');
+					return;
+				}
+
+				var idsStr = '';
+
+				for (var i = 0; i < ids.length; i++) {
+					idsStr += ids.eq(i).val() + ',';
+				}
+
+				idsStr = idsStr.substr(0, idsStr.length - 1);
+
+				alert(idsStr);
+
+				$.ajax({
+						type: "get", //请求类型get post
+						url: baseUrl + '/mes/deleteMany', //请求url地址
+						async: true, //true默认表示异步请求
+						dataType: 'text', //响应的数据类型	
+						data: {
+							ids: idsStr
+						}
+					})
+					.done(function(data, status, xhr) { //请求成功回调函数
+						layer.msg('删除信息成功');
+						setTimeout(function() {
+							location.reload(); //刷新当前网页
+						}, 1000);
+					})
+					.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+						alert(errorStatus + ',' + errorText);
+					});
+
+			});
+
+			//删除按钮的状态						
+			$('.container').on('click', ':checkbox[name=ids]', function() {
+
+				var ids = $(':checkbox[name=ids]:checked');
+
+				if (ids.length == 0)
+					$('#delManyBtn').prop('disabled', true);
+				else
+					$('#delManyBtn').prop('disabled', false);
+
 			});
 		</script>
 

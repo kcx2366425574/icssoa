@@ -46,11 +46,7 @@ public class TestPlan {
 		System.out.println(count);
 	}
 	
-	@Test 
-	//删除plan
-	public void testDelete(){
-		mapper.delete("星期一的计划");
-	}
+
 
 	@Test
 	public void testUpdate(){

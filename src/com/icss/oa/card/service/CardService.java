@@ -1,6 +1,7 @@
 package com.icss.oa.card.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -87,7 +88,18 @@ public class CardService {
 			e.printStackTrace();
 		}
 	}
+	
+	//批量删除
+	public void deleteManyCard(Integer[] ids) {
+		for(Integer id : ids) {
+			int id0 = mapper.queryTeamIdById(id);
+			mapper.lowTeamNum(id0);
+		}
+		mapper.deleteMany(ids);
+	}
 
+	
+	
 	// 修改数据
 	public void updateCard(Integer cardId, Card card) {
 		int id0 = mapper.queryTeamIdById(cardId);
@@ -121,19 +133,6 @@ public class CardService {
 	@Transactional(readOnly = true)
 	public Card queryCardById(Integer cardId) {
 		return mapper.queryById(cardId);
-	}
-
-	// 条件获取记录数
-	@Transactional(readOnly = true)
-	public Integer getCardCountByCondition(Integer teamId, String cardName, String cardSex, String cardIntro) {
-		return mapper.getCountByCondition(teamId, cardName, cardSex, cardIntro);
-	}
-
-	// 条件查询(分页、分组名称、姓名、性别、介绍)
-	@Transactional(readOnly = true)
-	public List<Card> queryCardByCondition(Pager page, Integer teamId, String cardName, String cardSex,
-			String cardIntro) {
-		return mapper.queryByCondition(page.getStart(), page.getPageSize(), teamId, cardName, cardSex, cardIntro);
 	}
 	
 	/**
@@ -173,6 +172,32 @@ public class CardService {
 		List<Card> list = indexDao.search(query);
 
 		return list;
+	}
+	
+	//根据teamId查询
+	@Transactional(readOnly = true)
+	public List<Card> queryCardByEmp(Integer[] ids) {
+		return mapper.queryByEmp(ids);
+	}
+	
+	//获取teamId数组
+	@Transactional(readOnly = true)
+	public ArrayList<Integer> getTeamIds(String empLoginName) {
+		return mapper.getIds(empLoginName);
+	}
+	
+	//登录后条件获取记录数 (分页、分组名称、姓名、性别、介绍)
+	@Transactional(readOnly = true)
+	public Integer getCardCountByCond(Integer[] ids, Integer teamId, String cardName, String cardSex, String cardIntro) {
+		return mapper.getCountByCond(ids, teamId, cardName, cardSex, cardIntro);
+	}
+	
+	//登录后条件查询 (分页、分组名称、姓名、性别、介绍)
+	@Transactional(readOnly = true)
+	public List<Card> queryCardByCond(Integer[] ids, Pager page, Integer teamId, String cardName, String cardSex,
+			String cardIntro) {
+		return mapper.queryByCond(ids, page.getStart(), page.getPageSize(), teamId, cardName, cardSex, cardIntro);
+		
 	}
 
 }

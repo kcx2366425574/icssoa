@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +15,6 @@ import com.icss.oa.message.pojo.Message;
 import com.icss.oa.message.service.MessageService;
 import com.icss.oa.system.pojo.Employee;
 import com.icss.oa.system.service.EmployeeService;
-
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
@@ -44,13 +42,38 @@ public class MessageController {
 	 */
 	@RequestMapping("/mes/addMes")
 	public void addMes(HttpServletRequest request, HttpServletResponse response, Message Message) {
+		// HttpSession session = request.getSession();
+		//
+		// String empLoginName = (String) session.getAttribute("empLoginName");
+		// Employee emp = empService.queryEmpByLoginName(empLoginName);
+		// session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+
+		service.addMes(Message);
+	}
+
+	/**
+	 * 增加职务,根据登录名增加
+	 * 
+	 * @param request
+	 * @param response
+	 * @param dept
+	 */
+	@RequestMapping("/mes/addMesByLoginName")
+	public void addMesByLoginName(HttpServletRequest request, HttpServletResponse response, Message mes) {
+
 		HttpSession session = request.getSession();
 
 		String empLoginName = (String) session.getAttribute("empLoginName");
 		Employee emp = empService.queryEmpByLoginName(empLoginName);
-		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+		emp.setEmpId(empService.getId(empLoginName));
 
-		service.addMes(Message);
+		Integer empId = emp.getEmpId();
+
+		Employee mesSender = new Employee();
+		mesSender.setEmpId(empId);
+		mes.setMesSender(mesSender);
+
+		service.addMes(mes);
 	}
 
 	/**
@@ -153,10 +176,21 @@ public class MessageController {
 		return map;
 	}
 
+	/**
+	 * 根据登录名查询
+	 * 
+	 * @param request
+	 * @param response
+	 * @param pageNum
+	 * @param pageSize
+	 * @param empLoginName
+	 * @return
+	 */
 	@RequestMapping("/mes/queryByEmpLoginName")
 	@ResponseBody
 	public HashMap<String, Object> queryByEmpLoginName(HttpServletRequest request, HttpServletResponse response,
-			Integer pageNum, Integer pageSize, String empLoginName) {
+			Integer pageNum, Integer pageSize, String empLoginName, String mesSendDate, String empEmail,
+			String mesTitle, Integer empId, String mesInfo) {
 
 		HttpSession session = request.getSession();
 
@@ -172,9 +206,180 @@ public class MessageController {
 			pageSize = 5;
 		}
 
-		Pager pager = new Pager(service.getMesCount(), pageSize, pageNum);
+		Pager pager = new Pager(
+				service.getMesCountByEmpLoginName(empLoginName, mesSendDate, empEmail, mesTitle, empId, mesInfo),
+				pageSize, pageNum);
 
-		List<Message> list = service.queryMesByLoginName(empLoginName, pager);
+		List<Message> list = service.queryMesByLoginName(empLoginName, pager, mesSendDate, empEmail, mesTitle, empId,
+				mesInfo);
+
+		// 在Map集合中存储分页数据和信息数据
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
+
+		return map;
+	}
+
+	/**
+	 * 查询草稿箱
+	 * 
+	 * @param request
+	 * @param response
+	 * @param mesSendConfirm
+	 * @param pageNum
+	 * @param pageSize
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("/mes/queryDraft")
+	@ResponseBody
+	public HashMap<String, Object> queryDraft(HttpServletRequest request, HttpServletResponse response,
+			String mesSendConfirm, Integer pageNum, Integer pageSize, String empLoginName) {
+
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+
+		if (pageSize == null) {
+			pageSize = 5;
+		}
+
+		Pager pager = new Pager(service.getMesDraftCount("未发", empLoginName), pageSize, pageNum);
+
+		List<Message> list = service.queryMesDraft("未发", pager, empLoginName);
+
+		// 在Map集合中存储分页数据和信息数据
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
+
+		return map;
+	}
+
+	/**
+	 * 查询发件箱
+	 * 
+	 * @param request
+	 * @param response
+	 * @param mesSendConfirm
+	 * @param pageNum
+	 * @param pageSize
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("/mes/queryOutbox")
+	@ResponseBody
+	public HashMap<String, Object> queryOutbox(HttpServletRequest request, HttpServletResponse response,
+			String mesSendConfirm, Integer pageNum, Integer pageSize, String empLoginName) {
+
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+
+		if (pageSize == null) {
+			pageSize = 5;
+		}
+
+		Pager pager = new Pager(service.getMesDraftCount("已发", empLoginName), pageSize, pageNum);
+
+		List<Message> list = service.queryMesDraft("已发", pager, empLoginName);
+
+		// 在Map集合中存储分页数据和信息数据
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
+
+		return map;
+	}
+
+	/**
+	 * 查询收件箱
+	 * 
+	 * @param request
+	 * @param response
+	 * @param pageNum
+	 * @param pageSize
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("/mes/queryInbox")
+	@ResponseBody
+	public HashMap<String, Object> queryInbox(HttpServletRequest request, HttpServletResponse response, Integer pageNum,
+			Integer pageSize, String empLoginName) {
+
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+
+		if (pageSize == null) {
+			pageSize = 5;
+		}
+
+		Pager pager = new Pager(service.getMesInboxCount(empLoginName), pageSize, pageNum);
+
+		List<Message> list = service.queryMesInbox(pager, empLoginName);
+
+		// 在Map集合中存储分页数据和信息数据
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("list", list);
+
+		return map;
+	}
+
+	/**
+	 * 未读消息
+	 * 
+	 * @param request
+	 * @param response
+	 * @param mesSendConfirm
+	 * @param mesReadConfirm
+	 * @param pageNum
+	 * @param pageSize
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("/mes/queryUnread")
+	@ResponseBody
+	public HashMap<String, Object> queryUnread(HttpServletRequest request, HttpServletResponse response,
+			String mesSendConfirm, String mesReadConfirm, Integer pageNum, Integer pageSize, String empLoginName) {
+
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+
+		if (pageSize == null) {
+			pageSize = 5;
+		}
+
+		Pager pager = new Pager(service.getMesUnreadCount("已发", "未读", empLoginName), pageSize, pageNum);
+
+		List<Message> list = service.queryMesUnread("已发", "未读", pager, empLoginName);
 
 		// 在Map集合中存储分页数据和信息数据
 		HashMap<String, Object> map = new HashMap<>();
@@ -214,6 +419,22 @@ public class MessageController {
 			throws ParseException, IOException, InvalidTokenOffsetsException {
 
 		return service.queryMesByIndex(queryStr);
+	}
+
+	/**
+	 * 批量删除
+	 */
+	@RequestMapping("mes/deleteMany")
+	public void deleteMany(HttpServletRequest request, HttpServletResponse response, Integer[] ids)
+			throws ParseException, IOException, InvalidTokenOffsetsException {
+
+//		System.out.println(Arrays.toString(ids));
+		
+		for(int i = 0; i < ids.length; i++) {
+//			System.out.println(ids[i]);
+			service.deleteMes(ids[i]);
+		}
+
 	}
 
 }

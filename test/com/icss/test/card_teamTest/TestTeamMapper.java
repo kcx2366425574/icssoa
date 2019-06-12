@@ -8,6 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icss.oa.card.dao.TeamMapper;
 import com.icss.oa.card.pojo.Team;
+import com.icss.oa.system.pojo.Employee;
 
 public class TestTeamMapper {
 	
@@ -21,7 +22,10 @@ public class TestTeamMapper {
 	// 增加数据
 	@Test
 	public void testInsert() {
-		mapper.insert("hhh");
+		Employee employee = new Employee();
+		employee.setEmpId(2);
+		Team team = new Team("hhh", employee);
+		mapper.insert(team);
 	}
 	
 	//删除数据
@@ -33,7 +37,10 @@ public class TestTeamMapper {
 	//修改数据
 	@Test
 	public void testUpdate() {
-		Team team = new Team(6, "www");
+		Employee employee = new Employee();
+		employee.setEmpId(2);
+		
+		Team team = new Team(15, "www", employee);
 		mapper.update(team);
 	}
 	
@@ -47,10 +54,17 @@ public class TestTeamMapper {
 	//查询全部数据
 	@Test
 	public void testQuery() {
-		List<Team> list = mapper.query();
+		List<Team> list = mapper.query(2);
 		for (Team team : list) {
 			System.out.println(team);
 		}	
+	}
+	
+	//通过登录名获取员工id
+	@Test
+	public void testGetEmpId() {
+		int id = mapper.getEmpId("lisi");
+		System.out.println(id);
 	}
 
 }

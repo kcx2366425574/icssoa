@@ -1,5 +1,6 @@
 package com.icss.test.employeeTest;
 
+import java.io.IOException;
 /**
  * 对employee service层进行测试
  * 增删改查
@@ -8,11 +9,15 @@ package com.icss.test.employeeTest;
 import java.sql.Date;
 import java.util.List;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.TextField;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icss.oa.common.Pager;
+import com.icss.oa.system.index.EmpIndexDao;
 import com.icss.oa.system.pojo.Department;
 import com.icss.oa.system.pojo.Employee;
 import com.icss.oa.system.pojo.Job;
@@ -23,6 +28,8 @@ public class TestEmployeeService {
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
 	EmployeeService service = context.getBean(EmployeeService.class);
+	
+	EmpIndexDao indexDao = context.getBean(EmpIndexDao.class);
 	
 	@Test
 	/**
@@ -39,6 +46,11 @@ public class TestEmployeeService {
 		Employee emp=new Employee("测试", "ceshi", "123456", "男", Date.valueOf("1878-03-12"), "12345678987", 3555, "ceshi@icss.com", "啥也不会", dept, job);
 		service.addEmployee(emp);
 		
+	}
+	
+	@Test
+	public void testGetId(){
+		System.out.println(service.getId("lvbu"));
 	}
 	
 	@Test
@@ -89,10 +101,50 @@ public class TestEmployeeService {
 	@Test
 	public void getAll(){
 		List<Employee> list = service.queryByNothing();
-		System.out.println(list.size());
 		for (Employee employee : list) {
 			System.out.println(employee);
 		}
+	}
+	
+	@Test
+	public void updatePwd(){
+		service.updatePwd("lvbu", "111111");
+	}
+	
+	
+	
+	/**
+	 * 重建员工的索引
+	 */
+	@Test
+	public void testCreateIndex(){
+		
+		
+		List<Employee> list = service.queryByNothing();
+		
+		for (Employee emp : list) {
+						
+			System.out.println(emp);
+			
+			try {
+				/********** 生成索引 *************/
+				// 创建索引文档
+				Document document = new Document();
+				document.add(new TextField("empId", String.valueOf(emp.getEmpId())  , Store.YES));
+				document.add(new TextField("empName", emp.getEmpName(), Store.YES));
+				document.add(new TextField("empPhone", emp.getEmpPhone(), Store.YES));
+				document.add(new TextField("empInfo", emp.getEmpInfo(), Store.YES));
+
+				// 调用索引dao
+				indexDao.create(document);
+				
+				System.out.println("索引已创建");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}	
+		
 	}
 	
 	@Test

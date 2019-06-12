@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+	<body>		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">部门管理</a></li>
+				<li><a href="#">部门计划管理</a></li>
+				<li>增加部门计划</li>
+			</ol>
+			
+			<h3 class="page-header">
+				增加新部门计划
+			</h3>
+			
+			<form class="form-horizontal col-md-10" id="form1">
+				<div class="form-group">
+					<label for="" class="col-md-2">部门计划名称</label>
+					<div class="col-md-10">
+						<input type="text" id="planName" name="planName" placeholder="请输入部门计划名称" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">部门计划时间</label>
+					<div class="col-md-10">
+						<input type="text" id="planTime" name="planTime" placeholder="请输入部门计划名称" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">部门计划描述</label>
+					<div class="col-md-10">
+						<input type="text" id="planInfo" name="planInfo" placeholder="请输入部门计划描述" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
+					</div>
+					<div class="col-md-4">		
+						<input type="hidden" value="1" id="deptId" name="dept.deptId" />
+						<input type="button" value="增加" class="btn btn-primary btn-block" id="addBtn"/>
+					</div>				
+				</div>
+			</form>			
+		</div>	
+				
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
+				
+		<script>
+			//获得参数部门id
+			var deptId = getParam('deptId');
+			$('#deptId').val(deptId);	
+			//日历控件
+			$("#planTime").datetimepicker({
+		    	lang:'ch',
+		    	format:'Y-m-d H:i:00',
+		    	formatDate:'Y-m-d H:i:00',
+		    	timepicker:false
+		    });
+			//单击增加按钮
+			$('#addBtn').click(function(){
+				
+				//表单验证函数
+				function checkForm() {
+					
+					//验证部门名称
+					var planName = $('#planName');
+					
+					if (planName.val() == '' || planName.val().length > 20) {
+						alert('部门计划名称不能为空且最多20字符');
+						planName.focus();
+						return false;
+					}
+										
+					//验证部门
+					var planInfo = $('#planInfo');
+					
+					if (planInfo.val() == '' || planInfo.val().length > 20) {
+						alert('部门计划描述不能为空且最多20字符');
+						planInfo.focus();
+						return false;
+					}
+					
+					return true;					
+				}				
+				
+//				调用表单验证
+				if ( !checkForm() )
+					return;	
+					
+				//加载层
+				layer.load(2);
+				
+				//把表单的元素序列化为参数数据
+				var params = $('#form1').serialize();
+								
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/plan/add", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params   //请求参数数据
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('增加部门成功');	
+					
+					setTimeout(function(){
+						location.href = 'QueryPlan.html?deptId='+deptId;//重定向到查询画面
+					},1000);
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll();//关闭加载
+				});				
+				
+			});			
+		</script>
+		
+	</body>
+</html>

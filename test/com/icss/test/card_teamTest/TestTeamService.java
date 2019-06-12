@@ -8,6 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icss.oa.card.pojo.Team;
 import com.icss.oa.card.service.TeamService;
+import com.icss.oa.system.pojo.Employee;
 
 /**
  * 分组业务测试类
@@ -25,19 +26,24 @@ public class TestTeamService {
 	//增加数据
 	@Test
 	public void testAddTeam() {
-		service.addTeam("ppp");
+		Employee employee = new Employee();
+		employee.setEmpId(service.getEmpIdByLname("zhangsan"));
+		Team team = new Team("sss", employee);
+		service.addTeam(team);
 	}
 	
 	//删除数据
 	@Test
 	public void testDeleteTeam() {
-		service.deleteTeam(11);
+		service.deleteTeam(16);
 	}
 	
 	//修改数据
 	@Test
 	public void testUpdateTeam() {
-		Team team = new Team(7, "aaa");
+		Employee employee = new Employee();
+		employee.setEmpId(service.getEmpIdByLname("zhangsan"));
+		Team team = new Team(16, "qqqq", employee);
 		service.updateTeam(team);
 	}
 	
@@ -51,10 +57,17 @@ public class TestTeamService {
 	//查询全部数据
 	@Test
 	public void testQueryTeam() {
-		List<Team> list = service.queryTeam();
+		List<Team> list = service.queryTeam(2);
 		for (Team team : list) {
 			System.out.println(team);
 		}
+	}
+	
+	//通过登录名获取员工id
+	@Test
+	public void testGetEmpIdByLname() {
+		int id = service.getEmpIdByLname("zhangsan");
+		System.out.println(id);
 	}
 
 }

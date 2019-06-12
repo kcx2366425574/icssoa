@@ -41,12 +41,21 @@ public class MessageService {
 	@Autowired
 	private MessageIndexDao indexDao;
 
-	// 根据id查询信息
+	/**
+	 * 根据id查询信息
+	 * 
+	 * @param mesId
+	 * @return
+	 */
 	public Message queryMesById(Integer mesId) {
 		return mapper.queryById(mesId);
 	}
 
-	// 添加信息
+	/**
+	 * 添加信息
+	 * 
+	 * @param mes
+	 */
 	public void addMes(Message mes) {
 		mapper.insert(mes);
 
@@ -68,7 +77,11 @@ public class MessageService {
 		}
 	}
 
-	// 删除信息
+	/**
+	 * 删除信息
+	 * 
+	 * @param mesId
+	 */
 	public void deleteMes(Integer mesId) {
 		mapper.delete(mesId);
 
@@ -82,7 +95,11 @@ public class MessageService {
 		}
 	}
 
-	// 修改信息
+	/**
+	 * 修改信息
+	 * 
+	 * @param mes
+	 */
 	public void updateMes(Message mes) {
 		mapper.update(mes);
 
@@ -105,13 +122,25 @@ public class MessageService {
 
 	/**
 	 * 返回信息总记录数
+	 * 
+	 * @return
 	 */
 	@Transactional(readOnly = true)
 	public int getMesCount() {
 		return mapper.getCount();
 	}
 
-	// 全部的模糊查询
+	/**
+	 * 全部的模糊查询
+	 * 
+	 * @param pager
+	 * @param mesSendDate
+	 * @param empEmail
+	 * @param mesTitle
+	 * @param mesReciver
+	 * @param mesInfo
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public List<Message> queryMesByCondition(Pager pager, String mesSendDate, String empEmail, String mesTitle,
 			Integer mesReciver, String mesInfo) {
@@ -119,29 +148,47 @@ public class MessageService {
 				mesReciver, mesInfo);
 	}
 
-	// 全部的模糊查询 没有收件人
+	/**
+	 * 全部的模糊查询 没有收件人
+	 * 
+	 * @param pager
+	 * @param mesSendDate
+	 * @param empEmail
+	 * @param mesTitle
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public List<Message> queryMesByCondition1(Pager pager, String mesSendDate, String empEmail, String mesTitle) {
 		return mapper.queryByCondition1(pager.getStart(), pager.getPageSize(), mesSendDate, empEmail, mesTitle);
 	}
 
-	// 根据条件查询总记录数
+	/**
+	 * 根据条件查询总记录数
+	 * 
+	 * @param mesSendDate
+	 * @param empEmail
+	 * @param mesTitle
+	 * @param mesReciver
+	 * @param mesInfo
+	 * @return
+	 */
 	@Transactional(readOnly = true)
-	public Integer getMesCountByCondition(String mesSendDate, String empEmail, String mesTitle, Integer mesReciver,String mesInfo) {
-		return mapper.getCountByCondition(mesSendDate, empEmail, mesTitle, mesReciver,mesInfo);
+	public Integer getMesCountByCondition(String mesSendDate, String empEmail, String mesTitle, Integer mesReciver,
+			String mesInfo) {
+		return mapper.getCountByCondition(mesSendDate, empEmail, mesTitle, mesReciver, mesInfo);
 	}
-	
+
 	/**
 	 * 全文检索员工
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
-	 * @throws InvalidTokenOffsetsException 
+	 * @throws InvalidTokenOffsetsException
 	 */
 	@Transactional(readOnly = true)
 	public List<Message> queryMesByIndex(String queryStr)
 			throws IOException, InvalidTokenOffsetsException, ParseException {
-		
+
 		// 设置常见停用词（的，么，啊，着之类的东东）
 		String[] self_stop_words = { "的", "着", "啊", "么", "嘛", "是" };
 		CharArraySet cas = new CharArraySet(Version.LUCENE_47, 0, true);
@@ -160,7 +207,7 @@ public class MessageService {
 
 		// 创建查询解析器对象，多字段搜索
 		QueryParser queryParser = new MultiFieldQueryParser(Version.LUCENE_47,
-				new String[] { "mesId", "mesTitle", "mesInfo"}, analyzer);
+				new String[] { "mesId", "mesTitle", "mesInfo" }, analyzer);
 
 		// 创建查询对象
 		Query query = queryParser.parse(queryStr);
@@ -170,11 +217,109 @@ public class MessageService {
 
 		return list;
 	}
-	
-	//根据登录名查询信息
+
+	/**
+	 * 根据登录名查询信息
+	 * 
+	 * @param empLoginName
+	 * @param pager
+	 * @return
+	 */
 	@Transactional(readOnly = true)
-	public List<Message> queryMesByLoginName(String empLoginName,Pager pager) {
-		return mapper.queryByLoginName(empLoginName,pager.getStart(),pager.getPageSize());
+	public List<Message> queryMesByLoginName(String empLoginName, Pager pager, String mesSendDate, String empEmail,
+			String mesTitle, Integer mesReciver, String mesInfo) {
+		return mapper.queryByLoginName(empLoginName, pager.getStart(), pager.getPageSize(), mesSendDate, empEmail,
+				mesTitle, mesReciver, mesInfo);
+	}
+
+	/**
+	 * 根据登录名查询响应的总记录数
+	 * 
+	 * @param empLoginName
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public int getMesCountByEmpLoginName(String empLoginName, String mesSendDate, String empEmail, String mesTitle,
+			Integer mesReciver, String mesInfo) {
+		return mapper.getCountByEmpLoginName(empLoginName, mesSendDate, empEmail, mesTitle, mesReciver, mesInfo);
+	}
+
+	/**
+	 * 草稿箱和发件箱查询
+	 * 
+	 * @param mesSendConfirm
+	 * @param start
+	 * @param pageSize
+	 * @param empLoginName
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<Message> queryMesDraft(String mesSendConfirm, Pager pager, String empLoginName) {
+		return mapper.queryDraft(mesSendConfirm, pager.getStart(), pager.getPageSize(), empLoginName);
+	}
+
+	/**
+	 * 草稿箱和发件箱个数
+	 * 
+	 * @param mesSendConfirm
+	 * @param empLoginName
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public Integer getMesDraftCount(String mesSendConfirm, String empLoginName) {
+		return mapper.getCountDraft(mesSendConfirm, empLoginName);
+	}
+
+	/**
+	 * 收件箱查询
+	 * 
+	 * @param start
+	 * @param pageSize
+	 * @param empLoginName
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<Message> queryMesInbox(Pager pager, String empLoginName) {
+		return mapper.queryInbox(pager.getStart(), pager.getPageSize(), empLoginName);
+	}
+
+	/**
+	 * 收件箱个数
+	 * 
+	 * @param empLoginName
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public Integer getMesInboxCount(String empLoginName) {
+		return mapper.getCountInbox(empLoginName);
+	}
+
+	/**
+	 * 未读消息查询
+	 * 
+	 * @param pager
+	 * @param empLoginName
+	 * @param mesSendConfirm
+	 * @param mesReadConfirm
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<Message> queryMesUnread(String mesSendConfirm,
+			String mesReadConfirm,Pager pager, String empLoginName ) {
+		return mapper.queryUnread(mesSendConfirm, mesReadConfirm, pager.getStart(), pager.getPageSize(), empLoginName);
+	}
+
+	/**
+	 * 未读消息查询
+	 * 
+	 * @param empLoginName
+	 * @param mesSendConfirm
+	 * @param mesReadConfirm
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public Integer getMesUnreadCount( String mesSendConfirm, String mesReadConfirm,String empLoginName) {
+		return mapper.getCountUnread(mesSendConfirm, mesReadConfirm, empLoginName);
 	}
 
 }

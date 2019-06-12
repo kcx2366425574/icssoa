@@ -93,7 +93,7 @@
 		//动态生成员工列表
 			$.ajax({
 				type:"get", //请求类型get post
-				url: baseUrl + "/emp/query", //请求url地址
+				url: baseUrl + "/employee/query", //请求url地址
 				async:false, //false默认表示同步请求
 				dataType:'json', //响应的数据类型				
 			})
@@ -111,7 +111,7 @@
 			//动态生成职务列表（同步请求）
 			$.ajax({
 				type:"get", //请求类型get post
-				url: baseUrl + "/emp/query", //请求url地址
+				url: baseUrl + "/employee/query", //请求url地址
 				async:false, //false默认表示同步请求
 				dataType:'json', //响应的数据类型				
 			})

@@ -21,9 +21,15 @@
 				<div class="form-group">
 					<label for="" class="col-xs-2">员工登录名</label>
 					<div class="col-xs-10">
-						<input readonly type="text" id="empLoginName" name="empLoginName" placeholder="请输入员工登录名" class="form-control"/>
+						<input readonly type="text" id="empLoginName" name="empLoginName" class="form-control"/>
 					</div>					
 				</div>	
+				<div class="form-group">
+					<label for="" class="col-xs-2">员工密码</label>
+					<div class="col-xs-10">
+						<input readonly type="text" id="empPwd" name="empPwd" class="form-control"/>
+					</div>					
+				</div>
 				<div class="form-group">
 					<label for="" class="col-xs-2">性别</label>
 					<div class="col-xs-10">
@@ -160,7 +166,8 @@
 				//表单回显
 				$('#empId').val(data.empId);
 				$('#empName').val(data.empName);
-				$('#empLoginName').val(data.empLoginName);				
+				$('#empLoginName').val(data.empLoginName);	
+				$('#empPwd').val(data.empPwd);	
 				var sexCheck = [];
 				sexCheck.push(data.empSex);				
 				$(':radio[name=empSex]').val(sexCheck);
