@@ -1,6 +1,8 @@
 package com.icss.oa.message.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 /**
- * 职务控制器
+ * 信息控制器
  * 
  * @author Administrator
  *
@@ -34,7 +36,7 @@ public class MessageController {
 	private EmployeeService empService;
 
 	/**
-	 * 增加职务
+	 * 增加信息
 	 * 
 	 * @param request
 	 * @param response
@@ -42,24 +44,59 @@ public class MessageController {
 	 */
 	@RequestMapping("/mes/addMes")
 	public void addMes(HttpServletRequest request, HttpServletResponse response, Message Message) {
-		// HttpSession session = request.getSession();
-		//
-		// String empLoginName = (String) session.getAttribute("empLoginName");
-		// Employee emp = empService.queryEmpByLoginName(empLoginName);
-		// session.setAttribute("empId", emp.getEmpId()); // 记录用户id
-
 		service.addMes(Message);
 	}
 
 	/**
-	 * 增加职务,根据登录名增加
+	 * 增加信息,根据登录名增加,已发信息
 	 * 
 	 * @param request
 	 * @param response
 	 * @param dept
 	 */
 	@RequestMapping("/mes/addMesByLoginName")
-	public void addMesByLoginName(HttpServletRequest request, HttpServletResponse response, Message mes) {
+	public void addMesByLoginName(HttpServletRequest request, HttpServletResponse response, Integer[] emp,
+			Message mes) {
+
+		for (int i = 0; i < emp.length; i++) {
+
+			Date mesSendDate = new Date();
+
+			HttpSession session = request.getSession();
+
+			String empLoginName = (String) session.getAttribute("empLoginName");
+			Employee employee = empService.queryEmpByLoginName(empLoginName);
+			employee.setEmpId(empService.getId(empLoginName));
+
+			Integer empId = employee.getEmpId();
+
+			Employee mesSender = new Employee();
+			mesSender.setEmpId(empId);
+			mes.setMesSender(mesSender);
+
+			Employee mesReciver = empService.getById(emp[i]);
+
+			mes.setMesReciver(mesReciver);
+
+			mes.setMesSendConfirm("已发");
+			mes.setMesReadConfirm("未读");
+			mes.setMesSendDate(mesSendDate);
+
+			service.addMes(mes);
+		}
+	}
+
+	/**
+	 * 增加信息,根据登录名增加,草稿箱
+	 * 
+	 * @param request
+	 * @param response
+	 * @param dept
+	 */
+	@RequestMapping("/mes/addDraftByLoginName")
+	public void addDraftByLoginName(HttpServletRequest request, HttpServletResponse response, Message mes) {
+
+		Date mesSendDate = new Date();
 
 		HttpSession session = request.getSession();
 
@@ -73,11 +110,15 @@ public class MessageController {
 		mesSender.setEmpId(empId);
 		mes.setMesSender(mesSender);
 
+		mes.setMesSendConfirm("未发");
+		mes.setMesReadConfirm("未读");
+		mes.setMesSendDate(mesSendDate);
+
 		service.addMes(mes);
 	}
 
 	/**
-	 * 删除职务
+	 * 删除信息
 	 * 
 	 * @param request
 	 * @param response
@@ -89,15 +130,22 @@ public class MessageController {
 	}
 
 	/**
-	 * 修改职务
+	 * 修改信息
 	 * 
 	 * @param request
 	 * @param response
 	 * @param Message
 	 */
 	@RequestMapping("/mes/updateMes")
-	public void update(HttpServletRequest request, HttpServletResponse response, Message Message) {
-		service.updateMes(Message);
+	public void update(HttpServletRequest request, HttpServletResponse response, Message mes) {
+
+		if (mes.getMesSendConfirm().equals("已发")) {
+			mes.setMesReadConfirm("已读");
+			service.updateMes(mes);
+		} else {
+			service.updateMes(mes);
+		}
+
 	}
 
 	/**
@@ -111,12 +159,13 @@ public class MessageController {
 	 * @param empEmail
 	 * @param mesTitle
 	 * @return
+	 * @throws UnsupportedEncodingException
 	 */
 	@RequestMapping("/mes/queryByCondition")
 	@ResponseBody
 	public HashMap<String, Object> queryByCondition(HttpServletRequest request, HttpServletResponse response,
 			Integer pageNum, Integer pageSize, String mesSendDate, String empEmail, String mesTitle, Integer empId,
-			String mesInfo) {
+			String mesInfo) throws UnsupportedEncodingException {
 
 		if (pageNum == null) {
 			pageNum = 0;
@@ -428,13 +477,25 @@ public class MessageController {
 	public void deleteMany(HttpServletRequest request, HttpServletResponse response, Integer[] ids)
 			throws ParseException, IOException, InvalidTokenOffsetsException {
 
-//		System.out.println(Arrays.toString(ids));
-		
-		for(int i = 0; i < ids.length; i++) {
-//			System.out.println(ids[i]);
+		for (int i = 0; i < ids.length; i++) {
 			service.deleteMes(ids[i]);
 		}
 
+	}
+
+	/**
+	 * 群发邮件
+	 */
+	@RequestMapping("mes/addMany")
+	public void insertMany(HttpServletRequest request, HttpServletResponse response, Integer[] emp, Message mes) {
+		for (int i = 0; i < emp.length; i++) {
+
+			Employee employee = empService.getById(emp[i]);
+
+			mes.setMesReciver(employee);
+
+			service.addMes(mes);
+		}
 	}
 
 }

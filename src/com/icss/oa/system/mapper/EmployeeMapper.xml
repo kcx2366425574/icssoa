@@ -129,7 +129,8 @@
 	
 	<select id="queryByLoginName" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT *
-		FROM	employee e
+		FROM	employee e left outer join department d
+		on e.emp_dept_id = d.dept_id
 		where	emp_login_name=#{empLoginName}
 	</select>
 	

@@ -66,7 +66,7 @@
 					<!--v-for循环遍历数据绑定到画面-->
 					<tr v-for="(emp,index) in empData">
 						<td>
-							<input type="checkbox" name="ids" :value="emp.empId" />
+							<input type="checkbox" id="ids" name="ids" :value="emp.empId" />
 						</td>
 						<td>{{emp.empId}}</td>
 						<td>{{emp.empName}}</td>
@@ -137,6 +137,11 @@
 		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
 		
 		<script>	
+			
+
+
+			
+			
 			
 			//搜索条件
 			var deptCond = '';
@@ -290,6 +295,23 @@
 			});
 			
 			
+						
+			var checkedIds = $(':checkbox[name=ids]:checked');
+			/* 将选中的数据ID保存*/
+			$("#ids").click(function(){
+			    if($(this).is(":checked")){
+			         checkedIds.push($(this).attr("ids"));
+			     }else{
+			         for(var i=0; i<checkedIds.length; i++){
+			             if($(this).attr("ids") == checkedIds[i]){
+			             checkedIds.splice(i, 1);
+			             break;
+			             }
+			         }
+			     }
+			 });
+			
+			
 			//批量删除1
 			$('#delManyBtn').click(function(){
 				
@@ -308,7 +330,7 @@
 				
 				idsStr = idsStr.substr(0,idsStr.length-1);
 				
-				var flag = window.confirm('确定要删除此员工吗');
+				var flag = window.confirm('确定要删除选中的员工吗');
 						
 				if ( !flag )
 					return;

@@ -33,6 +33,8 @@
 		#{schGranter.empId,jdbcType=INTEGER},
 		#{schGrantee.empId,jdbcType=INTEGER})
 	</insert>
+	
+	
 	<delete id="delete" parameterType="java.lang.Integer">
 		delete from
 		schedule

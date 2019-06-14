@@ -7,6 +7,13 @@
 <meta charset="UTF-8">
 <title></title>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/global.js"></script>
+<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+<script src="../js/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
+<script type="text/javascript" src="../js/param.js"></script>
+
 </head>
 <body>
 	<div class="container">
@@ -91,6 +98,11 @@
 					<input type="button"  value="批量删除" id="delManyBtn" class="btn btn-danger  btn-block"/>
 				</div>
 				
+				<div class="col-md-4">
+					<input type="hidden" name="meetingId" id="meetingId"/>
+					<a :href="'AddMeetingEmp.html?meetingId='+meetingId" class="btn btn-primary btn-block">增加参会人员</a>
+				</div>
+				
 		</div>
 
 		<!--<div class="row">
@@ -101,19 +113,13 @@
 
 	</div>
 
-
-	<script type="text/javascript" src="../js/jquery.js"></script>
-	<script type="text/javascript" src="../js/global.js"></script>
-	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
-	<script src="../js/layer/layer.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
-	<script type="text/javascript" src="../js/param.js"></script>
-	
 	
 	<script>		
 			
 			var meetingId = getParam('meetingId');
+			$('#meetingId').val(meetingId);
 			
+			alert(meetingId);
 			var pageNum=getParam('pageNum');
 		
 			

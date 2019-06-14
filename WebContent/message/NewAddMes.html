@@ -6,12 +6,16 @@
 		<meta charset="UTF-8">
 		<title>增加信息,自动获取收件人</title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/kind/css/blueprint/screen.css" />
+		<link rel="stylesheet" href="../js/kind/css/blueprint/print.css" />
+		<link rel="stylesheet" href="../js/kind/css/style.css" />
+		<link rel="stylesheet" href="../js/kind/js/kindeditor/themes/default/default.css" />
 	</head>
 
 	<body>
 
 		<div class="container">
-			
+
 			<!--面板组-->
 			<div class="panel-group" id="accordion" style="float: left; width: 160px;margin-top: 20px;">
 				<!--面板1-->
@@ -34,21 +38,21 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">是否发送</label>
+					<!--<label for="" class="col-md-2">是否发送</label>-->
 					<div class="col-md-10">
-						<input type="text" id="mesSendConfirm" name="mesSendConfirm" placeholder="请输入信息题目" class="form-control" />
+						<input type="hidden" id="mesSendConfirm" name="mesSendConfirm" placeholder="请输入信息题目" class="form-control" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">是否已读</label>
+					<!--	<label for="" class="col-md-2">是否已读</label>-->
 					<div class="col-md-10">
-						<input type="text" id="mesReadConfirm" name="mesReadConfirm" placeholder="请输入信息题目" class="form-control" />
+						<input type="hidden" id="mesReadConfirm" name="mesReadConfirm" placeholder="请输入信息题目" class="form-control" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">时间</label>
+					<!--	<label for="" class="col-md-2">时间</label>-->
 					<div class="col-md-10">
-						<input type="text" id="mesSendDate" name="mesSendDate" placeholder="请输入信息题目" class="form-control" />
+						<input type="hidden" id="mesSendDate" name="mesSendDate" placeholder="请输入信息题目" class="form-control" />
 					</div>
 				</div>
 				<div class="form-group">
@@ -61,17 +65,28 @@
 					</div>
 				</div>
 				<!--<div class="form-group">
-					<label for="" class="col-md-2">发件人</label>
-					<div class="col-md-10">
-						<input type="text" id="empLoginName" name="mesSender.empId" class="form-control" disabled="disabled"/>
-					</div>
-				</div>-->
-				<div class="form-group">
 					<label for="" class="col-md-2">选择收件人</label>
 					<div class="col-md-10">
 						<select name="mesReciver.empId" id="mesReciver" class="form-control">
 							<option value="">请选择收件人</option>							
 						</select>
+					</div>
+				</div>-->
+				<div class="form-group">
+					<label for="" class="col-md-2">选择收件人</label>
+					<div class="col-md-10">
+						<input type="button" value="选择收件人" class="btn btn-primary btn-block " id="chooseBtn" />
+					</div>
+					<!--<div class="col-md-10">
+						<select name="mesReciver.empId" id="mesReciver" class="form-control">
+							<option value="">请选择收件人</option>							
+						</select>
+					</div>-->
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">已选择员工</label>
+					<div class="col-md-10">
+						<input type="text" id="emp" name="emp" class="form-control" readonly="readonly" />
 					</div>
 				</div>
 				<div class="form-group">
@@ -83,9 +98,9 @@
 					</div>
 				</div>
 			</form>
-			
+
 			<input type="hidden" id="empId" name="empId" />
-			
+
 		</div>
 
 		<script type="text/javascript" src="../js/jquery.js"></script>
@@ -93,23 +108,25 @@
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
 		<script type="text/javascript" src="../js/layer/layer.js"></script>
 		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+		<script src="../js/kind/js/My97DatePicker/WdatePicker.js"></script>
+		<script src="../js/kind/js/kindeditor/kindeditor-min.js"></script>
+		<script src="../js/kind/js/kindeditor/zh_CN.js"></script>
 
 		<script>
-			
 			//根据登录名获得发件人的id
-//			var empLoginName = $('#empLoginName');
-//
-//			$.get(baseUrl + '/employee/getLoginName', function(data) {
-//				$('#empLoginName').val(data);
-//			});
-//			
-//			var empId = $('#empId');
-//			$.get(baseUrl + 'employee/getId', function(data) {
-//				$('#empId').val(data);
-//			})
-//			
-//			$("#empLoginName").append('<option value="' + empId + '" >' + empLoginName + '</option>');
-			
+			//			var empLoginName = $('#empLoginName');
+			//
+			//			$.get(baseUrl + '/employee/getLoginName', function(data) {
+			//				$('#empLoginName').val(data);
+			//			});
+			//			
+			//			var empId = $('#empId');
+			//			$.get(baseUrl + 'employee/getId', function(data) {
+			//				$('#empId').val(data);
+			//			})
+			//			
+			//			$("#empLoginName").append('<option value="' + empId + '" >' + empLoginName + '</option>');
+
 			//动态生成收件人列表
 			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
 					//遍历数据集合
@@ -120,6 +137,29 @@
 				.error(function() {
 					alert('请求员工列表失败');
 				});
+
+			//转换textarea到kindeditor，简化类型编辑器
+			var editor = KindEditor.create('textarea[name="mesInfo"]', {
+				resizeType: 1,
+				allowPreviewEmoticons: false,
+				allowImageUpload: false,
+				items: [
+					'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+					'insertunorderedlist', '|', 'emoticons', 'image', 'link'
+				]
+			});
+
+			//单击选择按钮
+			$('#chooseBtn').click(function() {
+				// 利用iframe加载其他网页内容到页面层 type:2
+				layer.open({
+					title: '收件人',
+					type: 2,
+					area: ['800px', '600px'], //宽高
+					content: 'QueryReciver.html'
+				})
+			})
 
 			//单击增加按钮
 			$('#addBtn').click(function() {
@@ -150,6 +190,11 @@
 					//验证信息内容
 					var mesInfo = $('#mesInfo');
 
+					//发送数据之前，需要把富文本内容同步到textarea中
+					if (editor) {
+						editor.sync();
+					}
+
 					if (mesInfo.val() == '' || mesInfo.val().length > 100000) {
 						alert('信息内容不能为空且最多100000字符');
 						mesInfo.focus();
@@ -158,13 +203,15 @@
 					}
 
 					//验证收件人 发件人不可以相同
-					var mesSender = $('#mesSender');
-					var mesReciver = $('#mesReciver');
-
-					if (mesSender.val() == mesReciver.val()) {
-						alert("发件人收件人不可以相同");
-						return false;
-					}
+//					var mesSender = $('#mesSender');
+//					var mesReciver = $('#mesReciver');
+//
+//					if (mesSender.val() == mesReciver.val()) {
+//						alert("发件人收件人不可以相同");
+//						return false;
+//					}
+					
+					var emp = $('#emp').val().split(",");
 
 					return true;
 				}

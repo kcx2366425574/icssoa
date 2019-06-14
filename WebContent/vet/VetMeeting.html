@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+<meta name="viewport"
+	content="width=width-device,initial-scale=1,user-scalable=no" />
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css">
+</head>
+<body>
+	<div class="container">
+
+		<h3 class="page-header">审批会议</h3>
+
+		<form class="form-horizontal col-md-10" id="form1">
+			
+			<div class="form-group">
+				<label for="" class="col-md-2">会议ID</label>
+				<div class="col-md-10">
+					<input type="text"  readonly="readonly" id="meetingId" name="meetingId"
+						 class="form-control" />
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="" class="col-md-2">会议主题</label>
+				<div class="col-md-10">
+					<input type="text" readonly="readonly" id="meetingTheme" name="meetingTheme"
+						 class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">开始时间</label>
+				<div class="col-md-10">
+					<input type="text" readonly="readonly" id="startTime" name="startTime"
+						 class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">结束时间</label>
+				<div class="col-md-10">
+					<input type="text" readonly="readonly" id="endTime" name="endTime"
+						 class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议发起人:</label>
+				<div class="col-md-10">
+					<input type="text" readonly="readonly" id="empId" name="promoter.empId"
+						value="promoter" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议室:</label>
+				<div class="col-md-10">
+					<input type="text" readonly="readonly" id="meetingRoomId" name="meetingRoom.meetingRoomId"
+						value="meetingRoom" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">会议状态</label>
+				<div class="col-md-10">
+					<select id="meetingState" name="meetingState" value="meetingState" class="form-control">
+						<option value="未审批">未审批</option>
+						<option value="审批不通过">审批不通过</option>
+						<option value="审批通过">审批通过</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="form-group">
+					<div class="col-lg-offset-6 col-md-2">
+						<input type="button" value="返回" class="btn btn-warning btn-block"
+							onclick="history.back();" />
+					</div>
+					<div class="col-md-2">
+						<input type="hidden" value="1" id="meetingId" name="meetingId" />
+						<input type="button" value="确认" class="btn btn-primary" id="updateBtn"/>
+					</div>
+				</div>
+		</form>
+	</div>
+
+
+
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/global.js"></script>
+	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/layer/layer.js"></script>
+	<script type="text/javascript" src="../js/param.js"></script>
+	<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+	<script>
+	
+	 		
+							
+			
+			
+			
+			//获得id
+			
+			var meetingId = getParam('meetingId');
+			var pageNum=getParam('pageNum');
+			
+			
+			//根据id返回员工数据
+			$.getJSON(baseUrl + '/meeting/queryById',{meetingId:meetingId},function(data){
+				
+				$('#meetingId').val(data.meetingId);
+				$('#meetingTheme').val(data.meetingTheme);
+				$('#startTime').val(data.startTime);
+				$('#endTime').val(data.endTime);
+				$('#empId').val(data.promoter.empId);
+				$('#meetingRoomId').val(data.meetingRoom.meetingRoomId);
+				$('#meetingState').val(data.meetingState);
+				
+			})
+			.error(function(){
+				alert('请求会议数据失败');				
+			});			
+	  
+		
+		
+		//单击修改按钮
+			$('#updateBtn').click(function() {
+				
+				//加载层
+				layer.load(2);
+				
+				
+				//请求参数
+				var params2 = $('#form1').serialize();
+				
+				var state = $('#meetingState');
+				
+				
+				
+				var empList;
+				var ids = new Array();
+				
+				//发出ajax请求调用后端接口
+				var url = baseUrl + "/meetingEmp/queryByCondition";
+				
+				//请求参数
+				var params = {
+					meetingId:meetingId
+				}
+
+				
+				$.ajax({
+					type:"get", //请求类型get post
+					url: url, //请求url地址
+					async:false, //true默认表示异步请求
+					dataType:'json', //响应的数据类型
+					data:params
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					//把响应的数据赋值给vue数据模型中的变量
+					
+					empList = data.list;					
+				    
+	
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});	
+				
+				console.log(empList);
+				for (var i = 0;i<empList.length;i++) {
+					console.log(empList[i].emp.empId);
+					ids.push(empList[i].emp.empId);
+				}
+				
+				console.log(ids);
+				
+//				var mesParams{
+//					mesTitle:'会议通知',
+//					
+//					
+//				};
+				
+				
+				
+			
+				
+				
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/meeting/update", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params2 //传递的请求参数
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('审批会议成功');	
+					
+					setTimeout(function(){
+						history.back();//重定向到查询画面
+					},1000);		
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});									
+				
+			});
+		
+		</script>
+</body>
+</html>

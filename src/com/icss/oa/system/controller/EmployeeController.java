@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.icss.oa.common.Pager;
+import com.icss.oa.plan.pojo.Plan;
+import com.icss.oa.plan.service.PlanService;
 import com.icss.oa.system.pojo.Employee;
 import com.icss.oa.system.service.EmployeeService;
 
@@ -25,6 +27,8 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService service;
 	
+	@Autowired
+	private PlanService planService;
 	
 	/**
 	 * 登录验证
@@ -99,6 +103,16 @@ public class EmployeeController {
 		return service.queryByNothing();
 	}
 
+	//根据登录名获得部门计划
+	@RequestMapping("/employee/queryDeptId")
+	@ResponseBody
+	public Integer queryDeptId(HttpServletRequest request,HttpServletResponse response){
+		HttpSession session = request.getSession();
+		
+		String empLoginName = (String) session.getAttribute("empLoginName");
+		Employee employee = service.queryEmpByLoginName(empLoginName);
+		return employee.getDept().getDeptId();
+	}
 	
 	//根据查询条件动态查询员工
 	@RequestMapping("/employee/query")
@@ -141,14 +155,14 @@ public class EmployeeController {
 	}
 	
 	//根据登录名查询员工
-		@RequestMapping("/employee/queryByLoginName")
-		@ResponseBody
-		public Employee getEmpByLoginName(HttpServletRequest request,HttpServletResponse response){
-			HttpSession session = request.getSession();
-			
-			String empLoginName = (String) session.getAttribute("empLoginName");
-			return service.queryEmpByLoginName(empLoginName);
-		}
+	@RequestMapping("/employee/queryByLoginName")
+	@ResponseBody
+	public Employee getEmpByLoginName(HttpServletRequest request,HttpServletResponse response){
+		HttpSession session = request.getSession();
+		
+		String empLoginName = (String) session.getAttribute("empLoginName");
+		return service.queryEmpByLoginName(empLoginName);
+	}
 	
 		//修改密码
 		@RequestMapping("/employee/updatePwd")

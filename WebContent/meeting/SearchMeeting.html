@@ -157,7 +157,7 @@
 	<script type="text/javascript " src="../js/bootstrap/js/bootstrap.js "></script>
 	<script src="../js/layer/layer.js " type="text/javascript " charset="utf-8 "></script>
 	<script type="text/javascript " src="../js/vue/vue2.5.js "></script>
-	<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+	<script type="text/javascript"  src="../js/datetimepicker/jquery.datetimepicker.js"></script>
 	
 	
 	<script>	
@@ -228,7 +228,9 @@
 						})
 						.done(function(data,status,xhr){ //请求成功回调函数
 							//把响应的数据赋值给vue数据模型中的变量
+							console.log(data.list);
 							v.meetingData = data.list;	
+							
 							v.pager = data.pager;
 							
 							//生成分页按钮

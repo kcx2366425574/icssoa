@@ -1,10 +1,128 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title></title>
+	<style type="text/css">
+		.div,.main{
+			position:absolute;
+			height:1920px;
+			width:300px;
+		}
+		
+		img{
+			height:300px;
+			width:1920px;
+		}
+		
+		.bon1,.bon2{
+			position:absolute;
+			height:60px;
+			width:60px;
+			margin-top:130px;
+			background:black;
+			opacity:0.6;
+			font-size:40px;
+			color:white;
+			line-height:60px;
+			text-align:center;
+		}
+		
+		.bon2{
+			margin-left:1860px;
+		}
+		.list{
+			position:absolute;
+			margin-top:250px;
+			margin-left:1600px;
+		}
+		
+		.li{
+			float:left;
+			height:36px;
+			width:36px;
+			background:orange;
+			margin-left:10px;
+			margin-right:10px;
+			text-align:center;
+			line-height:36px;
+			font-family:"微软雅黑";
+			border-radius:18px;
+		}
+	</style>
+	<script type="text/javascript" src="js/jquery.js" ></script>
 </head>
 <body>
-    这是头
+	<div class="main">
+		<div class="div"><img src="images/06133900ly2g.png"></div>
+		<div class="div"><img src="images/ui.png"></div>
+		<div class="div"><img src="images/guangzhoumxc.png"></div>
+		<div class="div"><img src="images/neu_1.png"></div>
+		<div class="div"><img src="images/neu_2.png"></div>
+	</div>
+
+<div class="bon1"><</div>
+<div class="bon2">></div>
+
+	<div class="list">
+		<div class="li" index="0">1</div>
+		<div class="li" index="1">2</div>
+		<div class="li" index="2">3</div>
+		<div class="li" index="3">4</div>
+		<div class="li" index="4">5</div>
+	</div>
+
 </body>
 </html>
+<script>
+	$(document).ready(function() {
+		var i=0;
+		var timer=null;
+		start();//初始化函数
+		time();//定时器函数
+		
+		//鼠标移入移出事件
+		$(".li").hover(function(){
+		i=$(this).index();
+		start();
+		clearInterval(timer);
+		},function(){time();}
+		);
+		
+		//点击按钮事件
+		$(".bon1").click(function(){
+			clearInterval(timer);
+			if(i==0){
+				i=5;
+			}
+			i--;
+			start();
+			time();
+		});
+		
+		$(".bon2").click(function(){
+			clearInterval(timer);
+			if(i==4){
+				i=-1;
+			}
+			i++;
+			start();
+			time();
+		});
+		
+		function start(){
+			$(".div").eq(i).show().siblings().hide();
+			$(".li").eq(i).css("background","red").siblings().css("background","orange");
+		};
+		
+		function time(){
+			timer=setInterval(function(){
+				i++;
+				if(i==6){
+					i=0;
+				}
+				start();
+			},1800);
+		};
+	});
+</script>

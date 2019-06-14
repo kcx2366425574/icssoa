@@ -55,9 +55,19 @@ public class EmployeeService {
 	}
 	//批量删除
 	public void deleteMany(Integer[] ids){
-	    System.out.println(Arrays.toString(ids));
 		
-		mapper.deleteMany(ids);
+		for(int  i = 0;i<ids.length;i++){
+			int empId = ids[i];
+			// 索引
+			try {
+				Term term = new Term("empId", String.valueOf(empId));
+				// 调用索引dao
+				indexDao.delete(term);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			mapper.deleteMany(ids);
+		}
 	}
 	
 	//修改密码

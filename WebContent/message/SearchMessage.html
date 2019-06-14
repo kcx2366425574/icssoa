@@ -80,7 +80,7 @@
 							<td>{{mes.mesSendConfirm}}</td>
 							<td>{{mes.mesReadConfirm}}</td>
 							<td>{{mes.mesSendDate}}</td>
-							<td>{{mes.mesInfo}}</td>
+							<td>{{{mes.mesInfo}}}</td>
 							<td>{{mes.mesSender.empName}}</td>
 							<td>{{mes.mesReciver.empName}}</td>
 							<td>
@@ -309,8 +309,9 @@
 					.done(function(data, status, xhr) { //请求成功回调函数
 						layer.msg('删除信息成功');
 						setTimeout(function() {
-							location.reload(); //刷新当前网页
+							window.v.query(v.pager.pageNum);
 						}, 1000);
+
 					})
 					.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
 						alert(errorStatus + ',' + errorText);

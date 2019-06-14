@@ -47,7 +47,6 @@ public class PlanController {
 		int count = service.getCount(planTime, planName, deptId);
 		Pager pager=new Pager(count, pageSize, pageNum);
 		List<Plan> list=service.queryPlan(pager, planTime, planName, deptId);
-		System.out.println(list);
 		// 在Map集合中存储分页数据和名片数据
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("pager", pager);

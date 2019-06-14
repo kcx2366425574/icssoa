@@ -7,7 +7,7 @@
 <body>
 	<div>
 		欢迎你，<span id="empLoginName"></span>
-		
+		<p>我们最新的计划是：<span id="planInfo" style="color: red;"></span></p>
 	</div>
 	
 	
@@ -18,11 +18,46 @@
 	<script type="text/javascript" src="js/vue/vue2.5.js" ></script>
 	<script type="text/javascript" src="js/layer/layer.js" ></script>
 	<script>		
+		
 		$.get(baseUrl + '/employee/getLoginName',function(data) {
 			
 			$('#empLoginName').html(data);
 			
-		});		
+		});	
+	
+		var deptId;
+		$.ajax({
+			type:"post", //请求类型get post
+			url: baseUrl + "/employee/queryDeptId", //请求url地址
+			async:false, //true默认表示异步请求
+			dataType:'text', //响应的数据类型
+		})
+		.done(function(data, status, xhr) { //请求成功回调函数
+			
+			 deptId = data;
+		})
+		.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+			alert(errorStatus + ',' + errorText);
+		});
+		
+		$.ajax({
+			type:"post", //请求类型get post
+			url: baseUrl + "/plan/query", //请求url地址
+			async:false, //true默认表示异步请求
+			dataType:'json', //响应的数据类型
+			data:{deptId:deptId}
+		})
+		.done(function(data, status, xhr) { //请求成功回调函数
+			var list = data.list;
+		    var deptInfo = list[list.length-1].planInfo;
+			$('#planInfo').html(deptInfo);
+		})
+		.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+			alert(errorStatus + ',' + errorText);
+		});
+		
+		
+		
 		
 	</script>
 	

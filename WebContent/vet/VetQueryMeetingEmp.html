@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+<meta name="viewport"
+	content="width=width-device,initial-scale=1,user-scalable=no" />
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/global.js"></script>
+<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+<script src="../js/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
+<script type="text/javascript" src="../js/param.js"></script>
+
+</head>
+<body>
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="#">OA系统</a></li>
+			<li><a href="#">会议管理</a></li>
+			<li><a href="#">参会人员管理</a></li>
+			<li>参会人员列表</li>
+		</ol>
+
+		<h3 class="page-header">参会人员列表</h3>
+
+		<table class="table table-striped table-bordered table-hover table-condensed">
+			<thead>
+				<tr>
+					<th>参会编号</th>
+					<th>会议编号</th>
+					<th>参会人</th>
+					<th>性别</th>
+					<th>部门</th>
+					<th>职位</th>
+					<th>电话号码</th>
+				</tr>
+			</thead>
+			<!--v-for循环遍历数据绑定到画面-->
+				<tbody>
+					
+					<tr v-for="(meetingEmp,index) in meetingEmpData">
+						<td>{{meetingEmp.meetingEmpId}}</td>
+						<td>{{meetingEmp.meeting.meetingId}}</td>
+						<td>{{meetingEmp.emp.empName}}</td>
+						<td>{{meetingEmp.emp.empSex}}</td>
+						<td>{{meetingEmp.emp.dept.deptName}}</td>
+						<td>{{meetingEmp.emp.job.jobName}}</td>
+						<td>{{meetingEmp.emp.empPhone}}</td>
+					
+					</tr>					
+				</tbody>
+		</table>
+		
+		<div class="row" v-show="pager.recordCount!=0">
+				
+				<div class=" col-sm-4 ">
+					<div>
+						共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条，
+						共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+					</div>
+				</div>
+				
+				<div class="col-sm-8">
+						<nav>
+							<ul class="pagination pull-right">
+								<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
+								<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
+
+								<li :class="{active:item==pager.pageNum}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
+
+								<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+								<li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>
+							</ul>
+						</nav>
+				</div>
+			
+		</div>
+			
+		<div class="alert alert-info " v-show="pager.recordCount==0 ">
+				没有任何满足条件的数据
+		</div>	
+		
+		<div class="row">
+			
+				<div class="col-md-4">
+					<input type="button"  value="返回" class="btn btn-default  btn-block" onclick="history.back();"/>
+				</div>
+				
+				
+		</div>
+
+		<!--<div class="row">
+			<div class="col-md-offset-8 col-md-4">
+				<a :href="'AddMeetingEmp.html?meetingId='+meetingEmp.meetingId" class="btn btn-info btn-sm">新增参会人员</a>
+			</div>
+		</div>-->
+
+	</div>
+
+	
+	<script>		
+			
+			var meetingId = getParam('meetingId');
+			$('#meetingId').val(meetingId);
+			
+			var pageNum=getParam('pageNum');
+		
+			
+			var v = new Vue({
+				el:'.container', //应用vue数据的范围
+				data:{  //数据模型
+					meetingEmpData:[],
+					pager:{},
+					pageBtn:[]
+				},
+				
+				methods:{ //定义方法
+					query:function(pageNum) {
+						
+						//发出ajax请求调用后端接口
+						var url = baseUrl + "/meetingEmp/queryByCondition";
+						
+						//请求参数
+						var params = {
+							pageNum: pageNum,
+							pageSize: 10,
+							meetingId:meetingId
+						}
+
+						
+						$.ajax({
+							type:"get", //请求类型get post
+							url: url, //请求url地址
+							async:true, //true默认表示异步请求
+							dataType:'json', //响应的数据类型
+							data:params
+						})
+						.done(function(data,status,xhr){ //请求成功回调函数
+							//把响应的数据赋值给vue数据模型中的变量
+							
+							v.meetingEmpData = data.list;
+							v.pager = data.pager;
+							
+						    //生成分页按钮
+							var start = v.pager.pageNum - 2;
+							var end = v.pager.pageNum + 2;
+
+							if (v.pager.pageNum < 3) {
+								start = 1;
+								end = 5;
+							}
+
+							if (end > v.pager.pageCount) {
+								end = v.pager.pageCount;
+							}
+
+							if (v.pager.pageCount < 5) {
+								start = 1;
+								end = v.pager.pageCount;
+							}
+
+							v.pageBtn = []; //初始化清空
+
+							for (var i = start; i <= end; i++) {
+								v.pageBtn.push(i);
+							}
+			
+						})
+						.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+							alert(errorStatus + ',' + errorText);				
+						});		
+						
+					},
+					
+					
+					
+				}
+			});	
+			
+			
+//			调用查询方法
+			v.query();	
+			
+			
+			
+			
+			
+		</script>
+</body>
+</html>

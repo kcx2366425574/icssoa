@@ -26,6 +26,7 @@ public interface ScheduleMapper {
     
     List<Schedule> queryByCondition(@Param("start")Integer start,@Param("pageSize")Integer pageSize,@Param("empId1")Integer e1,@Param("empId2")Integer e2,@Param("schName")String schName);
     
+    
     List<Schedule> queryByIds(@Param("ids") Integer[] ids);
     
     int getCount();
