@@ -6,7 +6,8 @@ package com.icss.test.employeeTest;
  * 增删改查
  * @author kcx
  */
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class TestEmployeeMapper {
 		Job job = new Job();
 		job.setJobId(1);
 
-		Employee emp = new Employee("aaaa", "zhang", "123", "jjjj", Date.valueOf("1999-1-1"), "11111111111", 100, "4444",
+		Employee emp = new Employee("aaaa", "zhang", "123", "jjjj", java.sql.Date.valueOf("1999-1-1"), "11111111111", 100, "4444",
 				"dddd", dept, job);
 		mapper.insert(emp);
 	}
@@ -69,7 +70,7 @@ public class TestEmployeeMapper {
 
 		Job job = new Job();
 		job.setJobId(1);
-		Employee emp=new Employee(16,"测试", "ceshi", "123456", "男", Date.valueOf("1878-03-12"), "12345678987", 7000, "ceshi@icss.com", "我会java", dept, job);
+		Employee emp=new Employee(16,"测试", "ceshi", "123456", "男",java.sql.Date.valueOf("1878-03-12"), "12345678987", 7000, "ceshi@icss.com", "我会java", dept, job);
 		mapper.update(emp);
 	}
 
@@ -89,6 +90,18 @@ public class TestEmployeeMapper {
 		List<Employee> list = mapper.queryByCondition(0, 10, null,"女", null,null);
 		for (Employee employee : list) {
 			System.out.println(employee);
+		}
+	}
+	
+	
+	@Test
+	//时间查询
+	public void testIdByBirthday() {
+		SimpleDateFormat format = new SimpleDateFormat("MM-dd");
+		String formatStr =format.format(new Date());
+		Integer[] empId = mapper.queryByBirthday("%"+formatStr);
+		for (int i : empId) {
+			System.out.print(i+" ");
 		}
 	}
 	

@@ -18,7 +18,7 @@
 		<div class="container">
 
 			<h3 class="page-header">
-				用车记录列表
+				车辆记录列表
 			</h3>
 
 			<div class="row" style="margin-bottom: 20px;">
@@ -30,18 +30,19 @@
 								<option value="">请选择申请人</option>							
 							</select>
 						</div>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<label for="">审批人</label>
 							<select name="vehAppEmp" id="vehAppEmp" class="form-control">
 								<option value="">请选择审批人</option>							
 							</select>
-						</div>
+						</div>-->
 						<div class="form-group">
 							<label for="">审批状态</label>
 							<select name="vehAppState" id="vehAppState" class="form-control">
 								<option value="">请选择审批状态</option>	
 								<option value="审批通过">审批通过</option>
 								<option value="未通过">未通过</option>
+								<option value="待审批">待审批</option>
 								<option value="审批中">审批中</option>
 								<option value="撤销">撤销</option>
 							</select>
@@ -76,8 +77,7 @@
 						<th>申请人</th>
 						<th>用车开始时间</th>
 						<th>用车结束时间</th>
-						<th>用车原因</th>
-						<th>审批人</th>
+						<!--<th>审批人</th>-->
 						<th>审批状态</th>
 						<th>车辆</th>
 						<th>操作</th>
@@ -90,12 +90,11 @@
 						<td>{{vehUse.vehUseEmp.empName}}</td>
 						<td>{{vehUse.vehUseStart}}</td>
 						<td>{{vehUse.vehUseEnd}}</td>
-						<td>{{vehUse.vehUseReason}}</td>
-						<td>{{vehUse.vehUseApprover.empName}}</td>
+						<!--<td>{{vehUse.vehUseApprover.empName}}</td>-->
 						<td>{{vehUse.vehAppState}}</td>
 						<td>{{vehUse.veh.vehicleName}}</td>
 						<td>
-							<input type="button" value="修改/详细" class="btn btn-info btn-sm" @click="showDetails(vehUse.vehUseId);"/>
+							<input type="button" value="详细" class="btn btn-info btn-sm" @click="showDetails(vehUse.vehUseId);"/>
 						</td>
 						
 						<!--<td>
@@ -140,11 +139,11 @@
 			<div class="alert alert-info" v-show="pager.recordCount==0">
 				没有任何满足条件的数据
 			</div>
-			<div class="row">
+			<!--<div class="row">
 				<div class="col-md-offset-8 col-md-4">
-					<a href="AddVehicleUse.html" class="btn btn-primary btn-block">增加新用车记录</a>
+					<a href="AddVehicleUse.html" class="btn btn-primary btn-block">增加车辆记录</a>
 				</div>
-			</div>
+			</div>-->
 
 		</div>
 
@@ -155,13 +154,11 @@
 		<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
 
 		<script>
-		
-		
-		
+			
 			
 			//搜索条件
 			var vehUseEmpcond = '';
-			var vehUseApprovercond = ''
+//			var vehUseApprovercond = ''
 			var vehAppStatecond =''
 			var vehcond = '';
 
@@ -176,16 +173,16 @@
 					alert('请求申请人列表失败');
 				});
 
-			//动态生成审批人列表
-			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
-					//遍历数据集合
-					$.each(data, function(index, el) {
-						$('#vehAppEmp').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
-					});
-				})
-				.error(function() {
-					alert('请求审批人列表失败');
-				});
+//			//动态生成审批人列表
+//			$.getJSON(baseUrl + '/employee/getAll', {}, function(data) {
+//					//遍历数据集合
+//					$.each(data, function(index, el) {
+//						$('#vehAppEmp').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+//					});
+//				})
+//				.error(function() {
+//					alert('请求审批人列表失败');
+//				});
 
 			//动态生成车辆列表
 			$.getJSON(baseUrl + '/vehicle/query', {}, function(data) {
@@ -216,7 +213,7 @@
 							pageNum: pageNum,
 							pageSize: 5,
 							vehUseEmp: vehUseEmpcond,
-							vehAppEmp: vehUseApprovercond,
+//							vehAppEmp: vehUseApprovercond,
 							vehAppState: vehAppStatecond,
 							vehicleId: vehcond
 						}
@@ -264,40 +261,15 @@
 					},
 					showDetails: function(vehUseId) { //修改查看详细的方法
 
-							// 利用iframe加载其他网页内容到页面层 type:2
-							layer.open({
-								title: '用车记录详细信息',
-								type: 2,
-								area: ['600px', '800px'], //宽高
-								content: 'UpdateVehicleUse.html?vehUseId=' + vehUseId + '&pageNum=' + v.pager.pageNum
-							});
+						// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title: '用车记录详细信息',
+							type: 2,
+							area: ['600px', '800px'], //宽高
+							content: 'UpdateVehicleUse.html?vehUseId=' + vehUseId + '&pageNum=' + v.pager.pageNum
+						});
 
-						}
-						//					del:function(vehUseId,index){
-						//						
-						//						var flag = window.confirm('确定要删除此吗');
-						//						
-						//						if ( !flag )
-						//							return;
-						//							
-						//						//发出ajax请求
-						//						var url = baseUrl + "/vehUseloyee/delete";
-						//						
-						//						$.ajax({
-						//							type:"get",
-						//							url:url,
-						//							async:true,
-						//							dataType:'text',
-						//							data:{vehUseId:vehUseId}
-						//						})
-						//						.done(function(data,status,xhr){
-						//							layer.msg('删除部门成功');	
-						//							v.deptData.splice(index,1);//前端删除
-						//						})
-						//						.fail(function(xhr,errorStatus,errorText){
-						//							alert(errorStatus + ',' + errorText);
-						//						});
-						//					}
+					}
 				}
 			});
 
@@ -309,7 +281,7 @@
 
 				//条件赋值
 				vehUseEmpcond = $('#vehUseEmp').val();
-				vehUseApprovercond = $('#vehAppEmp').val();
+//				vehUseApprovercond = $('#vehAppEmp').val();
 				vehAppStatecond = $('#vehAppState').val();
 				vehcond = $('#vehicleId').val();
 

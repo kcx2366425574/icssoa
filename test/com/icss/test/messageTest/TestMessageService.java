@@ -76,7 +76,7 @@ public class TestMessageService {
 		Date date = new Date(); // 获得当前系统的时间
 
 		Employee mesSender = new Employee();
-		mesSender.setEmpId(1);
+		mesSender.setEmpId(6);
 
 		Employee mesReciver = new Employee();
 		mesReciver.setEmpId(2);
@@ -227,7 +227,7 @@ public class TestMessageService {
 		pager.setStart(0);
 		pager.setPageSize(2);
 
-		List<Message> list = service.queryMesByLoginName("zhaoyi", pager,"1998-02-19%", null, null, null,null);
+		List<Message> list = service.queryMesByLoginName("zhaoyi", pager, "1998-02-19%", null, null, null, null);
 
 		for (Message mes : list) {
 			System.out.println(mes);
@@ -239,7 +239,7 @@ public class TestMessageService {
 	 */
 	@Test
 	public void testGetMesCountByEmpLoginName() {
-		int count = service.getMesCountByEmpLoginName("zhaoyi","1998-02-19%", null, null, null,null);
+		int count = service.getMesCountByEmpLoginName("zhaoyi", "1998-02-19%", null, null, null, null);
 		System.out.println(count);
 	}
 
@@ -307,7 +307,7 @@ public class TestMessageService {
 		pager.setStart(0);
 		pager.setPageSize(2);
 
-		List<Message> list = service.queryMesUnread("已发", "未读",pager, "zhaoyi" );
+		List<Message> list = service.queryMesUnread("已发", "未读", pager, "zhaoyi");
 
 		for (Message mes : list) {
 			System.out.println(mes);
@@ -320,8 +320,25 @@ public class TestMessageService {
 	 */
 	@Test
 	public void testGetMesUnreadCount() {
-		int count = service.getMesUnreadCount("已发", "未读", "zhaoyi" );
+		int count = service.getMesUnreadCount("已发", "未读", "zhaoyi");
 		System.out.println(count);
+	}
+	
+	/**
+	 * 群发消息
+	 */
+	@Test
+	public void testGroupSend() {
+
+		Integer[] ids = { 1, 2 };
+
+		Date date = new Date(); // 获得当前系统的时间
+
+		Employee mesSender = new Employee();
+		mesSender.setEmpId(6);
+
+		Message mes = new Message("测试", "已发", "已读", date, "ceshi", mesSender, null);
+		service.groupSend(mes, ids,"lisi");
 	}
 
 }

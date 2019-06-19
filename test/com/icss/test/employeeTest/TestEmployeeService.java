@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icss.oa.common.Pager;
+import com.icss.oa.message.service.MessageService;
 import com.icss.oa.system.index.EmpIndexDao;
 import com.icss.oa.system.pojo.Department;
 import com.icss.oa.system.pojo.Employee;
@@ -30,6 +31,8 @@ public class TestEmployeeService {
 	EmployeeService service = context.getBean(EmployeeService.class);
 	
 	EmpIndexDao indexDao = context.getBean(EmpIndexDao.class);
+	
+	MessageService mesService = context.getBean(MessageService.class);
 	
 	@Test
 	/**
@@ -96,6 +99,13 @@ public class TestEmployeeService {
 	public void testQueryByLoginName(){
 		Employee emp = service.queryEmpByLoginName("lisi");
 		System.out.println(emp);
+	}
+	
+	
+	@Test
+	//测试通过员工登录名查询数据
+	public void testHappyBirthday(){
+		service.happyBirthday();
 	}
 	
 	@Test

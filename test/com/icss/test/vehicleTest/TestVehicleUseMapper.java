@@ -1,4 +1,4 @@
-package com.icss.test.vehicle;
+package com.icss.test.vehicleTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,13 +41,10 @@ public class TestVehicleUseMapper {
 		Employee vehUseEmp = new Employee();
 		vehUseEmp.setEmpId(1);
 
-		Employee vehUseApprover = new Employee();
-		vehUseApprover.setEmpId(1);
-
 		Vehicle veh = new Vehicle();
 		veh.setVehicleId(5);
 
-		VehicleUse vehUse = new VehicleUse(vehUseEmp, inform("2019-2-13 14:20:22"), inform("2019-2-14 14:20:22"), "aaa车", vehUseApprover,
+		VehicleUse vehUse = new VehicleUse(vehUseEmp, inform("2019-2-13 14:20:22"), inform("2019-2-14 14:20:22"), "aaa车", 
 				"审批通过", veh);
 		
 		mapper.insert(vehUse);
@@ -61,13 +58,10 @@ public class TestVehicleUseMapper {
 		Employee vehUseEmp = new Employee();
 		vehUseEmp.setEmpId(1);
 
-		Employee vehUseApprover = new Employee();
-		vehUseApprover.setEmpId(2);
-
 		Vehicle veh = new Vehicle();
 		veh.setVehicleId(1);
 		
-		VehicleUse vehUse = new VehicleUse(19,vehUseEmp, inform("2019-2-13 14:20:22"), inform("2019-2-14 14:20:22"), "aaa车", vehUseApprover,
+		VehicleUse vehUse = new VehicleUse(19,vehUseEmp, inform("2019-2-13 14:20:22"), inform("2019-2-14 14:20:22"), "aaa车", 
 				"审批通过", veh);
 		
 		mapper.update(vehUse);
@@ -77,7 +71,7 @@ public class TestVehicleUseMapper {
 	//模糊查询用车记录
 	public void testQueryByCondition() {
 		
-		List<VehicleUse> list = mapper.queryByCondition(null, null, null, 10,0,5);
+		List<VehicleUse> list = mapper.queryByCondition(null,  null, 10,0,5);
 		
 		for (VehicleUse vehUse : list) {
 			System.out.println(vehUse);
@@ -87,14 +81,7 @@ public class TestVehicleUseMapper {
 	@Test
 	//模糊查询的总记录数
 	public void testGetCountByCondition() {
-		int count = mapper.getCountByCondition(null, null, null, 1);
+		int count = mapper.getCountByCondition(null, null, 1);
 		System.out.println(count);
-	}
-	
-	@Test
-	//根据id查询用车记录
-	public void testQueryById() {
-		VehicleUse vehUse = mapper.queryById(18);
-		System.out.println(vehUse);
 	}
 }

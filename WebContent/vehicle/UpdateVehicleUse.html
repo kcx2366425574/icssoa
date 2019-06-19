@@ -43,17 +43,17 @@
 				<div class="form-group">
 					<label for="" class="col-md-2">用车原因</label>
 					<div class="col-md-10">
-						<input type="text" id="vehUseReason" name="vehUseReason" placeholder="请输入用车原因" class="form-control" />
+						<textarea name="vehUseReason" id="vehUseReason" class="form-control" rows="5"></textarea>
 					</div>
 				</div>
-				<div class="form-group">
+				<!--<div class="form-group">
 					<label for="" class="col-md-2">选择审批人</label>
 					<div class="col-md-10">
 						<select name="vehUseApprover.empId" id="vehUseApprover" class="form-control">
 							<option value="">选择审批人</option>							
 						</select>
 					</div>
-				</div>
+				</div>-->
 				<div class="form-group">
 					<label for="" class="col-md-2">审批状态</label>
 					<div class="col-md-10">
@@ -61,6 +61,7 @@
 							<option value="">请选择审批状态</option>	
 							<option value="审批通过">审批通过</option>
 							<option value="未通过">未通过</option>
+							<option value="待审批">待审批</option>
 							<option value="审批中">审批中</option>
 							<option value="撤销">撤销</option>
 							
@@ -80,7 +81,7 @@
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-4">						
 						<input type="button" value="关闭" class="btn btn-warning" onclick="parent.layer.closeAll()"/>
-						<input type="button" value="修改" class="btn btn-primary" id="updateBtn"/>
+						<!--<input type="button" value="修改" class="btn btn-primary" id="updateBtn"/>-->
 						<input type="hidden" id="vehUseId" name="vehUseId"/>
 					</div>									
 				</div>
@@ -143,24 +144,24 @@
 				layer.closeAll(); //关闭加载
 			});
 			
-			//动态审批人列表(同步请求)
-			$.ajax({
-				type:"get",
-				url:baseUrl + "/employee/getAll",
-				async:false,
-				dataType:'json',
-			})
-			.done(function(data,status,xhr){
-				//遍历数组集合
-//				var list = data.list;
-				$.each(data, function(index,el) {
-					$('#vehUseApprover').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
-				});
-			})
-			.fail(function(xhr,errorStatus,errorText){
-				alert(errorStatus + ',' + errorText);
-				layer.closeAll(); //关闭加载
-			});
+//			//动态审批人列表(同步请求)
+//			$.ajax({
+//				type:"get",
+//				url:baseUrl + "/employee/getAll",
+//				async:false,
+//				dataType:'json',
+//			})
+//			.done(function(data,status,xhr){
+//				//遍历数组集合
+////				var list = data.list;
+//				$.each(data, function(index,el) {
+//					$('#vehUseApprover').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+//				});
+//			})
+//			.fail(function(xhr,errorStatus,errorText){
+//				alert(errorStatus + ',' + errorText);
+//				layer.closeAll(); //关闭加载
+//			});
 			
 			//动态车辆列表(同步请求)
 			$.ajax({
@@ -201,7 +202,7 @@
 				$("#vehUseStart").val(data.vehUseStart);
 				$('#vehUseEnd').val(data.vehUseEnd);
 				$('#vehUseReason').val(data.vehUseReason);
-				$('#vehUseApprover').val(data.vehUseApprover.empId);
+//				$('#vehUseApprover').val(data.vehUseApprover.empId);
 				$('#vehAppState').val(data.vehAppState);
 				$('#veh').val(data.veh.vehicleId);
 				
@@ -216,17 +217,52 @@
 				//表单验证函数
 				function checkForm() {
 
-					var r; //正则表达式					
+					var r; //正则表达式	
+					
+					//验证申请人
+					var vehUseEmp = $('#vehUseEmp');
+
+					if (vehUseEmp.val() == '') {
+						layer.msg('请选择申请人');
+						vehUseEmp.focus();
+						return false;
+					}
+					
+					//时间验证
+					var vehUseStart=$('#vehUseStart');
+					if(vehUseStart.val()=='')
+					{
+						layer.msg('开始时间不能为空');
+						vehUseStart.focus();
+						return false;
+					}
+					var vehUseEnd=$('#vehUseEnd');
+					if(vehUseEnd.val()=='')
+					{
+						layer.msg('结束时间不能为空');
+						vehUseEnd.focus();
+						return false;
+					}
+					
+					//验证日期的早晚有效性
+					var startdate=new Date(document.getElementById("vehUseStart").value.replace(/\-/g, "\/"));
+					var enddate=new Date(document.getElementById("vehUseEnd").value.replace(/\-/g, "\/"));
+					if(startdate>enddate){
+						layer.msg("开始时间不能晚于结束时间，请重新输入!");
+						vehUseStart.focus();
+						return false;
+					}
+					
 
 					//验证用车原因
 					var vehUseReason = $('#vehUseReason');
 
-					if (vehUseReason.val() == '' || vehUseReason.val().length > 20) {
-						layer.msg('用车原因不能为空且最多20字符');
+					if (vehUseReason.val() == '' || vehUseReason.val().length > 100) {
+						layer.msg('用车原因不能为空且最多100字符');
 						vehUseReason.focus();
 						return false;
 					}
-
+			
 					//验证状态
 					var vehAppState = $('#vehAppState');
 
@@ -237,29 +273,11 @@
 					}
 
 					//验证车辆
-					var vehId = $('#vehId');
+					var veh = $('#veh');
 
-					if (vehId.val() == '') {
+					if (veh.val() == '') {
 						layer.msg('请选择车辆');
-						vehId.focus();
-						return false;
-					}
-
-					//验证申请人
-					var vehUseEmp = $('#vehUseEmp');
-
-					if (vehUseEmp.val() == '') {
-						layer.msg('请选择申请人');
-						vehUseEmp.focus();
-						return false;
-					}
-
-					//验证审批人
-					var vehUseApprover = $('#vehUseApprover');
-
-					if (vehUseApprover.val() == '') {
-						layer.msg('请选择审批人');
-						vehUseApprover.focus();
+						veh.focus();
 						return false;
 					}
 

@@ -37,16 +37,16 @@ public class VehicleUseService {
 	
 	//查询
 	@Transactional(readOnly = true)
-	public List<VehicleUse> queryVehByCondition(Integer vehUseEmp,Integer vehAppEmp, String vehAppState,
+	public List<VehicleUse> queryVehByCondition(Integer vehUseEmp, String vehAppState,
 			Integer vehicleId,Pager pager){
-		return mapper.queryByCondition(vehUseEmp, vehAppEmp, vehAppState, vehicleId,pager.getStart(),pager.getPageSize());
+		return mapper.queryByCondition(vehUseEmp,  vehAppState, vehicleId,pager.getStart(),pager.getPageSize());
 	}
 	
 	//模糊查询的总记录数
 	@Transactional(readOnly = true)
-	public int getVehCountByCondition(Integer vehUseEmp,Integer vehAppEmp, String vehAppState,
+	public int getVehCountByCondition(Integer vehUseEmp, String vehAppState,
 			Integer vehicleId) {
-		return mapper.getCountByCondition(vehUseEmp, vehAppEmp, vehAppState, vehicleId);
+		return mapper.getCountByCondition(vehUseEmp, vehAppState, vehicleId);
 	}
 	
 	//根据id查询用车记录
@@ -54,5 +54,5 @@ public class VehicleUseService {
 	public VehicleUse queryVehById(Integer vehUseId) {
 		return mapper.queryById(vehUseId);
 	}
-	
+
 }

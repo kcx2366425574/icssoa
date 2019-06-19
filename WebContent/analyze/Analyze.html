@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">数据分析</a></li>				
+				<li>图表展示</li>
+			</ol>
+			
+			<h3 class="page-header">
+				数据分析图表展示
+			</h3>
+			
+			
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="deptEmpCount" style="height: 500px;"></div>					
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="salMinMax" style="height: 500px;"></div>					
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-sm-6">
+					<div id="jobEmpCount" style="height: 500px;"></div>					
+				</div>
+				<div class="col-sm-6">
+					<div id="jobEmpCount2" style="height: 500px;"></div>					
+				</div>
+			</div>
+			
+		</div>	
+				
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/echarts/echarts.min.js"></script>		
+		<script>
+			// 基于准备好的dom，初始化echarts实例
+			var deptEmpCountChart = echarts.init(document.getElementById('deptEmpCount'));
+			
+			// 指定图表的配置项和数据
+			var option = {
+			    title: {
+			        text: '部门人数统计',
+			    },
+			    // 工具箱
+			    toolbox: {
+			        // 是否显示
+			        show: true,
+			        feature: {
+			            // 数据视图
+			            dataView:{
+			                show:true
+			            },
+			            // 还原
+			            restore:{
+			                show:true
+			            },
+			            // 缩放视图
+			            dataZoom:{
+			                show:true
+			            },
+			            // 是否保存图片
+			            saveAsImage: {
+			                show: true
+			            },
+			            // 动态类型切换
+			            magicType: {
+			                type: ['line', 'bar']
+			            }
+			        }
+			    },
+			    // 鼠标悬停提示框
+			    tooltip: {
+			        // axis就是x轴触发
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data: ['人数']
+			    },
+			    xAxis: {
+			        data: []
+			    },
+			    yAxis: {},
+			    series: [{
+			        name: '人数',
+			        type: 'bar',
+			        data: [],
+				    // 额外的标记点
+			        markPoint: {
+			            data: [
+			                {type: 'max', name: '最大值'},
+			                {type: 'min', name: '最小值',symbol:'arrow'}
+			            ]
+			        },
+			        // 额外的标记线
+			        markLine: {
+			            data: [
+			                {type: 'average', name: '平均值'}
+			            ]
+			        }
+				}]
+			};
+					
+			$.getJSON(baseUrl + '/analyze/queryDeptEmpCount',{},function(data) {
+	
+				$.each(data, function(index,el) {
+					//把后台json数据转换位图表数据
+					deptName = option.xAxis.data;										
+					deptName.push(el.deptName);	
+										
+					empCount = option.series[0].data;
+					empCount.push(el.empCount);
+							
+				});	
+				
+				// 使用刚指定的配置项和数据显示图表。
+				deptEmpCountChart.setOption(option);	
+			})
+			.error(function(){	
+				alert('请求数据失败');	
+			});
+			
+			//----------------------------------------------
+			
+			// 基于准备好的dom，初始化echarts实例
+			var salMinMaxChart = echarts.init(document.getElementById('salMinMax'));
+			
+			// 指定图表的配置项和数据
+			var option2 = {
+			    title: {
+			        text: '部门最低最高统计',
+			    },
+			    // 工具箱
+			    toolbox: {
+			        // 是否显示
+			        show: true,
+			        feature: {
+			            // 数据视图
+			            dataView:{
+			                show:true
+			            },
+			            // 还原
+			            restore:{
+			                show:true
+			            },
+			            // 缩放视图
+			            dataZoom:{
+			                show:true
+			            },
+			            // 是否保存图片
+			            saveAsImage: {
+			                show: true
+			            },
+			            // 动态类型切换
+			            magicType: {
+			                type: ['line', 'bar']
+			            }
+			        }
+			    },
+			    // 鼠标悬停提示框
+			    tooltip: {
+			        // axis就是x轴触发
+			        trigger: 'axis'
+			    },
+			    legend: {
+			        data: ['最低工资','最高工资']
+			    },
+			    xAxis: {
+			        data: []
+			    },
+			    yAxis: {},
+			    series: [{
+			        name: '最低工资',
+			        type: 'bar',
+			        data: [],
+				    // 额外的标记点
+			        markPoint: {
+			            data: [
+			                {type: 'max', name: '最大值'},
+			                {type: 'min', name: '最小值',symbol:'arrow'}
+			            ]
+			        },
+			        // 额外的标记线
+			        markLine: {
+			            data: [
+			                {type: 'average', name: '平均值'}
+			            ]
+			        }
+				},{
+			        name: '最高工资',
+			        type: 'bar',
+			        data: [],
+				    // 额外的标记点
+			        markPoint: {
+			            data: [
+			                {type: 'max', name: '最大值'},
+			                {type: 'min', name: '最小值',symbol:'arrow'}
+			            ]
+			        },
+			        // 额外的标记线
+			        markLine: {
+			            data: [
+			                {type: 'average', name: '平均值'}
+			            ]
+			        }
+				}]
+			};
+					
+			$.getJSON(baseUrl + '/analyze/querySalMinMax',{},function(data) {
+	
+				$.each(data, function(index,el) {
+					//把后台json数据转换位图表数据
+					deptName = option2.xAxis.data;										
+					deptName.push(el.dept_name);	
+										
+					minSal = option2.series[0].data;
+					minSal.push(el.minSal);
+					
+					maxSal = option2.series[1].data;
+					maxSal.push(el.maxSal);
+							
+				});	
+				
+				// 使用刚指定的配置项和数据显示图表。
+				salMinMaxChart.setOption(option2);	
+			})
+			.error(function(){	
+				alert('请求数据失败');	
+			});
+			
+			//----------------------------------------------
+			
+			// 基于准备好的dom，初始化echarts实例
+			var jobEmpCountChar = echarts.init(document.getElementById('jobEmpCount'));
+			
+			// 指定图表的配置项和数据
+			var option3 = {
+			    title : {
+			        text: '职务对应员工人数统计',
+			        left:'200px'
+			    },
+			    tooltip : {
+			        trigger: 'item'
+			    },
+			    legend: {
+			        orient: 'vertical',
+			        left: 'left',
+			        // 图例名字和数据的名字一定要一致，鼠标悬停图例和单击图例有功能
+			        data: []
+			    },
+			    series : [
+			        {
+			            name: '访问来源',
+			            type: 'pie',
+			            radius : '55%',
+			            avoidLabelOverlap: false,
+			            // 水平位置，垂直位置
+			            center: ['50%', '60%'],
+			            data:[]
+			        }
+			    ]
+			};		
+			
+			$.getJSON(baseUrl + '/analyze/queryJobEmpCount',{},function(data) {
+	
+				$.each(data, function(index,el) {
+					//把后台json数据转换位图表数据
+					var legend = option3.legend.data;
+					legend.push(el.job_name);
+						
+					var obj = option3.series[0].data;
+					var jobObj = {
+						value:el.emp_count,
+						name:el.job_name
+					}
+					obj.push(jobObj);	
+							
+				});	
+				
+				// 使用刚指定的配置项和数据显示图表。
+				jobEmpCountChar.setOption(option3);	
+			})
+			.error(function(){	
+				alert('请求数据失败');	
+			});
+			
+		</script>
+		
+	</body>
+</html>

@@ -24,6 +24,8 @@ import com.icss.oa.common.Pager;
 import com.icss.oa.message.dao.MessageMapper;
 import com.icss.oa.message.index.MessageIndexDao;
 import com.icss.oa.message.pojo.Message;
+import com.icss.oa.system.dao.EmployeeMapper;
+import com.icss.oa.system.pojo.Employee;
 
 /**
  * 在线信息业务层
@@ -37,7 +39,10 @@ public class MessageService {
 
 	@Autowired
 	private MessageMapper mapper;
-
+	
+	@Autowired
+	private EmployeeMapper empMapper;
+	
 	@Autowired
 	private MessageIndexDao indexDao;
 
@@ -304,8 +309,8 @@ public class MessageService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public List<Message> queryMesUnread(String mesSendConfirm,
-			String mesReadConfirm,Pager pager, String empLoginName ) {
+	public List<Message> queryMesUnread(String mesSendConfirm, String mesReadConfirm, Pager pager,
+			String empLoginName) {
 		return mapper.queryUnread(mesSendConfirm, mesReadConfirm, pager.getStart(), pager.getPageSize(), empLoginName);
 	}
 
@@ -318,8 +323,46 @@ public class MessageService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Integer getMesUnreadCount( String mesSendConfirm, String mesReadConfirm,String empLoginName) {
+	public Integer getMesUnreadCount(String mesSendConfirm, String mesReadConfirm, String empLoginName) {
 		return mapper.getCountUnread(mesSendConfirm, mesReadConfirm, empLoginName);
+	}
+
+	/**
+	 * 群发邮件
+	 * 
+	 * @param mes
+	 * @param ids
+	 */
+	public void groupSend(Message mes, Integer[] ids,String empLoginName) {
+		
+		Employee sender = empMapper.queryByLoginName(empLoginName);
+		mes.setMesSender(sender);
+		
+		for (int i = 0; i < ids.length; i++) {
+			
+			Employee mesReciver = new Employee();
+			mesReciver.setEmpId(ids[i]);
+			mes.setMesReciver(mesReciver);
+			
+			mapper.insert(mes);
+			
+			// 获得插入信息的自动编号
+			int mesId = mapper.getLastInsertId();
+
+			try {
+				/********** 生成索引 *************/
+				// 创建索引文档
+				Document document = new Document();
+				document.add(new TextField("mesId", String.valueOf(mesId), Store.YES));
+				document.add(new TextField("mesTitle", mes.getMesTitle(), Store.YES));
+				document.add(new TextField("mesInfo", mes.getMesInfo(), Store.YES));
+
+				// 调用索引dao
+				indexDao.create(document);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.icss.test.vehicle;
+package com.icss.test.vehicleTest;
 
 import java.util.List;
 

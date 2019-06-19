@@ -26,8 +26,6 @@ public class VehicleUse {
 
     private String vehUseReason;
 
-    private Employee vehUseApprover;
-
     private String vehAppState;
     
     private Vehicle veh;
@@ -37,26 +35,24 @@ public class VehicleUse {
 	}
 
 	public VehicleUse(Integer vehUseId, Employee vehUseEmp, Date vehUseStart, Date vehUseEnd, String vehUseReason,
-			Employee vehUseApprover, String vehAppState, Vehicle veh) {
+			String vehAppState, Vehicle veh) {
 		super();
 		this.vehUseId = vehUseId;
 		this.vehUseEmp = vehUseEmp;
 		this.vehUseStart = vehUseStart;
 		this.vehUseEnd = vehUseEnd;
 		this.vehUseReason = vehUseReason;
-		this.vehUseApprover = vehUseApprover;
 		this.vehAppState = vehAppState;
 		this.veh = veh;
 	}
 
-	public VehicleUse(Employee vehUseEmp, Date vehUseStart, Date vehUseEnd, String vehUseReason, Employee vehUseApprover,
-			String vehAppState, Vehicle veh) {
+	public VehicleUse(Employee vehUseEmp, Date vehUseStart, Date vehUseEnd, String vehUseReason, String vehAppState,
+			Vehicle veh) {
 		super();
 		this.vehUseEmp = vehUseEmp;
 		this.vehUseStart = vehUseStart;
 		this.vehUseEnd = vehUseEnd;
 		this.vehUseReason = vehUseReason;
-		this.vehUseApprover = vehUseApprover;
 		this.vehAppState = vehAppState;
 		this.veh = veh;
 	}
@@ -101,14 +97,6 @@ public class VehicleUse {
 		this.vehUseReason = vehUseReason;
 	}
 
-	public Employee getVehUseApprover() {
-		return vehUseApprover;
-	}
-
-	public void setVehUseApprover(Employee vehUseApprover) {
-		this.vehUseApprover = vehUseApprover;
-	}
-
 	public String getVehAppState() {
 		return vehAppState;
 	}
@@ -128,8 +116,8 @@ public class VehicleUse {
 	@Override
 	public String toString() {
 		return "VehicleUse [vehUseId=" + vehUseId + ", vehUseEmp=" + vehUseEmp + ", vehUseStart=" + vehUseStart
-				+ ", vehUseEnd=" + vehUseEnd + ", vehUseReason=" + vehUseReason + ", vehUseApprover=" + vehUseApprover
-				+ ", vehAppState=" + vehAppState + ", veh=" + veh + "]";
+				+ ", vehUseEnd=" + vehUseEnd + ", vehUseReason=" + vehUseReason + ", vehAppState=" + vehAppState
+				+ ", veh=" + veh + "]";
 	}
   
 }

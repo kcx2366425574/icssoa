@@ -48,14 +48,12 @@ public class MeetingController {
 	// 删除会议
 	@RequestMapping(" /meeting/delete")
 	public void delete(HttpServletRequest request, HttpServletResponse response, Integer meetingId) {
-		System.out.println("删除会议");
 		service.deleteMeeting(meetingId);
 	}
 
 	// 修改会议
 	@RequestMapping(" /meeting/update")
 	public void update(HttpServletRequest request, HttpServletResponse response, Meeting meeting) {
-		System.out.println("修改会议");
 		service.updateMeeting(meeting);
 	}
 
@@ -111,36 +109,31 @@ public class MeetingController {
 	
 	//批量删除会议
 	// 删除会议
-		@RequestMapping("/meeting/deleteMany")
-		public void delete(HttpServletRequest request, HttpServletResponse response, Integer[] meetingIds) {
-			System.out.println("删除会议");
-			for(Integer meetingId:meetingIds){
-				System.out.println(meetingId);
-			//service.deleteMeeting(meetingId);
-			}
+	@RequestMapping("/meeting/deleteMany")
+	public void delete(HttpServletRequest request, HttpServletResponse response, Integer[] meetingIds) {
+		for(Integer meetingId:meetingIds){
+			System.out.println(meetingId);
+		//service.deleteMeeting(meetingId);
 		}
+	}
 		
-// 查询会议室
-		@RequestMapping("/meeting/queryById")
-		@ResponseBody
-		public Meeting queryById(HttpServletRequest request, HttpServletResponse response,Integer meetingId) {
-			System.out.println("查詢会议室");
-			return service.queryMeetingById(meetingId);
-		}
+	// 查询会议室
+	@RequestMapping("/meeting/queryById")
+	@ResponseBody
+	public Meeting queryById(HttpServletRequest request, HttpServletResponse response,Integer meetingId) {
+		return service.queryMeetingById(meetingId);
+	}
 				
-/**
- * 全文检索会议
- * @throws IOException 
- * @throws ParseException 
- * @throws InvalidTokenOffsetsException 
- */
-				@RequestMapping("meeting/queryByIndex")
-				@ResponseBody
-				public List<Meeting> queryByIndex(HttpServletRequest request,HttpServletResponse response,String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
-					
-					return service.queryMeetingByIndex(queryStr);		
-				}
-				
-	
-
+	/**
+	 * 全文检索会议
+	 * @throws IOException 
+	 * @throws ParseException 
+	 * @throws InvalidTokenOffsetsException 
+	 */
+	@RequestMapping("meeting/queryByIndex")
+	@ResponseBody
+	public List<Meeting> queryByIndex(HttpServletRequest request,HttpServletResponse response,String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
+		
+		return service.queryMeetingByIndex(queryStr);		
+	}
 }

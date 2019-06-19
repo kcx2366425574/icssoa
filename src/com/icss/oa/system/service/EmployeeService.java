@@ -1,7 +1,9 @@
 package com.icss.oa.system.service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.icss.oa.common.Pager;
+import com.icss.oa.message.pojo.Message;
+import com.icss.oa.message.service.MessageService;
 import com.icss.oa.system.dao.EmployeeMapper;
 import com.icss.oa.system.index.EmpIndexDao;
 import com.icss.oa.system.pojo.Employee;
@@ -37,6 +41,10 @@ public class EmployeeService {
 	
 	@Autowired
 	private EmpIndexDao indexDao;
+	
+	
+	@Autowired
+	private MessageService mesService;
 	/**
 	 * 登录验证
 	 * 返回1 用户名不存在 2 密码错误 3 登录成功
@@ -213,5 +221,19 @@ public class EmployeeService {
 		List<Employee> list = indexDao.search(query);
 
 		return list;
+	}
+	
+	
+	/**
+	 * 员工生日祝福提醒
+	 */
+	public void happyBirthday() {
+		
+		SimpleDateFormat format = new SimpleDateFormat("MM-dd");
+		String formatStr =format.format(new Date());
+		Integer[] empId = mapper.queryByBirthday("%"+formatStr);
+		Employee employee = mapper.queryById(32);
+		Message message = new Message("生日快乐", "已发", "未读", new Date(), "今天是您的生日，总经理祝您生日快乐", employee,null);
+		mesService.groupSend(message, empId, employee.getEmpLoginName());
 	}
 }

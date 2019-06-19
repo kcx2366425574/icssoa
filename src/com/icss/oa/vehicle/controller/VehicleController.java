@@ -85,7 +85,7 @@ public class VehicleController {
 			pageNum = 1;
 		
 		if (pageSize == null)
-			pageSize = 10;
+			pageSize = service.getVehicleCountByCondition(vehicleName, vehicleLicense, vehicleState);
 		
 		Pager pager = new Pager(service.getVehicleCountByCondition(vehicleName, vehicleLicense, vehicleState),
 				pageSize, pageNum);

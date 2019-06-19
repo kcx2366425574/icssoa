@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
+import org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -94,6 +96,7 @@ public class CardController {
 	
 	/**
 	 * 全文检索
+	 * @return 
 	 * @throws IOException 
 	 * @throws ParseException 
 	 * @throws InvalidTokenOffsetsException 
@@ -101,8 +104,27 @@ public class CardController {
 	@RequestMapping("card/queryByIndex")
 	@ResponseBody
 	public List<Card> queryByIndex(HttpServletRequest request,HttpServletResponse response,String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
+		HttpSession session = request.getSession();
+		String empLoginName0 = (String) session.getAttribute("empLoginName");
 		
-		return service.queryCardByIndex(queryStr);		
+		ArrayList<Integer> ids0 = service.getTeamIds(empLoginName0);
+		int size = ids0.size();
+		Integer[] ids = (Integer[])ids0.toArray(new Integer[size]);
+		List<Card> list0 = service.queryCardByEmp(ids);
+		List<Card> list = service.queryCardByIndex(queryStr);
+		
+		List<Integer> cardId0 = list0.stream().map(Card::getCardId).collect(Collectors.toList());
+		List<Integer> cardId = list.stream().map(Card::getCardId).collect(Collectors.toList());
+		cardId.retainAll(cardId0);
+		
+		List<Card> result = new ArrayList<Card>();
+		for (Card card : list) {
+			boolean isContains = cardId.contains(card.getCardId());
+			if (isContains) {
+				result.add(card);
+			}
+		}
+		return result;	
 	}
 	
 	/**

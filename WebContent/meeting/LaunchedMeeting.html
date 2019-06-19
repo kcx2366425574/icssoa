@@ -55,6 +55,7 @@
 									<li><a  href="javascript:void(0);" @click="del(meeting.meetingId,index);"/>删除</li>
 							     	<li><a :href="'UpdateMeeting.html?meetingId='+meeting.meetingId" >修改</a></li>
 									<li><a :href="'AddMeetingEmp.html?meetingId='+meeting.meetingId" >新增参会人员</a></li>
+									<li><a :href="'QueryMeetingEmp.html?meetingId='+meeting.meetingId" >查看参会人员</a></li>
 								</ul>				
 							</div>
 						</td>
@@ -89,7 +90,13 @@
 			
 		<div class="alert alert-info " v-show="pager.recordCount==0 ">
 				没有任何满足条件的数据
-		</div>	
+		</div>
+		
+		<div class="row ">
+			<div class="col-md-offset-8 col-md-4 ">
+				<a href="AddMeeting.html " class=" btn btn-primary btn-block ">增加新会议</a>
+			</div>
+		</div>
 
 	</div>
 
@@ -120,8 +127,6 @@
 			});	
 			
 			alert(empId);
-			
-//			var meetingId = getParam('meetingId');
 			
 			var pageNum=getParam('pageNum');
 		

@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <title></title>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
-<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css">
+<link rel="stylesheet" type="text/css" href="../js/datetimepicker/jquery.datetimepicker.css" />
 </head>
 <body>
 	<div class="container">
@@ -48,15 +48,18 @@
 			<div class="form-group">
 				<label for="" class="col-md-2">会议发起人:</label>
 				<div class="col-md-10">
-					<input type="text" readonly="readonly" id="empId" name="promoter.empId"
-						value="promoter" class="form-control" />
+					<select id="empId" name="promoter.empId" value="promoter" class="form-control" style="pointer-events: none;>
+						<option value="">请选择会议发起人</option>
+					</select>
 				</div>
 			</div>
+			
 			<div class="form-group">
 				<label for="" class="col-md-2">会议室:</label>
 				<div class="col-md-10">
-					<input type="text" readonly="readonly" id="meetingRoomId" name="meetingRoom.meetingRoomId"
-						value="meetingRoom" class="form-control" />
+					<select id="meetingRoomId" name="meetingRoom.meetingRoomId" value="meetingRoom" class="form-control" style="pointer-events: none;>
+						<option value="">请选择会议室</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group">
@@ -69,7 +72,8 @@
 					</select>
 				</div>
 			</div>
-
+		
+			
 			<div class="form-group">
 				<div class="form-group">
 					<div class="col-lg-offset-6 col-md-2">
@@ -93,99 +97,109 @@
 	<script type="text/javascript" src="../js/param.js"></script>
 	<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
 	<script>
-	
-	 		
-							
+		//动态生成会议室列表（同步请求）
+		$.ajax({
+			type:"get", //请求类型get post
+			url: baseUrl + "/meetingRoom/query", //请求url地址
+			async:false, //false默认表示同步请求
+			dataType:'json', //响应的数据类型				
+		})
+		.done(function(data,status,xhr){ //请求成功回调函数
 			
 			
+			//遍历数据集合
+			$.each(data, function(index,el) {				
+				$('#meetingRoomId').append('<option value="' + el.meetingRoomId + '" >' + el.meetingRoomName + '</option>');					
+			});
+		})
+		.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+			alert(errorStatus + ',' + errorText);
+			layer.closeAll();//关闭加载
+		});		
+						
+		//动态生成会议发起人列表（同步请求）
+		$.ajax({
+			type:"get", //请求类型get post
+			url: baseUrl + "/employee/getAll", //请求url地址
+			async:false, //false默认表示同步请求
+			dataType:'json', //响应的数据类型				
+		})
+		.done(function(data,status,xhr){ //请求成功回调函数
+			//遍历数据集合
+			$.each(data, function(index,el) {				
+				$('#empId').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
+			});
+		})
+		.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+			alert(errorStatus + ',' + errorText);
+			layer.closeAll();//关闭加载
+		});
+		
+		
+		//获得id
+		
+		var meetingId = getParam('meetingId');
+		var pageNum=getParam('pageNum');
+		
+		
+		//根据id返回员工数据
+		$.getJSON(baseUrl + '/meeting/queryById',{meetingId:meetingId},function(data){
 			
-			//获得id
+			$('#meetingId').val(data.meetingId);
+			$('#meetingTheme').val(data.meetingTheme);
+			$('#startTime').val(data.startTime);
+			$('#endTime').val(data.endTime);
+			$('#empId').val(data.promoter.empId);
+			$('#meetingRoomId').val(data.meetingRoom.meetingRoomId);
+			$('#meetingState').val(data.meetingState);
 			
-			var meetingId = getParam('meetingId');
-			var pageNum=getParam('pageNum');
-			
-			
-			//根据id返回员工数据
-			$.getJSON(baseUrl + '/meeting/queryById',{meetingId:meetingId},function(data){
+		})
+		.error(function(){
+			alert('请求会议数据失败');				
+		});	
 				
-				$('#meetingId').val(data.meetingId);
-				$('#meetingTheme').val(data.meetingTheme);
-				$('#startTime').val(data.startTime);
-				$('#endTime').val(data.endTime);
-				$('#empId').val(data.promoter.empId);
-				$('#meetingRoomId').val(data.meetingRoom.meetingRoomId);
-				$('#meetingState').val(data.meetingState);
-				
+			
+			var empList;
+			var ids = new Array();
+			//请求参数
+			var params = {
+				meetingId:meetingId
+			}
+	  		//发出ajax请求调用后端接口
+			var url = baseUrl + "/meetingEmp/queryByCondition";
+	  		
+	  		
+			$.ajax({
+				type:"get", //请求类型get post
+				url: url, //请求url地址
+				async:false, //true默认表示异步请求
+				dataType:'json', //响应的数据类型
+				data:params
 			})
-			.error(function(){
-				alert('请求会议数据失败');				
-			});			
-	  
-		
-		
-		//单击修改按钮
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//把响应的数据赋值给vue数据模型中的变量
+				
+				empList = data.list;					
+			    
+
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});	
+			
+			for (var i = 0;i<empList.length;i++) {
+				ids.push(empList[i].emp.empId);
+			}
+			
+			
+			//单击修改按钮
 			$('#updateBtn').click(function() {
-				
-				//加载层
-				layer.load(2);
-				
-				
+								
 				//请求参数
 				var params2 = $('#form1').serialize();
 				
-				var state = $('#meetingState');
-				
-				
-				
-				var empList;
-				var ids = new Array();
-				
-				//发出ajax请求调用后端接口
-				var url = baseUrl + "/meetingEmp/queryByCondition";
-				
-				//请求参数
-				var params = {
-					meetingId:meetingId
-				}
+				var state = $('#meetingState').val();
 
-				
-				$.ajax({
-					type:"get", //请求类型get post
-					url: url, //请求url地址
-					async:false, //true默认表示异步请求
-					dataType:'json', //响应的数据类型
-					data:params
-				})
-				.done(function(data,status,xhr){ //请求成功回调函数
-					//把响应的数据赋值给vue数据模型中的变量
-					
-					empList = data.list;					
-				    
-	
-				})
-				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
-					alert(errorStatus + ',' + errorText);				
-				});	
-				
-				console.log(empList);
-				for (var i = 0;i<empList.length;i++) {
-					console.log(empList[i].emp.empId);
-					ids.push(empList[i].emp.empId);
-				}
-				
-				console.log(ids);
-				
-//				var mesParams{
-//					mesTitle:'会议通知',
-//					
-//					
-//				};
-				
-				
-				
-			
-				
-				
 				$.ajax({
 					type:"post", //请求类型get post
 					url: baseUrl + "/meeting/update", //请求url地址
@@ -194,12 +208,23 @@
 					data:params2 //传递的请求参数
 				})
 				.done(function(data,status,xhr){ //请求成功回调函数
-					layer.closeAll();//关闭加载
-					layer.msg('审批会议成功');	
+					layer.closeAll();
+					layer.msg('审批成功');
 					
-					setTimeout(function(){
-						history.back();//重定向到查询画面
-					},1000);		
+					
+					setTimeout(function() {
+						if(state == '审批通过') {
+							// 利用iframe加载其他网页内容到页面层
+						    layer.open({
+								title: '消息通知',
+								type: 2,
+								area: ['800px', '600px'], //宽高
+								content: 'VetConfirmAddMes.html?emp='+ids+'&vetType=1'
+							})
+						}
+					}, 2000);
+					
+					
 				})
 				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
 					alert(errorStatus + ',' + errorText);				

@@ -67,6 +67,11 @@
    		where emp_id=#{empId}
    	</select>
    	
+   	<!-- 按生日查询员工 -->
+   	<select id="queryByBirthday" parameterType="java.lang.String" resultType="java.lang.Integer">
+   	  SELECT e.emp_id FROM employee e WHERE emp_birthday LIKE #{date}
+   	</select>
+   	
    	<select id="getId" parameterType="java.lang.String" resultType="java.lang.Integer">
    		select emp_id from employee  where emp_login_name=#{empLoginName}
    	</select>

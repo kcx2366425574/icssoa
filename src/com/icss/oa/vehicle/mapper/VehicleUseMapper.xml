@@ -15,14 +15,6 @@
 				jdbcType="VARCHAR" />
 		</association>
 
-		<association property="vehUseApprover" javaType="com.icss.oa.system.pojo.Employee">
-			<id column="veh_use_approver" property="empId" jdbcType="INTEGER" />
-			<result column="veh_use_approver_name" property="empName"
-				jdbcType="VARCHAR" />
-			<result column="veh_use_approver_login_name" property="empLoginName"
-				jdbcType="VARCHAR" />
-		</association>
-
 		<association property="veh" javaType="com.icss.oa.vehicle.pojo.Vehicle">
 			<id column="veh_id" property="vehicleId" jdbcType="INTEGER" />
 			<result column="veh_name" property="vehicleName" jdbcType="VARCHAR" />
@@ -39,7 +31,7 @@
 		values (default, #{vehUseEmp.empId},
 		#{vehUseStart},
 		#{vehUseEnd},
-		#{vehUseReason}, #{vehUseApprover.empId},
+		#{vehUseReason}, 
 		#{vehAppState},#{veh.vehicleId})
 	</insert>
 
@@ -48,7 +40,7 @@
 		update vehicle_use
 		set
 		veh_use_emp=#{vehUseEmp.empId},veh_use_start=#{vehUseStart},veh_use_end=#{vehUseEnd},
-		veh_use_reason=#{vehUseReason},veh_use_approver=#{vehUseApprover.empId},
+		veh_use_reason=#{vehUseReason},
 		veh_app_state=#{vehAppState},veh_id=#{veh.vehicleId}
 		where
 		veh_use_id=#{vehUseId}
@@ -57,22 +49,16 @@
 	<!-- 模糊查询 -->
 	<select id="queryByCondition" resultMap="BaseResultMap">
 		select ve.* ,e1.`emp_id`,e1.`emp_name` veh_use_emp_name,
-		e2.`emp_id`,e2.`emp_name` veh_use_approver_name,
 		v.`vehicle_id`,v.`vehicle_name` veh_name
 		from vehicle_use ve
 		LEFT OUTER
 		JOIN employee e1 on ve.`veh_use_emp` = e1.`emp_id`
-		LEFT OUTER JOIN
-		employee e2 on ve.`veh_use_approver` = e2.`emp_id`
 		LEFT OUTER JOIN
 		vehicle v on ve.`veh_id` = v.`vehicle_id`
 		<!-- 动态sql语句 -->
 		<where>
 			<if test="vehUseEmp != null and vehUseEmp != '' ">
 				and veh_use_emp = #{vehUseEmp,jdbcType=INTEGER}
-			</if>
-			<if test="vehAppEmp != null and vehAppEmp != '' ">
-				and veh_use_approver = #{vehAppEmp,jdbcType=INTEGER}
 			</if>
 			<if test="vehicleId != null and vehicleId != '' ">
 				and ve.veh_id = #{vehicleId, jdbcType=INTEGER}
@@ -106,17 +92,12 @@
 		from vehicle_use ve
 		LEFT OUTER JOIN employee e1 on
 		ve.`veh_use_emp` = e1.`emp_id`
-		LEFT OUTER JOIN employee e2 on
-		ve.`veh_use_approver` = e2.`emp_id`
 		LEFT OUTER JOIN vehicle v on
 		ve.`veh_id` = v.`vehicle_id`
 		<!-- 动态sql语句 -->
 		<where>
 			<if test="vehUseEmp != null and vehUseEmp != '' ">
 				and veh_use_emp = #{vehUseEmp,jdbcType=INTEGER}
-			</if>
-			<if test="vehAppEmp != null and vehAppEmp != '' ">
-				and veh_use_approver = #{vehAppEmp,jdbcType=INTEGER}
 			</if>
 			<if test="vehicleId != null and vehicleId != '' ">
 				and ve.veh_id = #{vehicleId, jdbcType=INTEGER}
@@ -134,10 +115,8 @@
 		LEFT OUTER
 		JOIN employee e1 on ve.`veh_use_emp` = e1.`emp_id`
 		LEFT OUTER JOIN
-		employee e2 on ve.`veh_use_approver` = e2.`emp_id`
-		LEFT OUTER JOIN
 		vehicle v on ve.`veh_id` = v.`vehicle_id`
 		where veh_use_id=#{vehUseId}
 	</select>
-
+	
 </mapper>

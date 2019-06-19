@@ -31,6 +31,8 @@ public interface EmployeeMapper {
 	
 	List<Employee> queryByNothing();
 	
+	Integer[] queryByBirthday(String date);
+	
 	List<Employee> queryByCondition(@Param("start") Integer start, @Param("pageSize") Integer pageSize,
 			@Param("empName") String empName,@Param("empSex") String empSex,
 			@Param("deptId") Integer deptId, @Param("jobId") Integer jobId); // instr

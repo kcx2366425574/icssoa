@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+
+	<body>
+		<div class="container">
+
+			<h3 class="page-header">
+				审批
+			</h3>		
+			<form class="form-horizontal col-md-10" id="form1">		
+				<div class="form-group">
+					<label for="" class="col-md-2">选择申请人</label>
+					<div class="col-md-10">
+						<select name="vehUseEmp.empId" id="vehUseEmp" class="form-control" style="pointer-events: none;>
+							<option value="">请选择申请人</option>							
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-md-2">开始时间</label>
+					<div class="col-md-10">
+						<input type="text" readonly="readonly" id="vehUseStart" name="vehUseStart" placeholder="请输入开始时间" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">结束时间</label>
+					<div class="col-md-10">
+						<input type="text" readonly="readonly" id="vehUseEnd" name="vehUseEnd" placeholder="请输入结束时间" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">用车原因</label>
+					<div class="col-md-10">
+						<textarea readonly="readonly" name="vehUseReason" id="vehUseReason" class="form-control" rows="5"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">选择车辆</label>
+					<div class="col-md-10">
+						<select name="veh.vehicleId" id="veh" class="form-control" style="pointer-events: none;>
+							<option value="">选择车辆</option>							
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">审批状态</label>
+					<div class="col-md-10">
+						<select name="vehAppState" id="vehAppState" class="form-control">
+							<option value="">请选择审批状态</option>	
+							<option value="审批通过">审批通过</option>
+							<option value="未通过">未通过</option>
+							<option value="待审批">待审批</option>
+							<option value="审批中">审批中</option>
+							<option value="撤销">撤销</option>
+							
+						</select>
+					</div>
+					
+				</div>
+
+				
+				
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="关闭" class="btn btn-warning" onclick="history.back()"/>
+						<input type="button" value="审批" class="btn btn-primary" id="updateBtn"/>
+						<input type="hidden" id="vehUseId" name="vehUseId"/>
+					</div>									
+				</div>
+
+
+			</form>
+		</div>
+
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+
+		<script>
+	
+			//动态申请人列表(同步请求)
+			$.ajax({
+				type:"get",
+				url:baseUrl + "/employee/getAll",
+				async:false,
+				dataType:'json',
+			})
+			.done(function(data,status,xhr){
+				//遍历数组集合
+				$.each(data, function(index,el) {
+					$('#vehUseEmp').append('<option value="' + el.empId + '" >' + el.empName + '</option>');
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll(); //关闭加载
+			});
+		
+			
+			//动态车辆列表(同步请求)
+			$.ajax({
+				type:"get",
+				url:baseUrl + "/vehicle/query",
+				async:false,
+				dataType:'json',
+			})
+			.done(function(data,status,xhr){
+				//遍历数组集合
+				var list = data.list;
+				$.each(list, function(index,el) {
+					$('#veh').append('<option value="' + el.vehicleId + '" >' + el.vehicleName + '</option>');
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll(); //关闭加载
+			});
+
+
+
+
+			//获得id
+			var vehUseId = getParam('vehUseId');
+			//获得页码
+			var pageNum = getParam('pageNum');
+
+			var url = baseUrl + '/veh/get?vehUseId=' + vehUseId;
+			
+			//根据id返回员工数据
+			$.getJSON(url, {vehUseId: vehUseId}, function(data) {
+
+				//表单回显
+				$('#vehUseId').val(data.vehUseId);
+				$('#vehUseEmp').val(data.vehUseEmp.empId);
+				$("#vehUseStart").val(data.vehUseStart);
+				$('#vehUseEnd').val(data.vehUseEnd);
+				$('#vehUseReason').val(data.vehUseReason);
+				$('#vehAppState').val(data.vehAppState);
+				$('#veh').val(data.veh.vehicleId);
+				
+			})
+			.error(function() {
+				alert('请求车辆记录数据失败');
+			});
+			
+			//单击修改按钮
+			$('#updateBtn').click(function() {
+
+				//加载层
+				layer.load(2);
+				
+				
+				var state = $('#vehAppState').val();
+				
+				var empId = $('#vehUseEmp').val();
+								
+				//把表单的元素序列化为参数数据
+				var params = $('#form1').serialize();
+
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type: "post", //请求类型get post
+					url: baseUrl + "/veh/update", //请求url地址
+					async: true, //true默认表示异步请求
+					dataType: 'text', //响应的数据类型
+					data: params //请求参数数据
+				})
+				.done(function(data, status, xhr) { //请求成功回调函数
+					layer.closeAll(); //关闭加载
+					layer.msg('审批成功');
+
+					setTimeout(function() {
+						if(state == '审批通过') {
+							// 利用iframe加载其他网页内容到页面层
+						    layer.open({
+								title: '消息通知',
+								type: 2,
+								area: ['800px', '600px'], //宽高
+								content: 'VetConfirmAddMes.html?emp='+empId+'&vetType=2'
+							})
+						}
+					}, 2000);
+				})
+				.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll(); //关闭加载
+				});
+
+			});
+		</script>
+
+	</body>
+
+</html>

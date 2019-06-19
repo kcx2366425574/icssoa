@@ -7,13 +7,6 @@
 <meta charset="UTF-8">
 <title></title>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
-<script type="text/javascript" src="../js/jquery.js"></script>
-<script type="text/javascript" src="../js/global.js"></script>
-<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
-<script src="../js/layer/layer.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
-<script type="text/javascript" src="../js/param.js"></script>
-
 </head>
 <body>
 	<div class="container">
@@ -92,34 +85,34 @@
 				没有任何满足条件的数据
 		</div>	
 		
-		<div class="row">
+		<div class="form-group">
+			<div class="form-group">
 			
-				<div class="col-md-4">
+				<div class="col-lg-offset-8 col-md-2">
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();" />
+				</div>
+				<div class="col-md-2">
 					<input type="button"  value="批量删除" id="delManyBtn" class="btn btn-danger  btn-block"/>
 				</div>
-				
-				<div class="col-md-4">
-					<input type="hidden" name="meetingId" id="meetingId"/>
-					<a :href="'AddMeetingEmp.html?meetingId='+meetingId" class="btn btn-primary btn-block">增加参会人员</a>
-				</div>
+			</div>
 				
 		</div>
 
-		<!--<div class="row">
-			<div class="col-md-offset-8 col-md-4">
-				<a :href="'AddMeetingEmp.html?meetingId='+meetingEmp.meetingId" class="btn btn-info btn-sm">新增参会人员</a>
-			</div>
-		</div>-->
-
 	</div>
 
+
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/global.js"></script>
+	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	<script src="../js/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
+	<script type="text/javascript" src="../js/param.js"></script>
+	
 	
 	<script>		
 			
 			var meetingId = getParam('meetingId');
-			$('#meetingId').val(meetingId);
 			
-			alert(meetingId);
 			var pageNum=getParam('pageNum');
 		
 			
@@ -235,6 +228,11 @@
 					return;
 				}
 				
+				var flag = window.confirm('确定要删除这些参会人员吗');
+						
+				if (!flag)
+					return;	
+				
 				var idsStr = '';
 				
 				for (var i = 0;i < ids.length;i ++) {
@@ -247,6 +245,16 @@
 				
 				$.post(baseUrl + '/meetingEmp/deleteMany',{ids:idsStr},function(){
 															
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+							layer.msg('删除参会人员成功');	
+							setTimeout(function(){
+						        location.reload();//刷新当前网页
+					        },1000);
+							//v.meetingData.splice(index,1);//前端删除
+						})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
 				});
 				
 			});	

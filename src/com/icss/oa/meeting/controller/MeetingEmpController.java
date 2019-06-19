@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -17,6 +18,8 @@ import com.icss.oa.meeting.pojo.Meeting;
 import com.icss.oa.meeting.pojo.MeetingEmp;
 import com.icss.oa.meeting.service.MeetingEmpService;
 import com.icss.oa.meeting.service.MeetingService;
+import com.icss.oa.system.pojo.Employee;
+import com.icss.oa.system.service.EmployeeService;
 
 /**
  * 参会人员控制
@@ -28,6 +31,10 @@ import com.icss.oa.meeting.service.MeetingService;
 public class MeetingEmpController {
 	@Autowired
 	private MeetingEmpService service;
+	@Autowired
+	private MeetingService meetingService;
+	@Autowired
+	private EmployeeService employeeService;
 
 	// 增加参会人员
 	@RequestMapping("/meetingEmp/add")
@@ -48,7 +55,7 @@ public class MeetingEmpController {
 	@ResponseBody
 	public HashMap<String, Object> queryByPage(HttpServletRequest request, HttpServletResponse response,
 			Integer pageNum, Integer pageSize) {
-		
+
 		if (pageNum == null)
 			pageNum = 0;
 
@@ -90,16 +97,30 @@ public class MeetingEmpController {
 		return map;
 
 	}
+
+	// 批量删除参会人员
+	@RequestMapping("/meetingEmp/deleteMany")
+	public void deleteMany(HttpServletRequest request, HttpServletResponse response, Integer[] ids) {
+		System.out.println("删除参会人员");
+		System.out.println(Arrays.toString(ids));
+		for (Integer meetingEmpId : ids) {
+			System.out.println(meetingEmpId);
+			service.deleteMeetingEmp(meetingEmpId);
+		}
+	}
 	
-	    //批量删除参会人员
-			@RequestMapping("/meetingEmp/deleteMany")
-			public void deleteMany(HttpServletRequest request, HttpServletResponse response, Integer[] ids) {
-				System.out.println("删除参会人员");
-				System.out.println(Arrays.toString(ids));
-//				for(Integer meetingEmpId:meetingEmpIds){
-//					System.out.println(meetingEmpId);
-//				//service.deleteMeeting(meetingId);
-//				}
+	//批量增加参会人员
+	@RequestMapping("/meetingEmp/addMany")
+	public void addMany(HttpServletRequest request, HttpServletResponse response,Integer meetingId,Integer[] ids) {
+			System.out.println("批量增加参会人员");
+			System.out.println(Arrays.toString(ids));
+			for (Integer id : ids) {
+				Meeting meeting=meetingService.queryMeetingById(meetingId);
+				Employee employee=employeeService.getById(id);
+				MeetingEmp meetingEmp=new MeetingEmp(meeting, employee);
+				service.addMeetingEmp(meetingEmp);
+			
 			}
+		}
 
 }

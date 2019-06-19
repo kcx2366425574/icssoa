@@ -103,7 +103,7 @@
 									<span class="caret"></span>
 								</button>				
 								<ul class="dropdown-menu">
-									<li><a :href="'QueryMeetingEmp.html?meetingId='+meeting.meetingId" >查看参会人员</a></li>
+									<li><a :href="'addMeetingEmps.html?meetingId='+meeting.meetingId" >查看参会人员</a></li>
 									<li><a  href="javascript:void(0);" @click="del(meeting.meetingId,index);"/>删除</li>
 							     	<li><a :href="'UpdateMeeting.html?meetingId='+meeting.meetingId" >修改</a></li>
 									<li><a :href="'AddMeetingEmp.html?meetingId='+meeting.meetingId" >新增参会人员</a></li>
@@ -228,9 +228,7 @@
 						})
 						.done(function(data,status,xhr){ //请求成功回调函数
 							//把响应的数据赋值给vue数据模型中的变量
-							console.log(data.list);
 							v.meetingData = data.list;	
-							
 							v.pager = data.pager;
 							
 							//生成分页按钮

@@ -47,7 +47,7 @@
 			<div class="form-group">
 				<label for="" class="col-md-2">会议发起人:</label>
 				<div class="col-md-10">
-					<select id="empId" name="promoter.empId" value="promoter" class="form-control">
+				    <select id="empId" name="promoter.empId" value="promoter"  class="form-control" style="pointer-events: none;">
 						<option value="">请选择会议发起人</option>
 					</select>
 				</div>
@@ -94,34 +94,78 @@
 	
 	
 		<script>
-		     
-		     
-		     //动态生成会议室列表
-			$.getJSON(baseUrl + '/meetingRoom/query',{},function(data) {				
+		    
+			
+		     //动态生成会议室列表（同步请求）
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + "/meetingRoom/query", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				
+				
 				//遍历数据集合
 				$.each(data, function(index,el) {				
 					$('#meetingRoomId').append('<option value="' + el.meetingRoomId + '" >' + el.meetingRoomName + '</option>');					
-				});				
+				});
 			})
-			.error(function(){
-				alert('请求会议室列表失败');				
-			});
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
+			});	
 			
-			//动态生成员工列表
-			$.getJSON(baseUrl + '/employee/getAll',{},function(data) {				
+            //动态生成会议发起人列表（同步请求）
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + "/employee/getAll", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
 				//遍历数据集合
 				$.each(data, function(index,el) {				
 					$('#empId').append('<option value="' + el.empId + '" >' + el.empName + '</option>');					
-				});				
+				});
 			})
-			.error(function(){
-				alert('请求员工列表失败');				
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
+			});
+			
+			var empId;
+			
+			
+			
+			//获得员工id
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + '/employee/getId', //请求url地址
+				async:false, //true默认表示异步请求
+				dataType:'text', //响应的数据类型
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				empId=data;			
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
 			});	
 			
+			alert(empId);
 			
-		
-		
-		 
+			//根据id返回员工数据
+			$.getJSON(baseUrl + '/employee/get',{empId:empId},function(data){
+				
+				$('#empId').val(data.empId);
+				
+				
+				
+			})
+			.error(function(){
+				alert('请求会议数据失败');				
+			});		
+			
 			//单击增加按钮
 			$('#addBtn').click(function(){
 				
