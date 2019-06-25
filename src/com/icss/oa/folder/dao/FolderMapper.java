@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.icss.oa.folder.pojo.Folder;
+import com.icss.oa.schedule.pojo.Schedule;
 
 public interface FolderMapper {
 	
@@ -14,7 +15,9 @@ public interface FolderMapper {
     
     void update(Folder record);
 
-    List<Folder> query();
+    List<Folder> query(@Param("empId") Integer empId);
+    
+    List<Folder> queryAll();
     
     List<Folder> queryByPage(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
     
@@ -22,9 +25,9 @@ public interface FolderMapper {
     
     Folder queryById(Integer folId);
     
-    List<Folder> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("folId") Integer folId,@Param("empId") Integer empId,@Param("folName") String folName);
+    List<Folder> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("empId") Integer empId,@Param("folName") String folName);
 
-    int getCountByCondition(@Param("folId") Integer folId,@Param("empId") Integer empId,@Param("folName") String folName);
+    int getCountByCondition(@Param("empId") Integer empId,@Param("folName") String folName);
     
     List<Folder> queryByIds(@Param("ids") Integer[] ids);
 }

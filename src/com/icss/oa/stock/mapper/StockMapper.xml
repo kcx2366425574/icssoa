@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.stock.dao.StockMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.stock.pojo.Stock">
+		<id column="stock_id" property="stockId" jdbcType="INTEGER" />
+		<result column="stock_name" property="stockName" jdbcType="VARCHAR" />
+		<result column="stock_num" property="stockNum" jdbcType="INTEGER" />
+		<result column="stock_used_num" property="stockUsedNum" jdbcType="INTEGER" />
+		<result column="stock_broken_num" property="stockBrokenNum" jdbcType="INTEGER" />
+		<result column="stock_time" property="stockTime" jdbcType="DATE" />
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.stock.pojo.Stock">
+		insert into stock (stock_id, stock_name, stock_num,
+		stock_used_num, stock_broken_num, stock_time)
+		values (default, #{stockName,jdbcType=VARCHAR},
+		#{stockNum,jdbcType=INTEGER},
+		#{stockUsedNum,jdbcType=INTEGER}, #{stockBrokenNum,jdbcType=INTEGER}, #{stockTime,jdbcType=DATE})
+	</insert>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from stock
+		where stock_id = #{stockId,jdbcType=INTEGER}
+	</delete>
+
+	<update id="update" parameterType="com.icss.oa.stock.pojo.Stock">
+		update stock
+		set stock_name = #{stockName,jdbcType=VARCHAR},
+		stock_num = #{stockNum,jdbcType=INTEGER},
+		stock_used_num = #{stockUsedNum,jdbcType=INTEGER},
+		stock_broken_num = #{stockBrokenNum,jdbcType=INTEGER},
+		stock_time = #{stockTime,jdbcType=DATE}
+		where stock_id = #{stockId,jdbcType=INTEGER}
+	</update>
+
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select * 
+		from stock
+		where stock_id = #{stockId,jdbcType=INTEGER}
+	</select>
+    
+    <select id="getCountByCondition" resultType="java.lang.Integer">
+		select count(*)
+		from stock
+		<where>
+			<if test="stockName != null and stockName != '' ">
+				and instr (stock_name, #{stockName, jdbcType=VARCHAR}) != 0
+			</if>
+			<if test="stockTime != null and stockTime != '' ">
+				and instr (stock_time, #{stockTime, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+	</select>
+    
+    <select id="queryByCondition" resultMap="BaseResultMap">
+		SELECT *
+		FROM stock
+		<where>
+			<if test="stockName != null and stockName != '' ">
+				and instr (stock_name, #{stockName, jdbcType=VARCHAR}) != 0
+			</if>
+			<if test="stockTime != null and stockTime != '' ">
+				and instr (stock_time, #{stockTime, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+		LIMIT #{start}, #{pageSize}
+	</select>
+  
+	
+</mapper>

@@ -3,11 +3,11 @@ package com.icss.oa.folder.controller;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.management.Query;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.annotations.ResultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.icss.oa.common.Pager;
 import com.icss.oa.folder.pojo.Folder;
 import com.icss.oa.folder.service.FolderService;
+import com.icss.oa.schedule.pojo.Schedule;
+
 
 @Controller
 public class FolderController {
@@ -37,9 +39,19 @@ public class FolderController {
 	}
 	@RequestMapping("/fol/query")
 	@ResponseBody
-	public List<Folder> query(HttpServletRequest request,HttpServletResponse response)
+	public List<Folder> query(HttpServletRequest request,HttpServletResponse response,Integer folEmp)
 	{
-		return service.query();
+		//get empId by session object
+		HttpSession session = request.getSession();
+		folEmp= (Integer) session.getAttribute("empId");
+		System.out.println(folEmp);
+		return service.query(folEmp);
+	}
+	@RequestMapping("/fol/queryAll")
+	@ResponseBody
+	public List<Folder> queryAll()
+	{
+		return service.queryAll();
 	}
 	@RequestMapping("/fol/queryById")
 	@ResponseBody

@@ -23,24 +23,31 @@
 			
 			<form class="form-horizontal col-md-10" id="form1">
 				<div class="form-group">
-					<label for="" class="col-md-2">报销名称</label>
+					<label for="" class="col-md-2">报销原因</label>
 					<div class="col-md-10">
-						<input type="text" id="noticeName" name="noticeName" placeholder="请输入公告名称" class="form-control"/>
+						<input type="text"  id="rebReason" name="rebReason"  class="form-control"/>
 					</div>					
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">公告描述</label>
+					<label for="" class="col-md-2">报销金额</label>
 					<div class="col-md-10">
-						<input type="text" id="noticeInfo" name="noticeInfo" placeholder="请输入公告描述" class="form-control"/>
+						<input type="text"  id="rebAmount" name="rebAmount"  class="form-control"/>
 					</div>
 				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">申请时间</label>
+					<div class="col-md-10">
+						<input type="text"  id="rebTime" name="rebTime"  class="form-control"/>
+					</div>
+				</div>
+				
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-4">						
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
 					</div>
 					<div class="col-md-4">
-						<input type="hidden" value="1" id="noticeId" name="noticeId" />
-
+						<input type="hidden" value="1" id="rebId" name="rebId" />
+						<input type="hidden" value="未审批" id="rebApprovalStatus" name="rebApprovalStatus" />
 						<input type="button" value="修改" class="btn btn-primary btn-block" id="updateBtn"/>
 					</div>				
 				</div>
@@ -52,26 +59,34 @@
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
 		<script type="text/javascript" src="../js/param.js" ></script>
-		
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
 		<script>
 			//获得参数id
-			var noticeId = getParam('noticeId');
-			
+			var rebId = getParam('rebId');
+			//绑定日历
+			$("#rebTime").datetimepicker({
+		    	lang:'ch',
+		    	format:'Y-m-d H:i:00',
+		    	formatDate:'Y-m-d H:i:00',
+		    	timepicker:false
+		    });
 			//发出ajax请求调用后端接口
-			var url = baseUrl + "/notice/get";
-			
+			var url = baseUrl + "/reb/get";
+
 			$.ajax({
 				type:"get", //请求类型get post
 				url: url, //请求url地址
 				async:true, //true默认表示异步请求
 				dataType:'json', //响应的数据类型
-				data:{noticeId:noticeId} //传递的请求参数
+				data:{rebId:rebId} //传递的请求参数
 			})
 			.done(function(data,status,xhr){ //请求成功回调函数
 				//表单数据回显
-				$('#noticeName').val(data.noticeName);
-				$('#noticeInfo').val(data.noticeInfo);
-				$('#noticeId').val(data.noticeId);
+				$('#rebReason').val(data.rebReason);
+				$('#rebAmount').val(data.rebAmount);
+				$('#rebTime').val(data.rebTime);
+				$('#empName').val(data.emp.empName);
+				$('#rebId').val(data.rebId);
 					
 			})
 			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
@@ -86,7 +101,7 @@
 				layer.load(2);
 				
 				//发出ajax请求调用后端接口
-				var url = baseUrl + "/notice/update";
+				var url = baseUrl + "/reb/update";
 				
 				//请求参数
 				var params = $('#form1').serialize();
@@ -100,9 +115,9 @@
 				})
 				.done(function(data,status,xhr){ //请求成功回调函数
 					layer.closeAll();//关闭加载
-					layer.msg('修改公告成功');	
+					layer.msg('修改完成');	
 					setTimeout(function(){
-						location.href = 'QueryNotice.html';//重定向到查询画面
+						location.href = 'QueryMyReb.html';//重定向到查询画面
 					},1000);		
 				})
 				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数

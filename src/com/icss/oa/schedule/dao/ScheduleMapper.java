@@ -14,11 +14,12 @@ public interface ScheduleMapper {
 
     void delete(Integer schId);
     
-    void insertSelective(Schedule record);
+    void deleteMany(@Param("ids")Integer[] ids);
     
     void update(Schedule record);
     
     List<Schedule> query();
+    
 
     Schedule queryById(Integer schId);
     
@@ -26,12 +27,17 @@ public interface ScheduleMapper {
     
     List<Schedule> queryByCondition(@Param("start")Integer start,@Param("pageSize")Integer pageSize,@Param("empId1")Integer e1,@Param("empId2")Integer e2,@Param("schName")String schName);
     
-    
     List<Schedule> queryByIds(@Param("ids") Integer[] ids);
+    
+    List<Schedule> getMonthSch();
     
     int getCount();
     
     int getCountByCondition(@Param("empId1") Integer empId1,@Param("empId2") Integer empId2,@Param("schName")String schName);
+    
+    List<Schedule> queryMine(@Param("start")Integer start,@Param("pageSize")Integer pageSize,@Param("empId9")Integer empId9);
+    
+    int getCountMine(@Param("empId9")Integer empId9);
     
 	int getLastInsertId();
 

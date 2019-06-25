@@ -62,18 +62,8 @@ public class TestEmployeeService {
 	 * @author kcx
 	 */
 	public void testDelete(){
-		service.deleteEmployee("aaaa");
+		service.deleteEmployee(1);
 	}
 	
-	@Test
-	/**
-	 * 测试查询员工数据
-	 * @author kcx
-	 */
-	public void testQueryByCondition(){
-		List<Employee> list =service.queryEmployee(0, 5, null,"女", null,null);
-		for (Employee employee : list) {
-			System.out.println(employee);
-		}
-	}
+
 }

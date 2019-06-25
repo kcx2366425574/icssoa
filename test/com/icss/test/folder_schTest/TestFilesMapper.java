@@ -15,7 +15,7 @@ import com.icss.oa.folder.pojo.Files;
 import com.icss.oa.folder.pojo.Folder;
 
 public class TestFilesMapper {
-	// ���Spring������������
+	
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 	// Mapper Object
 	FilesMapper mapper = context.getBean(FilesMapper.class);
@@ -66,7 +66,7 @@ public class TestFilesMapper {
 	@Test
     public void testQueryByCondition()
     {
-    	List<Files> list=mapper.queryByCondition(1, 3, 3, "h");
+    	List<Files> list=mapper.queryByCondition(1, 3, 3);
     	for(Files files:list)
     	{
     		System.out.println(files);
@@ -76,7 +76,7 @@ public class TestFilesMapper {
     public void testGetCountByCondition()
     {
     	
-    	System.out.println(mapper.getCountByCondition(2,"b"));
+    	System.out.println(mapper.getCountByCondition(2));
     }
 	 @Test
 	    public void testQueryByIds() {		

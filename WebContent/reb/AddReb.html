@@ -23,15 +23,15 @@
 			
 			<form class="form-horizontal col-md-10" id="form1">
 				<div class="form-group">
-					<label for="" class="col-md-2">名称</label>
+					<label for="" class="col-md-2">报销原因</label>
 					<div class="col-md-10">
-						<input type="text" id="noticeName" name="noticeName" placeholder="请输入公告名称" class="form-control"/>
+						<input type="text" id="rebReason" name="rebReason" placeholder="请输入报销原因" class="form-control"/>
 					</div>					
 				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">公告描述</label>
+					<label for="" class="col-md-2">报销金额</label>
 					<div class="col-md-10">
-						<input type="text" id="noticeInfo" name="noticeInfo" placeholder="请输入公告描述" class="form-control"/>
+						<input type="text" id="rebAmount" name="rebAmount" placeholder="请输入报销金额" class="form-control"/>
 					</div>					
 				</div>
 				<div class="form-group">
@@ -39,8 +39,11 @@
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
 					</div>
 					<div class="col-md-4">
-						<input type="button" value="增加" class="btn btn-primary btn-block" id="addBtn"/>
-					</div>				
+						
+						<input type="button" value="申请" class="btn btn-primary btn-block" id="addBtn"/>
+						<input type="hidden"  value="待审核" id="rebApprovalStatus" name="rebApprovalStatus"  class="form-control"/>
+					</div>	
+
 				</div>
 			</form>			
 		</div>	
@@ -49,29 +52,32 @@
 		<script type="text/javascript" src="../js/global.js" ></script>
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+
 				
 		<script>
+		
 			//单击增加按钮
 			$('#addBtn').click(function(){
 				
 				//表单验证函数
 				function checkForm() {
 					
-					//验证公告名称
-					var noticeName = $('#noticeName');
+					//验证报销原因
+					var rebReason = $('#rebReason');
 					
-					if (noticeName.val() == '' || noticeName.val().length > 20) {
-						alert('公告名称不能为空且最多20字符');
-						noticeName.focus();
+					if (rebReason.val() == '' || rebReason.val().length > 20) {
+						alert('申请原因不能为空且最多20字符');
+						rebReason.focus();
 						return false;
 					}
 										
-					//验证公告
-					var noticeInfo = $('#noticeInfo');
+					//验证报销金额
+					var rebAmount = $('#rebAmount');
 					
-					if (noticeInfo.val() == '' || noticeInfo.val().length > 20) {
-						alert('公告描述不能为空且最多20字符');
-						noticeInfo.focus();
+					if (rebAmount.val() == '' || rebAmount.val()> 2147483647) {
+						alert('报销金额不能为空最多为2147483647');
+						rebAmount.focus();
 						return false;
 					}
 					
@@ -91,17 +97,17 @@
 				//发出ajax请求调用后端接口
 				$.ajax({
 					type:"post", //请求类型get post
-					url: baseUrl + "/notice/add", //请求url地址
+					url: baseUrl + "/reb/add", //请求url地址
 					async:true, //true默认表示异步请求
 					dataType:'text', //响应的数据类型
 					data:params   //请求参数数据
 				})
 				.done(function(data,status,xhr){ //请求成功回调函数
 					layer.closeAll();//关闭加载
-					layer.msg('增加公告成功');	
+					layer.msg('增加申请成功');	
 					
 					setTimeout(function(){
-						location.href = 'QueryNotice.html';//重定向到查询画面
+						location.href = 'QueryMyReb.html';//重定向到查询画面
 					},1000);
 				})
 				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数

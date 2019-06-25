@@ -1,7 +1,10 @@
 package com.icss.oa.reb.service;
 
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +66,23 @@ public class RebService {
 	public int getRebCount() {
 		
 		return mapper.getCount();
+	}
+	
+	@Transactional(readOnly=true)
+	public List<Reb> queryRebByEmpId(int start,int pageSize,Integer empId) {
+		return mapper.queryByEmpId(start,pageSize,empId);
+	}
+	
+	public int getRebCountByEmpId(Integer empId) {
+		return mapper.getCountByEmpId(empId);
+	}
+	
+	public List<Reb> queryRebByCondition(Integer start,Integer pageSize,String rebReason, String rebAmount,@Param("rebTime") Date rebTime,String rebApprovalStatus,String empName){
+		return mapper.queryByEmpCondition(start, pageSize, rebReason, rebAmount, rebTime, rebApprovalStatus, empName);
+	}
+	
+	public int getRebCountByCondition( Integer start,Integer pageSize, String rebReason,String rebAmount, Date rebTime,String rebApprovalStatus,String empName) {
+		return mapper.getCountByCondition(start, pageSize, rebReason, rebAmount, rebTime, rebApprovalStatus, empName);
 	}
 	
 }

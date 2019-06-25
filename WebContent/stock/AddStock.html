@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title>增加库存</title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+
+	<body>
+		<div class="container">
+
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">库存管理</a></li>
+				<li>增加物品库存</li>
+			</ol>
+
+			<h3 class="page-header">
+				增加新物品
+			</h3>
+
+			<form class="form-horizontal col-md-10" id="form1">
+				<div class="form-group">
+					<label for="" class="col-md-2">物品名称</label>
+					<div class="col-md-10">
+						<input type="text" id="stockName" name="stockName" placeholder="请输入物品名称" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">物品数量</label>
+					<div class="col-md-10">
+						<input type="text" id="stockNum" name="stockNum" placeholder="请输入物品数量" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">物品已使用数量</label>
+					<div class="col-md-10">
+						<input type="text" readonly="readonly" id="stockUsedNum" name="stockUsedNum" value="0" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">物品损坏数量</label>
+					<div class="col-md-10">
+						<input type="text" id="stockBrokenNum" name="stockBrokenNum" placeholder="请输入物品损坏数量" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">存储物品时间</label>
+					<div class="col-md-10">
+						<input type="text" id="stockTime" name="stockTime" placeholder="请输入存储物品时间" class="form-control" />
+					</div>
+				</div>
+			
+
+				<div class="form-group">
+					<div class="col-md-offset-6 col-md-3">
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();" />
+					</div>
+					<div class="col-md-3">
+						<input type="button" value="增加" class="btn btn-primary btn-block" id = "addBtn"/>
+					</div>
+				</div>
+			</form>
+
+		</div>
+		
+
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+
+		<script>
+			
+			// 给文本框绑定日历控件
+			$('#stockTime').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:false
+			});
+			
+			//单击增加按钮
+			$('#addBtn').click(function(){
+				
+				//表单验证函数
+				function checkForm() {
+					
+					var r;//正则表达式					
+					
+					//物品名称验证
+					var stockName = $('#stockName');
+					
+					if (stockName.val() == '' || stockName.val().length > 20) {
+						layer.msg('物品名称不能为空且最多20字符');
+						stockName.focus();
+						return false;
+					}	
+					
+					//物品数量验证
+					var stockNum = $('#stockNum');
+					
+					r = /^\d+$/
+					
+					if (!r.test(stockNum.val())) {
+						layer.msg('物品数量必须为正整数');
+						stockNum.focus();
+						return false;
+					}
+					
+					//物品已使用数量验证
+					var stockUsedNum = $('#stockUsedNum');
+					
+					r = /^\d+$/
+					
+					if (!r.test(stockUsedNum.val())) {
+						layer.msg('物品已使用数量必须为正整数');
+						stockUsedNum.focus();
+						return false;
+					}	
+					
+					//物品损坏数量验证
+					var stockBrokenNum = $('#stockBrokenNum');
+					
+					r = /^\d+$/
+					
+					if (!r.test(stockBrokenNum.val())) {
+						layer.msg('物品损坏数量必须为正整数');
+						stockBrokenNum.focus();
+						return false;
+					}
+					
+					if(parseInt(stockBrokenNum.val()) + parseInt(stockUsedNum.val()) > parseInt(stockNum.val())) {
+						layer.msg('已使用物品与损坏物品数量的和不能超过总数');
+						stockBrokenNum.focus();
+						return false;
+					}
+					
+					//时间验证
+					var stockTime=$('#stockTime');
+					if(stockTime.val()=='') {
+						layer.msg('时间不能为空');
+						stockTime.focus();
+						return false;
+					}
+					
+					return true;					
+				}				
+				
+				//调用表单验证
+				if ( !checkForm() )
+					return;	
+					
+				//加载层
+				layer.load(2);
+				
+				//把表单元素序列化为参数数据
+				var params = $('#form1').serialize();
+				
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/stock/add", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params   //请求参数数据
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('增加物品库存成功');	
+					
+					setTimeout(function(){
+						location.href = 'QueryStock.html';//重定向到查询画面
+					},1000);
+				})
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll();//关闭加载
+				});				
+				
+			});			
+		</script>
+		
+	</body>
+
+</html>

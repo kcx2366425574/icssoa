@@ -1,5 +1,6 @@
 package com.icss.oa.folder.service;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +27,10 @@ public class FilesService {
 	{
 		mapper.delete(fileId);
 	}
+	public void deleteMany(Integer[] ids)
+	{
+		mapper.deleteMany(ids);
+	}
 	public void updateFiles(Files files)
 	{
 		mapper.update(files);
@@ -34,6 +39,11 @@ public class FilesService {
 	public List<Files> queryFile()
 	{
 		return mapper.query();
+	}
+	@Transactional(readOnly=true)
+	public List<Files> queryByFolder(@Param("folId")Integer folId)
+	{
+		return mapper.queryByFolder(folId);
 	}
 	@Transactional(readOnly=true)
 	public Files queryFileById(Integer fileId)
@@ -50,13 +60,13 @@ public class FilesService {
 		return mapper.getCount();
 	}
 	@Transactional(readOnly=true)
-	public List<Files> queryByConditon(Pager pager,@Param("folId") Integer folId,@Param("fileName") String fileName)
+	public List<Files> queryByConditon(Pager pager,@Param("folId") Integer folId)
 	{
-		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(),folId,  fileName);
+		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(),folId);
 	}
-	public int getCountByCondition(@Param("folId") Integer folId,@Param("fileName") String fileName)
+	public int getCountByCondition(@Param("folId") Integer folId)
 	{
-		return mapper.getCountByCondition(folId,fileName);
+		return mapper.getCountByCondition(folId);
 	}
 	public List<Files> queryByIds(@Param("ids") Integer[] ids)
 	{

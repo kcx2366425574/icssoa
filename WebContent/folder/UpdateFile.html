@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+<meta name="viewport"
+	content="width=width-device,initial-scale=1,user-scalable=no" />
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet"
+	href="../js/datetimepicker/jquery.datetimepicker.css" />
+</head>
+<body>
+	<div class="container">
+
+		<ol class="breadcrumb">
+			<li><a href="#">OA系统</a></li>
+			<li><a href="#">系统管理</a></li>
+			<li><a href="#">文件管理</a></li>
+			<li>文件重命名</li>
+		</ol>
+
+		<h3 class="page-header">文件重命名</h3>
+
+		<form class="form-horizontal col-md-10" id="form1">
+			<div class="form-group">
+				<label for="" class="col-md-2">文件名</label>
+				<div class="col-md-10">
+					<input type="text" id="fileName" name="fileName"
+						placeholder="请输入新文件名" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">文件大小</label>
+				<div class="col-md-10">
+					<input type="text" id="fileSize" name="fileSize" placeholder=""
+						readonly="true" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-xs-2">所属文件夹</label>
+				<div class="col-xs-10">
+					<select name="fileSuperFolder.folId" id="folId"  readonly="true" class="form-control">
+						<option value="">dir location</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">文件状态</label>
+				<div class="col-md-10">
+					<select id="fileState" name="fileState" placeholder="" class="form-control" >
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">文件更改时间</label>
+				<div class="col-md-10">
+					<input type="text" id="fileCreateDate" name="fileCreateDate"
+						placeholder="" readonly="true" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">文件创建时间</label>
+				<div class="col-md-10">
+					<input type="text" id="fileUpdateDate" name="fileUpdateDate"
+						placeholder="" readonly="true" class="form-control" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-md-offset-4 col-md-4">
+					<input type="button" value="返回" class="btn btn-warning btn-block"
+						onclick="parent.layer.closeAll()" />
+				</div>
+				<div class="col-md-4">
+					<input type="hidden" id="fileId" name="fileId" /> 
+					<input type="button" value="修改" class="btn btn-primary btn-block"
+					id="updateBtn" />
+				</div>
+			</div>
+
+		</form>
+	</div>
+
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/global.js"></script>
+	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/layer/layer.js"></script>
+	<script type="text/javascript" src="../js/param.js"></script>
+	<script type="text/javascript"
+		src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+
+	<script>
+			
+			$('#fileState').append('<option value="共享" >共享</option>');
+			$('#fileState').append('<option value="私有" >私有</option>');
+
+			$.ajax({
+				type:"get", //请求类型get post
+				url: baseUrl + "/fol/queryAll", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//遍历数据集合
+				$.each(data, function(index,el) {				
+					$('#folId').append('<option value="' + el.folId + '" >' + el.folName + '</option>');					
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
+			});
+	
+		//获得参数id
+		var fileId = getParam('fileId');
+
+		$.getJSON(baseUrl + '/file/queryById', {
+			fileId : fileId
+		}, function(data) {
+			//表单回显
+			$('#fileName').val(data.fileName);
+			$('#fileSize').val(data.fileSize);
+			$('#fileId').val(data.fileId);
+			$('#folId').val(data.fileSuperFolder.folId);
+			$('#fileState').val(data.fileState);
+			$('#fileCreateDate').val(data.fileCreateDate);
+			$('#fileUpdateDate').val(data.fileUpdateDate);
+		}).error(function() {
+			alert('请求数据失败');
+		});
+
+		//单击修改按钮
+		$('#updateBtn').click(function() {
+			function checkForm() {
+
+				var r;//正则表达式					
+
+				//任务名称
+				var fileName = $('#fileName');
+
+				if (fileName.val() == '' || fileName.val().length > 20) {
+					layer.msg('文件名不能为空且最多20字符');
+					fileName.focus();
+					return false;
+				}
+				return true;
+			}
+
+			//				调用表单验证
+			if (!checkForm())
+				return;
+			//加载层
+			layer.load(2);
+
+			//发出ajax请求调用后端接口
+			var url = baseUrl + "/file/update";
+
+			//请求参数
+			var params = $('#form1').serialize();
+
+			$.ajax({
+				type : "post", //请求类型get post
+				url : url, //请求url地址
+				async : true, //true默认表示异步请求
+				dataType : 'text', //响应的数据类型
+				data : params
+			//传递的请求参数
+			}).done(function(data, status, xhr) { //请求成功回调函数
+				layer.closeAll();//关闭加载
+				layer.msg('重命名成功');
+				setTimeout(function() {
+					parent.location.reload();
+					parent.layer.closeAll();
+				}, 1000);
+			}).fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+			});
+
+		});
+	</script>
+
+
+</body>
+</html>

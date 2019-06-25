@@ -12,19 +12,23 @@ public interface FilesMapper {
 
 	void delete(Integer fileId);
 	
+	void deleteMany(@Param("ids")Integer[] ids);
+	
 	void update(Files files);
 	
 	List<Files> query();
+	
+	List<Files> queryByFolder(@Param("folId") Integer folId);
 
     Files queryById(Integer fileId);
     
     List<Files> queryByPage(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
     
-    List<Files> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("folId") Integer folId,@Param("fileName")String fileName);
+    List<Files> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("folId") Integer folId);
 
     int getCount();
     
-    int getCountByCondition(@Param("folId") Integer folId,@Param("fileName")String fileName);
+    int getCountByCondition(@Param("folId") Integer folId);
     
     List<Files> queryByIds(@Param("ids") Integer[] ids);
 }

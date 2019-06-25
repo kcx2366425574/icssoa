@@ -4,7 +4,7 @@
 	<head>
 		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
 		<meta charset="UTF-8">
-		<title>发件箱</title>
+		<title>未读消息</title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
 		<style>
 			.pagination {
@@ -68,7 +68,7 @@
 									<span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu">
-									<li><a href="javascript:void(0);" @click="showDetails(mes.mesId);">详细</a></li>
+									<li><a href="javascript:void(0);" @click="showDetails(mes.mesId);">详情</a></li>
 									<li><a href="javascript:void(0);" @click="del(mes.mesId,index);">删除</a></li>
 								</ul>
 							</div>
@@ -207,7 +207,7 @@
 							title: '在线信息详细信息',
 							type: 2,
 							area: ['600px', '800px'], //宽高
-							content: 'UpdateMessage.html?mesId=' + mesId
+							content: 'Details.html?mesId=' + mesId
 						});
 						
 					}

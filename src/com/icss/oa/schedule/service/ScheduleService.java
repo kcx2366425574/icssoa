@@ -69,6 +69,10 @@ public class ScheduleService {
 
 
 	}
+	public void deleteMany(Integer[] ids)
+	{
+		mapper.deleteMany(ids);
+	}
 	public void updateSchedule(Schedule sch)
 	{
 		mapper.update(sch);
@@ -111,9 +115,21 @@ public class ScheduleService {
 	{
 		return mapper.queryByIds(ids);
 	}
+	public List<Schedule> getMonthSch()
+	{
+		return mapper.getMonthSch();
+	}
 	public int getCountByCondition(@Param("empId")Integer e1,@Param("empId")Integer e2,@Param("schName")String schName)
 	{
 		return mapper.getCountByCondition(e1, e2, schName);
+	}
+	public List<Schedule> queryMine(Pager pager,@Param("empId9")Integer empId9)
+	{
+		return mapper.queryMine(pager.getStart(),pager.getPageSize(),empId9);
+	}
+	public int getCountMine(@Param("empId9")Integer empId9)
+	{
+		return mapper.getCountMine(empId9);
 	}
 	/**
 	 * 全文检索
@@ -152,5 +168,9 @@ public class ScheduleService {
 		List<Schedule> list = indexDao.search(query);
 
 		return list;
+	}
+	public List<Employee> queryByNothing() {
+		
+		return null;
 	}
 }

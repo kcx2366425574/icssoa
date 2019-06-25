@@ -6,94 +6,37 @@
 <meta name="viewport" charset="width=device-width, initial-scale=1"
 	user-scalable="no">
 <!--手机设备显示-->
-<link href="../cloud_oa/js/bootstrap/css/bootstrap.css" rel="stylesheet"
-	type="text/css">
-<link href="../cloud_oa/js/zTree/css/zTreeStyle/zTreeStyle.css"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="../cloud_oa/css/common.css">
-<link href="../cloud_oa/css/style.css" rel="stylesheet" type="text/css">
-<link href="../cloud_oa/css/sb-admin.css" rel="stylesheet">
-
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" href="../js/ztree/css/zTreeStyle/zTreeStyle.css" />
 
 <title>云目录</title>
 
 </head>
 <body>
-	<!--导航条-->
-	<nav id="navigation" class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container1">
 
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed"
-					data-toggle="collapse" data-target="#myCollapse1">
-					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
-				<a href="javascript:void(0)" class="navbar-brand"> <img
-					src="../cloud_oa/image/default-transparent.png" height="20" />
-				</a>
-			</div>
-			
-
-
-		</div>
-	
-	</nav>
-	<!--/导航条-->
-
-	<!--轮播容器-->
-	<header id="myCarousel" class="carousel slide">
-		<!-- Indicators -->
-		<ol class="carousel-indicators">
-			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-			<li data-target="#myCarousel" data-slide-to="1"></li>
-			<li data-target="#myCarousel" data-slide-to="2"></li>
-		</ol>
-
-		<!-- Wrapper for slides -->
-		<div class="carousel-inner">
-			<div class="item active">
-				<div class="fill"
-					style="background-image: url('../cloud_oa/image/103.jpg');"></div>
-				<div class="carousel-caption">
-					<h2>学JAVA开发，到中软国际。</h2>
-				</div>
-			</div>
-			<div class="item">
-				<div class="fill"
-					style="background-image: url('../cloud_oa/image/104.jpg');"></div>
-				<div class="carousel-caption">
-					<h2>学iOS/Android开发，到中软国际。</h2>
-				</div>
-			</div>
-			<div class="item">
-				<div class="fill"
-					style="background-image: url('../cloud_oa/image/105.jpg');"></div>
-				<div class="carousel-caption">
-					<h2>学C++开发，到中软国际。</h2>
-				</div>
-			</div>
-		</div>
-		<!-- Controls -->
-		<a class="left carousel-control" href="#myCarousel" data-slide="prev">
-			<span class="icon-prev"></span>
-		</a> <a class="right carousel-control" href="#myCarousel"
-			data-slide="next"> <span class="icon-next"></span>
-		</a>
-	</header>
-	<!--/轮播容器-->
 
 
 	<!-- 网页头部完成-->
 	<!-- 每个模块的部分 -->
 	<div class="container">
-		<h2 class="page-header">云文件目录</h2>
+			<!-- navigate -->
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">文件管理</a></li>
+				<li>文件列表</li>
+			</ol>
+			
+			<h3 class="page-header">
+				文件目录
+			</h3>
+			<!-- navigate end -->
 		<!-- 侧边栏树形结构-->
 		<div class="col-md-3">
 			<div class="panel panel-primary">
-				<div class="panel-heading" style="font-weight: bolder">我的云目录</div>
-				<div id="folderTree" class="panel-body">
-					<ul id="tree" class="ztree"></ul>
+				<div class="panel-heading" style="font-weight: bolder">我的目录</div>
+				<div id="folderTree" class="panel-body" style="height: auto;">
+					<ul id="treeDemo" class="ztree"></ul>
 				</div>
 			</div>
 
@@ -104,26 +47,90 @@
 		<div id="currentFolder1" class="col-md-offset-3">
 			<div class="panel panel-info">
 				<div class="panel-heading">
-					<b>系统管理员的云存储</b>
-
+					<b>文件列表&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+					<b style="font-size:10px;">&nbsp;&nbsp;&nbsp;当前用户编号：</b><span id='folEmpId'></span>
+					
 					<div class="pull-right">
-						<a href="javascript:editFolder(21)" class="btn btn-xs btn-info">重命名</a>
-						<a href="javascript:delFolder(21)" class="btn btn-xs btn-info">删除目录</a>
-						<a href="javascript:void(0)"  class="btn btn-primary btn-xs" @click='showDetails();'>上传文件</a>
-						<a href="javascript:void(0)" class="btn btn-primary btn-xs">新建子目录</a>
+						<a href="javascript:void(0)" class="btn btn-xs btn-info" @click=Update();>重命名</a>
+						<a href="javascript:void(0)" class="btn btn-xs btn-info" @click="Delete();">删除目录</a>
+						<a href="javascript:void(0)" class="btn btn-xs btn-info" @click="AddFol();">新建子目录</a>
+						<a href="javascript:void(0)" class="btn btn-xs btn-info" @click="AddRoot();">新建根目录</a>
+						<a href="javascript:void(0)" class="btn btn-primary btn-xs"
+							@click="AddWindow();">上传文件</a> 
+						<input type="button" disabled value="批量删除" id="delManyBtn" class="btn btn-primary btn-xs"/>
 					</div>
 				</div>
 
 				<div class="panel-body">
-					<p>文件夹描述：中软云办公为您提供免费默认1G云空间，在您今后的工作生活中有机会增加容量。
+					
 					<div class="panel panel-default">
-						<div class="panel-heading">子目录和文件</div>
-						<div style="height: 300px; overflow-x: visible; overflow-y: auto">
+						<div style="height: 600px; width:800px; overflow-x: visible; overflow-y: visible">
+							<table
+								class="table table-striped table-bordered table-hover table-condensed">
+								<thead>
+									<tr>
+										<th>选择</th>
+										<th>文件编号</th>
+										<th>文件名称</th>
+										<th>文件大小</th>
+										<th>文件更改时间</th>
+										<th>文件创建时间</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
 
+									<tr v-for="(file,index) in fileData">
+										<td><input type="checkbox" name="ids"
+											:value="file.fileId" /></td>
+										<td>{{file.fileId}}</td>
+										<td>{{file.fileName}}</td>
+										<td>{{file.fileSize}}</td>
+										<td>{{file.fileUpdateDate}}</td>
+										<td>{{file.fileCreateDate}}</td>
+										<td>
+											<div class="dropdown">
+												<button type="button"
+													class="btn btn-default dropdown-toggle"
+													data-toggle="dropdown">
+													操作 <span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li><a href="javascript:void(0)" @click="Rename(file.fileId)">重命名</a></li>
+													<li><a href="javascript:void(0)"  @click="Download(file.fileId)">下载到本地</a></li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="row" v-show="pager.recordCount!=0">
+								<div class="col-sm-6">
+									<div>共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条，
+										共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页</div>
+								</div>
+								<div class="col-sm-8">
+									<nav>
+										<ul class="pagination pull-right">
+											<li v-show="pager.pageNum!=1"><a
+												href="javascript:void(0);" @click="query(1);">首页</a></li>
+											<li v-show="pager.pageNum!=1"><a
+												href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
 
+											<li :class="{active:item==pager.pageNum}"
+												v-for="(item,index) in pageBtn"><a
+												href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
 
-
-
+											<li v-show="pager.pageNum!=pager.pageCount"><a
+												href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+											<li v-show="pager.pageNum!=pager.pageCount"><a
+												href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>
+										</ul>
+									</nav>
+								</div>
+							</div>
+							<div class="alert alert-info" v-show="pager.recordCount==0">
+								暂无数据</div>
 						</div>
 					</div>
 				</div>
@@ -135,45 +142,295 @@
 	</div>
 
 
-	<footer>
-		<div class="container-fluid footer_style">
-			<div class="col-md-6 col-md-offset-3 text-center">
-				<h4>
-					<img src="../cloud_oa/image/default-transparent.png" height="20" />
-				</h4>
-				<p>地址：辽宁省大连市广贤路97号中软国际</p>
-				<p>Copyright 2009-2019 dletc.com.cn all rights reserved 网站备案号 :
-					辽ICP备09019147号-1</p>
-			</div>
-		</div>
-	</footer>
 
 	<!--网页底部结束-->
-	<script type="text/javascript" src="../js/jquery.js" ></script>
-    <script type="text/javascript" src="../js/global.js" ></script>
-    <script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
-    <script type="text/javascript" src="../js/layer/layer.js" ></script>
-    <script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/global.js"></script>
+	<script type="text/javascript"
+		src="../js/ztree/js/jquery.ztree.core-3.5.js"></script>
+	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/layer/layer.js"></script>
+	<script type="text/javascript" src="../js/vue/vue2.5.js"></script>
 	<script>
-		var v=new Vue({
-			el:'.container',
-			data:{
-				
+		var folId3;
+		var folId2;
+		var folSuperFol;
+		var folEmpId;
+		var folId4;
+		var folCond = '';
+		var folcondition=''
+		var setting = {
+			data : {
+				simpleData : {
+					enable : true,
+					idKey : "folId",
+					pIdKey : "folSuperFol",
+					rootPId : ""
+				},
+				key : {
+					name : "folName"
+				}
 			},
-			methods:{
-				showDetails:function() { //修改查看详细的方法
+			callback : {
+				onClick : onclick
+				
+			}
+		};
+
+		$(document).ready(function() {
+
+			$.getJSON(baseUrl + '/fol/query', function(data) {
+
+				//统一设置目录图标
+				$.each(data, function(index, el) {
+					el.isParent = true;
+				});
+
+				//绑定数据到树形菜单
+				$.fn.zTree.init($("#treeDemo"), setting, data);
+
+			});
+
+		});
+
+		//单击节点回调函数
+
+		var v = new Vue({
+			el : '.container',
+			updated : function() {
+
+			},
+			data : {
+				fileData : [],
+				pager : {}, //分页信息
+				pageBtn : []//分页按钮
+			},
+			methods : {
+				query : function(pageNum) { //查询					
+					//发出ajax请求调用后端接口
+					var url = baseUrl + "/file/search";
+
+					//请求参数
+					var params = {
+						pageNum : pageNum,
+						pageSize : 10,
+						folId : folCond,
+						
+					}
+
+					$.ajax({
+						type : "POST", //请求类型get post
+						url : url, //请求url地址
+						async : true, //true默认表示异步请求
+						dataType : 'json', //响应的数据类型
+						data : params
+					//请求参数
+					}).done(function(data, status, xhr) { //请求成功回调函数
+						//把响应的数据赋值给vue数据模型中的变量
+						v.fileData = data.list;
+						v.pager = data.pager;
+
+						//生成分页按钮
+						var start = v.pager.pageNum - 2;
+						var end = v.pager.pageNum + 2;
+
+						if (v.pager.pageNum < 3) {
+							start = 1;
+							end = 5;
+						}
+
+						if (end > v.pager.pageCount) {
+							end = v.pager.pageCount;
+						}
+
+						if (v.pager.pageCount < 5) {
+							start = 1;
+							end = v.pager.pageCount;
+						}
+
+						v.pageBtn = [];//初始化清空
+
+						for (var i = start; i <= end; i++) {
+							v.pageBtn.push(i);
+						}
+
+					}).fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+						alert(errorStatus + ',' + errorText);
+					});
+				},
+				AddWindow : function() { //
+					// 利用iframe加载其他网页内容到页面层 type:2
+			
+					if(folId2==undefined)
+					{
+						alert("未选择文件夹，操作无效");
+						return;
+						
+					}
+			
+					layer.open({
+						title : '上传文件',
+						type : 2,
+						area : [ '600px', '300px' ], //宽高
+						content : 'AddFile.html?folId2='+folId2
+					});
+
+				},
+				AddFol:function(){
+					if(folSuperFol==undefined)
+					{
+						alert("必须选择一个目录");
+						return;
+					}
 					
+					layer.open({
+						title : '上传文件',
+						type : 2,
+						area : [ '600px', '1000px' ], //宽高
+						content : 'AddFolder.html?folSuperFol='+folSuperFol+'&folEmpId='+folEmpId
+					});
+				},
+				AddRoot:function(){
+					
+					layer.open({
+						title : '上传文件',
+						type : 2,
+						area : [ '600px', '1000px' ], //宽高
+						content : 'AddRoot.html?folEmpId='+folEmpId
+					});
+				},
+				Rename:function(fileId) { //修改查看详细的方法
+					alert(fileId);
 					// 利用iframe加载其他网页内容到页面层 type:2
 					layer.open({
-						title:'上传文件',
+						title:'任务详细信息',
 					    type: 2, 				   
 					    area: ['600px', '800px'], //宽高
-					    content: 'AddFile.html'
+					    content: 'UpdateFile.html?fileId=' + fileId
 					});
 					
+				},
+				Delete:function(){
+					if(folId3==undefined)
+					{
+						alert("未选择文件夹，操作无效");
+						return;
+						
+					}
+					var flag = window.confirm('确定要删除此目录吗');
+					if (!flag)
+						return;
+			
+					//发出ajax请求调用后端接口
+					var url = baseUrl + "/fol/delete";
+					
+					$.ajax({
+						type:"get", //请求类型get post
+						url: url, //请求url地址
+						async:true, //true默认表示异步请求
+						dataType:'text', //响应的数据类型	
+						data:{folId:folId3}							
+					})
+					.done(function(data,status,xhr){ //请求成功回调函数
+						layer.msg('删除任务成功');	
+						location.reload();//刷新当前网页
+						v.folData.splice(index,1);//前端删除
+					})
+					.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+						alert(errorStatus + ',' + errorText);				
+					});
+					
+				},
+				Update:function() { //修改查看详细的方法
+					if(folId4==undefined)
+					{
+						alert("未选择文件夹，操作无效");
+						return;
+						
+					}
+					// 利用iframe加载其他网页内容到页面层 type:2
+					layer.open({
+						title:'任务详细信息',
+					    type: 2, 				   
+					    area: ['600px', '800px'], //宽高
+					    content: 'UpdateFol.html?folId=' + folId4
+					});
+					
+				},
+				Download:function(fileId){
+					var flag = window.confirm('确定要下载文件吗');
+					
+					if (!flag)
+						return;					
+											
+					//直接跳转到下载页面
+					location.href = baseUrl + "/file/download?fileId=" +fileId;
+
 				}
 			}
 		});
+		
+		function onclick(event, treeId, treeNode, clickFlag) {
+			folId3=treeNode.folId;
+			folId2 =  treeNode.folId;
+			folId4=treeNode.folId;
+			folSuperFol=treeNode.folId;
+			folCond = treeNode.folId;
+			folcondition=treeNode.folId;
+			v.query(1);
+		}
+		$.post(baseUrl + '/employee/getId',function(data) {
+			
+			$('#folEmpId').html(data);
+			folEmpId=document.getElementById("folEmpId").innerHTML;
+			
+		});	
+		 
+			
+		//批量删除1
+		$('#delManyBtn').click(function(){
+			var flag = window.confirm('确定要删除此任务吗');
+		
+			if (!flag)
+				return;	
+			var ids = $(':checkbox[name=ids]:checked');
+			
+			if (ids.length == 0) {
+				alert('没有选择任何选项');
+				return;
+			}
+			
+			var idsStr = '';
+			
+			for (var i = 0;i < ids.length;i ++) {
+				idsStr += ids.eq(i).val() + ',';
+			}
+			
+			idsStr = idsStr.substr(0,idsStr.length-1);
+			
+			alert(idsStr);
+			
+			$.post(baseUrl + '/file/deleteMany',{ids:idsStr},function(){
+				layer.msg('删除任务成功');	
+				location.reload();
+				v.fileData.splice(index,1);//前端删除											
+			});
+			
+		});	
+		
+		//删除按钮的状态						
+		$('.container').on('click',':checkbox[name=ids]',function(){
+			
+			var ids = $(':checkbox[name=ids]:checked');
+											
+			if (ids.length == 0)
+				$('#delManyBtn').prop('disabled',true);
+			else
+				$('#delManyBtn').prop('disabled',false);
+			
+		});				
+		
+
 	</script>
 
 </body>

@@ -4,6 +4,17 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<link rel="stylesheet" href="css/login.css" />
+		
+		<style type="text/css">
+			#yzm_img{
+				cursor:pointer;
+				width: 100px;
+				height: 36px;
+				margin: 5px 0 0 5px;
+				border-radius: 3px;
+			}
+		</style>
+		
 	</head>
 	<body>
 		<!--登录容器开始-->
@@ -23,6 +34,14 @@
 						<input type="password" id="empPwd" name="empPwd" placeholder="please input password" />
 					</div>
 				</form>
+				
+				<div class="input">
+					<input type="text" id="code" placeholder="请输入验证码(区分大小写)" name="code"/>
+				</div>
+				
+				<a href="javascript:getVerifiCode()">
+				    <img id="yzm_img" title="点击刷新验证码" src="/OA/getVerifiCode"/>
+				</a>	
 			</div>
 			<!--账号密码区结束-->
 			<!--登录按钮开始-->
@@ -58,8 +77,34 @@
 			}
 		
 			
+			var codeText;
+			
 			$('.btn-login').click(function(){
 				
+				$.ajax({
+					type:"get",
+					url:baseUrl + '/auth',
+					async:false,
+					dataType:'text'
+				})
+				.done(function(data,status,xhr){
+					codeText = data;
+				})
+				.fail(function(xhr,errorStatus,errorText){
+					alert(errorStatus + ',' + errorText);
+				});
+								
+				var code = $('#code').val();
+				
+				if( code != codeText ){
+					layer.msg('验证码输入不正确，请重新输入');
+					$("#yzm_img").prop('src', baseUrl+'/getVerifiCode?a='+new Date().getTime());
+					$('#code').val('');
+					$('#code').focus();
+					
+					return;
+				}
+
 				var url = baseUrl + '/employee/login';
 				
 				var params = $('#form1').serialize();
@@ -103,6 +148,11 @@
 				
 				
 			});
+			
+			
+			function getVerifiCode() {
+			    $("#yzm_img").prop('src', baseUrl+'/getVerifiCode?a='+new Date().getTime());
+			}
 			
 			
 		</script>

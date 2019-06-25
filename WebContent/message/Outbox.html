@@ -60,15 +60,13 @@
 						<td>{{mes.mesSender.empName}}</td>
 						<td>{{mes.mesReciver.empName}}</td>
 						<td>
-							<!--<a :href="'UpdateMessage.html?mesId='+mes.mesId" class="btn btn-info btn-sm">修改</a>
-								<input type="button" value="删除" class="btn btn-danger btn-sm" @click="del(mes.mesId,index);" />-->
 							<div class="dropdown">
 								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 									操作
 									<span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu">
-									<li><a href="javascript:void(0);" @click="showDetails(mes.mesId);">修改/详细</a></li>
+									<li><a href="javascript:void(0);" @click="showDetails(mes.mesId);">详情</a></li>
 									<li><a href="javascript:void(0);" @click="del(mes.mesId,index);">删除</a></li>
 								</ul>
 							</div>

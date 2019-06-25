@@ -1,5 +1,6 @@
 package com.icss.oa.reb.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -20,5 +21,11 @@ void insert(Reb reb);
 	int getCount();
 	
 	List<Reb> query(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
-
+	
+	List<Reb> queryByEmpId(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("empId") Integer empId);
+	
+	List<Reb> queryByEmpCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("rebReason") String rebReason,@Param("rebAmount") String rebAmount,@Param("rebTime") Date rebTime,@Param("rebApprovalStatus") String rebApprovalStatus,@Param("empName") String empName);
+	int getCountByEmpId(@Param("empId") Integer empId);
+	
+	int getCountByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("rebReason") String rebReason,@Param("rebAmount") String rebAmount,@Param("rebTime") Date rebTime,@Param("rebApprovalStatus") String rebApprovalStatus,@Param("empName") String empName);
 }

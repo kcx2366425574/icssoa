@@ -50,7 +50,7 @@ public class TestEmployeeMapper {
 	 * @author kcx
 	 */
     public void testDelete(){
-    	mapper.delete("aaaa");
+    	mapper.delete(2);
     }
 	
 

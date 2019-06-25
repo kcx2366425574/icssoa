@@ -33,14 +33,19 @@
 		#{schGranter.empId,jdbcType=INTEGER},
 		#{schGrantee.empId,jdbcType=INTEGER})
 	</insert>
-	
-	
 	<delete id="delete" parameterType="java.lang.Integer">
 		delete from
 		schedule
 		where
 		sch_id = #{schId,jdbcType=INTEGER}
 	</delete>
+	<delete id="deleteMany">
+        delete from schedule where sch_id in (
+        <foreach collection="ids" item="schId" separator=",">
+            #{schId,jdbcType=INTEGER}
+        </foreach>
+        )  
+        </delete>
 
 	<update id="update" parameterType="com.icss.oa.schedule.pojo.Schedule">
 		update schedule
@@ -150,6 +155,37 @@
 				and instr(sch_name,#{schName,jdbcType=VARCHAR})!=0
 			</if>
 		</where>
+	</select>
+	<select id="queryMine" resultMap="BaseResultMap">
+		select s.*,e.emp_name empa ,em.emp_name empb ,e.emp_id empc,em.emp_id empd
+		from schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		where sch_granter=#{empId9,jdbcType=INTEGER}
+		or    sch_grantee=#{empId9,jdbcType=INTEGER}
+		LIMIT #{start},#{pageSize}
+	</select>
+	<select id="getMonthSch" resultMap="BaseResultMap">
+		select s.*,e.emp_name empa ,em.emp_name empb ,e.emp_id empc,em.emp_id empd
+		from schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		WHERE DATE_FORMAT(sch_start_date, '%m/%Y')=DATE_FORMAT(SYSDATE(),'%m/%Y')
+		OR  DATE_FORMAT(sch_end_date, '%m/%Y')=DATE_FORMAT(SYSDATE(),'%m/%Y')
+	</select>
+	<select id="getCountMine" resultType="java.lang.Integer">
+		select COUNT(*)
+		from schedule s
+		LEFT OUTER JOIN employee e ON
+		s.sch_granter=e.emp_id
+		LEFT OUTER JOIN employee em ON
+		s.sch_grantee=em.emp_id
+		where sch_granter=#{empId9,jdbcType=INTEGER}
+		or sch_grantee=#{empId9,jdbcType=INTEGER}
 	</select>
 	<select id="getLastInsertId" resultType="java.lang.Integer">
 		SELECT LAST_INSERT_ID()

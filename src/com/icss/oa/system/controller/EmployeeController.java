@@ -164,14 +164,19 @@ public class EmployeeController {
 		return service.queryEmpByLoginName(empLoginName);
 	}
 	
-		//修改密码
-		@RequestMapping("/employee/updatePwd")
-		public void updatePwd(HttpServletRequest request,HttpServletResponse response,String empPwd){
+	//修改密码
+	@RequestMapping("/employee/updatePwd")
+	public void updatePwd(HttpServletRequest request,HttpServletResponse response,String empPwd,Integer empId){
+		String empLoginName;
+		if(empId == null){
 			HttpSession session = request.getSession();
-			
-			String empLoginName = (String) session.getAttribute("empLoginName");
-			service.updatePwd(empLoginName, empPwd);
+			empLoginName = (String) session.getAttribute("empLoginName");
+		}else{
+			empLoginName = service.getById(empId).getEmpLoginName();
 		}
+		
+		service.updatePwd(empLoginName, empPwd);
+	}
 		
 	//头像
 	@RequestMapping("/employee/updateHead")

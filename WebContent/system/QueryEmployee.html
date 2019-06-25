@@ -84,6 +84,7 @@
 								<ul class="dropdown-menu">
 									<li><a href="javascript:void(0);" @click="showDetails(emp.empId);">修改/详细</a></li>
 									<li><a href="javascript:void(0);" @click="del(emp.empId,index);">删除</a></li>
+									<li><a href="javascript:void(0);" @click="resetPwd(emp.empId);">重置密码</a></li>
 									
 								</ul>				
 							</div>
@@ -275,7 +276,36 @@
 						.fail(function(xhr,errorStatus,errorText){
 							alert(errorStatus + ',' + errorText);
 						});
+					},
+					resetPwd:function(empId){
+						
+						var flag = window.confirm('确定要重置此员工密码吗');
+						
+						if ( !flag )
+							return;
+							
+						//发出ajax请求
+						var url = baseUrl + "/employee/updatePwd";
+						
+						$.ajax({
+							type:"get",
+							url:url,
+							async:true,
+							dataType:'text',
+							data:{
+								empId:empId,
+								empPwd:'123456'
+							}
+						})
+						.done(function(data,status,xhr){
+							layer.msg('重置该员工密码成功');	
+						})
+						.fail(function(xhr,errorStatus,errorText){
+							alert(errorStatus + ',' + errorText);
+						});
 					}
+					
+					
 				}
 			});				
 			

@@ -50,6 +50,8 @@ public class CommonFilter implements Filter {
 				&& !uri.equals(app + "/logout.jsp")
 				&& !uri.equals(app + "/employee/login")
 				&& !uri.startsWith(app + "/css")
+				&& !uri.startsWith(app + "/getVerifiCode")
+				&& !uri.startsWith(app + "/auth")
 				&& !uri.startsWith(app + "/js")
 				&& !uri.startsWith(app + "/images")) {
 			

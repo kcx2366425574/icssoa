@@ -18,7 +18,7 @@
 				<div class="form-group">
 					<label for="" class="col-md-2">旧密码</label>
 					<div class="col-md-10">
-						<input type="text" id="oldEmpPwd" name="oldEmpPwd"  class="form-control"/>
+						<input type="text" readonly="readonly" id="oldEmpPwd" name="oldEmpPwd"  class="form-control"/>
 					</div>					
 				</div>
 				
@@ -107,9 +107,7 @@
 				
 				var params = $('#newEmpPwd').val();
 				
-				
-				alert(params);
-				
+								
 				
 				$.ajax({
 					type:"post", //请求类型get post
@@ -120,7 +118,10 @@
 				})
 				.done(function(status,xhr){ //请求成功回调函数
 					layer.closeAll();//关闭加载
-					layer.msg('修改密码成功');			
+					layer.msg('修改密码成功');	
+					setTimeout(function() {
+						history.back();
+					}, 1000);
 				})
 				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
 					alert(errorStatus + ',' + errorText);				

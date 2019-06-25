@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.icss.oa.common.Pager;
 import com.icss.oa.folder.dao.FolderMapper;
 import com.icss.oa.folder.pojo.Folder;
+import com.icss.oa.schedule.pojo.Schedule;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
@@ -29,9 +30,13 @@ public class FolderService {
 		mapper.update(folder);
 	}
 	@Transactional(readOnly=true)
-	public List<Folder> query()
+	public List<Folder> query(@Param("empId") Integer empId)
 	{
-		return mapper.query();
+		return mapper.query(empId);
+	}
+	public List<Folder> queryAll()
+	{
+		return mapper.queryAll();
 	}
 	@Transactional(readOnly=true)
 	public Folder queryFolderById(Integer folId)
@@ -50,11 +55,11 @@ public class FolderService {
 	@Transactional(readOnly=true)
 	public List<Folder> queryByConditon(Pager pager,@Param("folId") Integer folId,@Param("empId") Integer empId,@Param("folName") String folName)
 	{
-		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(),folId, empId, folName);
+		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(), empId, folName);
 	}
 	public int getCountByCondition(@Param("folId") Integer folId,@Param("empId") Integer empId,@Param("folName") String folName)
 	{
-		return mapper.getCountByCondition(folId,empId, folName);
+		return mapper.getCountByCondition(empId, folName);
 	}
 	public List<Folder> queryByIds(@Param("ids") Integer[] ids)
 	{

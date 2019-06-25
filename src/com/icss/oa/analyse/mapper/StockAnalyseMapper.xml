@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.analyse.dao.StockAnalyseMapper">
+
+	<resultMap id="BaseResultMap" type="com.icss.oa.analyse.dto.StockCount">
+		<result column="stock_name" property="stockName" jdbcType="VARCHAR" />
+		<result column="stock_count" property="stockCount" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<!-- 统计每个物品各种数量 -->
+	<select id="query" resultType="java.util.Map">
+		SELECT stock_name, stock_num allCount, stock_used_num usedCount, 
+		       stock_broken_num brokenCount, ABS(stock_num - stock_used_num - stock_broken_num) remainedCount
+		FROM stock
+	</select>
+	
+</mapper>

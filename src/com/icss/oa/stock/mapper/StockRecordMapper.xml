@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.stock.dao.StockRecordMapper">
+	<resultMap id="BaseResultMap" type="com.icss.oa.stock.pojo.StockRecord">
+		<id column="sr_id" property="srId" jdbcType="INTEGER" />
+		<result column="sr_num" property="srNum" jdbcType="INTEGER" />
+		<result column="sr_time" property="srTime" jdbcType="DATE" />
+		
+		<association property="dept" javaType="com.icss.oa.system.pojo.Department">
+			<id column="dept_id" property="deptId" jdbcType="INTEGER" />
+			<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+		</association>
+		
+		<association property="stock" javaType="com.icss.oa.stock.pojo.Stock">
+			<id column="stock_id" property="stockId" jdbcType="INTEGER" />
+			<result column="stock_name" property="stockName" jdbcType="VARCHAR" />
+		</association>
+		
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.stock.pojo.StockRecord">
+		insert into stock_record (sr_id, sr_dept_id, sr_stock_id, sr_num, sr_time)
+		values (default, #{dept.deptId,jdbcType=INTEGER},
+		#{stock.stockId,jdbcType=INTEGER},
+		#{srNum,jdbcType=INTEGER}, #{srTime,jdbcType=DATE})
+	</insert>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from stock_record
+		where sr_id = #{srId,jdbcType=INTEGER}
+	</delete>
+
+	<update id="update" parameterType="com.icss.oa.stock.pojo.StockRecord">
+		update stock_record
+		set sr_dept_id = #{dept.deptId,jdbcType=INTEGER},
+		sr_stock_id = #{stock.stockId,jdbcType=INTEGER},
+		sr_num = #{srNum,jdbcType=INTEGER},
+		sr_time = #{srTime,jdbcType=DATE}
+		where sr_id = #{srId,jdbcType=INTEGER}
+	</update>
+	
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select *
+		from stock_record sr
+		LEFT OUTER JOIN department d on sr.sr_dept_id = d.dept_id
+		LEFT OUTER JOIN stock s on sr.sr_stock_id = s.stock_id
+		where sr_id=#{srId}
+	</select>
+	
+	<!-- 模糊查询总记录数 -->
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*)
+		from stock_record sr
+		LEFT OUTER JOIN department d on sr.sr_dept_id = d.dept_id
+		LEFT OUTER JOIN stock s on sr.sr_stock_id = s.stock_id
+		<!-- 动态sql语句 -->
+		<where>
+			<if test="srDeptId != null and srDeptId != '' ">
+				and sr.sr_dept_id = #{srDeptId, jdbcType=INTEGER}
+			</if>
+			<if test="srStockId != null and srStockId != '' ">
+				and sr.sr_stock_id = #{srStockId, jdbcType=INTEGER}
+			</if>
+			<if test="srTime != null and srTime != '' ">
+				and instr (sr_time, #{srTime, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+	</select>
+	
+	<!-- 模糊查询 -->
+	<select id="queryByCond" resultMap="BaseResultMap">
+		select *
+		from stock_record sr
+		LEFT OUTER JOIN department d on sr.sr_dept_id = d.dept_id
+		LEFT OUTER JOIN stock s on sr.sr_stock_id = s.stock_id
+		<!-- 动态sql语句 -->
+		<where>
+			<if test="srDeptId != null and srDeptId != '' ">
+				and sr.sr_dept_id = #{srDeptId, jdbcType=INTEGER}
+			</if>
+			<if test="srStockId != null and srStockId != '' ">
+				and sr.sr_stock_id = #{srStockId, jdbcType=INTEGER}
+			</if>
+			<if test="srTime != null and srTime != '' ">
+				and instr (sr_time, #{srTime, jdbcType=VARCHAR}) != 0
+			</if>
+		</where>
+		LIMIT #{start}, #{pageSize}
+	</select>
+	
+	
+</mapper>

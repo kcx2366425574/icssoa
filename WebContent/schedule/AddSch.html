@@ -89,6 +89,7 @@
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
 		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
 		
 				
 		<script>
@@ -156,10 +157,10 @@
 					var schInfo = $('#schInfo');
 					
 					if (schInfo.val() == '' || schInfo.val().length > 1000) {
-						layer.msg('任务名称不能为空且最多1000字符');
+						layer.msg('任务描述不能为空且最多1000字符');
 						schInfo.focus();
 						return false;
-					}	
+					}
 					var schGrantDate=$('#schGrantDate');
 					if(schGrantDate.val()=='')
 					{
@@ -181,11 +182,11 @@
 						schEndDate.focus();
 						return false;
 					}
-					
 					//验证日期的早晚有效性
 					var grantdate=new Date(document.getElementById("schGrantDate").value.replace(/\-/g, "\/"));
 					var startdate=new Date(document.getElementById("schStartDate").value.replace(/\-/g, "\/"));
 					var enddate=new Date(document.getElementById("schEndDate").value.replace(/\-/g, "\/"));
+
 					if(grantdate>startdate||startdate>enddate){
 						layer.msg("开始日期晚于结束日期，或者早于授予日期，属于非法情形，请重新输入");
 						schStartDate.focus();
@@ -219,7 +220,7 @@
 					layer.msg('增加任务成功');	
 					setInterval(function(){
 					if(t==0)
-					{location= 'QuerySch.html';//重定向到查询画面
+					{location= 'SearchSch.html';//重定向到查询画面
 					}
 					layer.msg(t+"秒后跳转到查询列表");
 					t--;

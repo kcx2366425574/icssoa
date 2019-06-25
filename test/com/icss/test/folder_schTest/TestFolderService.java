@@ -20,9 +20,7 @@ public class TestFolderService {
 	{
 		Employee emp=new Employee();
 		emp.setEmpId(5);
-	  	Folder f=new Folder();
-    	f.setFolId(2);
-		Folder fol=new Folder("你好啊", 500.00, f, "啊啊啊，这是肿木了", "我靠", Date.valueOf("2011-10-01"), Date.valueOf("2014-10-11"), emp);
+		Folder fol=new Folder("你好啊", 500.00, 2, "啊啊啊，这是肿木了", "我靠", Date.valueOf("2011-10-01"), Date.valueOf("2014-10-11"), emp);
 		service.addFolder(fol);
 	}
 	@Test
@@ -35,9 +33,7 @@ public class TestFolderService {
 	{
 		Employee emp=new Employee();
 		emp.setEmpId(3);
-	  	Folder f=new Folder();
-    	f.setFolId(2);
-		Folder fol=new Folder("智障", 705.00, f, "大撒币", "惊怕", Date.valueOf("2012-10-01"), Date.valueOf("2016-10-11"), emp);
+		Folder fol=new Folder("智障", 705.00, 2, "大撒币", "惊怕", Date.valueOf("2012-10-01"), Date.valueOf("2016-10-11"), emp);
 		service.updateFolder(fol);
 	}
 	@Test

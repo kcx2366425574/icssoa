@@ -120,7 +120,7 @@ public class TestMessageMapper {
 	// 根据登录名查询对应的信息
 	public void testQueryByLoginName() {
 
-		List<Message> list = mapper.queryByLoginName("zhaoyi", 0, 2,"1998-02-19%", null, null, null,null);
+		List<Message> list = mapper.queryByLoginName("zhaoyi", 0, 7,null, null, null, null,null);
 
 		for (Message mes : list) {
 			System.out.println(mes);

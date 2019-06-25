@@ -1,6 +1,7 @@
 package com.icss.oa.schedule.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,6 +73,32 @@ public class ScheduleController {
 	public Schedule queryById(HttpServletRequest request,HttpServletResponse response,Integer schId) {
 		return service.queryBySchId(schId);
 	}
+	@RequestMapping("/sch/queryMine")
+	@ResponseBody
+	public HashMap<String, Object> queryMine(HttpServletRequest request,HttpServletResponse response,Integer pageNum,Integer pageSize,
+			Integer empId9)
+	{
+		if (pageNum == null)
+			pageNum = 1;
+		
+		if (pageSize == null)
+			pageSize = 10;		
+		
+		Pager pager = new Pager(service.getCountMine(empId9), pageSize, pageNum);
+		List<Schedule> list=service.queryMine(pager, empId9);
+		//在Map集合中存储分页数据和任务数据
+				HashMap<String, Object> map = new HashMap<>();
+				map.put("pager",pager);
+				map.put("list", list);
+				return map;		
+		
+	}
+	@RequestMapping("/sch/getMonthSch")
+	@ResponseBody
+	public List<Schedule> getMonthSch(HttpServletRequest request,HttpServletResponse response)
+	{
+		return service.getMonthSch();
+	}
 	@RequestMapping("/sch/queryByPage")
 	@ResponseBody
 	public HashMap<String, Object> queryByPage(HttpServletRequest request,HttpServletResponse response,Integer pageSize,Integer pageNum)
@@ -123,5 +150,14 @@ public class ScheduleController {
 	
 			
 		return service.querySchByIndex(queryStr);		
+	}
+	/**
+	 * 批量删除
+	 */
+	@RequestMapping("/sch/deleteMany")	
+	public void deleteMany(HttpServletRequest request,HttpServletResponse response,Integer[] ids) throws ParseException, IOException, InvalidTokenOffsetsException {
+		
+		System.out.println(Arrays.toString(ids));
+		service.deleteMany(ids);		
 	}
 }

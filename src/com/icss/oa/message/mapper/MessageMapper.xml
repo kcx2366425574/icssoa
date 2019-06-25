@@ -76,6 +76,7 @@
 		ON
 		m.`mes_reciver` = e2.`emp_id`
 		where mes_id=#{mesId}
+		order by mes_send_date desc
 	</select>
 
 	<!-- 查询全部信息 -->
@@ -94,6 +95,7 @@
 		LEFT OUTER JOIN employee as e2
 		ON
 		m.`mes_reciver` = e2.`emp_id`
+		order by mes_send_date desc
 	</select>
 
 	<!-- 简单的查询，把查询结果分页 -->
@@ -108,6 +110,7 @@
 		LEFT
 		OUTER JOIN employee as e2
 		ON m.`mes_reciver` = e2.`emp_id`
+		order by mes_send_date desc
 		LIMIT
 		#{start}, #{pageSize}
 	</select>
@@ -124,6 +127,7 @@
 		LEFT
 		OUTER JOIN employee as e2
 		ON m.`mes_reciver` = e2.`emp_id`
+		order by mes_send_date desc
 		LIMIT
 		#{start}, #{pageSize}
 	</select>
@@ -161,6 +165,7 @@
 				concat('%',#{mesInfo,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
+		order by mes_send_date desc
 		LIMIT #{start}, #{pageSize}
 	</select>
 
@@ -190,6 +195,7 @@
 				and mes_send_date like concat('%', #{mesSendDate}, '%')
 			</if>
 		</where>
+		order by mes_send_date desc
 		LIMIT #{start}, #{pageSize}
 	</select>
 
@@ -229,6 +235,7 @@
 				concat('%',#{mesInfo,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
+		order by mes_send_date desc
 	</select>
 
 	<!-- 获得最后一次添加的信息的id -->
@@ -278,10 +285,11 @@
 				concat('%',#{mesInfo,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
+		order by mes_send_date desc
 		LIMIT #{start}, #{pageSize}
 	</select>
 
-	<!-- 根据登录名查询响应的记录数 -->
+	<!-- 根据登录名查询相应的记录数 -->
 	<select id="getCountByEmpLoginName" resultType="java.lang.Integer">
 		select count(*)
 		from message m
@@ -338,6 +346,7 @@
 		mes_send_confirm=#{mesSendConfirm}
 		and
 		e1.emp_login_name=#{empLoginName}
+		order by mes_send_date desc
 		LIMIT #{start}, #{pageSize}
 	</select>
 
@@ -374,6 +383,7 @@
 		m.`mes_reciver` = e2.`emp_id`
 		WHERE
 		e2.emp_login_name=#{empLoginName}
+		order by mes_send_date desc
 		LIMIT #{start}, #{pageSize}
 	</select>
 
@@ -411,6 +421,7 @@
 		AND mes_send_confirm=#{mesSendConfirm}
 		AND
 		mes_read_confirm=#{mesReadConfirm}
+		order by mes_send_date desc
 		LIMIT #{start}, #{pageSize}
 	</select>
 

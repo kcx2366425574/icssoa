@@ -66,7 +66,7 @@ public class TestFilesService {
 	public void testQueryByCondition()
 	{
 		Pager pager=new Pager(service.getCount(), 6, 2);
-		List<Files> list=service.queryByConditon(pager,3, "s");
+		List<Files> list=service.queryByConditon(pager,3);
 		for(Files files:list)
 		{
 			System.out.println(files);
@@ -75,7 +75,7 @@ public class TestFilesService {
 	@Test
 	public void testGetCountByCondition()
 	{
-		System.out.println(service.getCountByCondition(2, "a"));
+		System.out.println(service.getCountByCondition(2));
 	}
 	@Test
   	public void testqueryByIds()

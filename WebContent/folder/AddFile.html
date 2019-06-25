@@ -46,9 +46,10 @@
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
-		<script type="text/javascript" src="../js/layer/layer.js" ></script>		
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
 		<script>
-			
+				var folId2 =getParam('folId2');
 			//选择文件后进行事件处理
 			$('#fileInfo').change(function(){
 				
@@ -75,7 +76,7 @@
 				parent.layer.closeAll();
 			})
 			
-			//单击上传图片按钮事件
+			//单击上传按钮事件
 			$('#addBtn').click(function(){
 				
 				//文件对象
@@ -98,7 +99,7 @@
 				
 				//添加表单数据
 				formData.append('fileInfo',file);
-				
+				formData.append('folId2',folId2);
 				$.ajax({
 					url:baseUrl + '/file/add',
 					type:'POST',

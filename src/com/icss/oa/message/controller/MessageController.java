@@ -139,6 +139,21 @@ public class MessageController {
 	@RequestMapping("/mes/updateMes")
 	public void update(HttpServletRequest request, HttpServletResponse response, Message mes) {
 
+		Date mesSendDate = new Date();
+
+		HttpSession session = request.getSession();
+
+		String empLoginName = (String) session.getAttribute("empLoginName");
+		Employee employee = empService.queryEmpByLoginName(empLoginName);
+		employee.setEmpId(empService.getId(empLoginName));
+
+		Integer empId = employee.getEmpId();
+
+		Employee mesSender = new Employee();
+		mesSender.setEmpId(empId);
+		mes.setMesSender(mesSender);
+		mes.setMesSendDate(mesSendDate);
+
 		if (mes.getMesSendConfirm().equals("已发")) {
 			mes.setMesReadConfirm("已读");
 			service.updateMes(mes);
@@ -497,5 +512,122 @@ public class MessageController {
 			service.addMes(mes);
 		}
 	}
+
+	/**
+	 * 获得未读消息的数量
+	 * 
+	 * @param request
+	 * @param response
+	 * @param count
+	 */
+	@RequestMapping("mes/getUnreadCount")
+	@ResponseBody
+	public Integer getUnreadCount(HttpServletRequest request, HttpServletResponse response, Integer count,
+			String empLoginName) {
+
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+		
+		count = service.getMesUnreadCount("已发", "未读", empLoginName);
+		
+		return count;
+
+	}
+	
+	/**
+	 * 获得收件箱个数
+	 * @param request
+	 * @param response
+	 * @param count
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("mes/getInboxCount")
+	@ResponseBody
+	public Integer getInboxCount(HttpServletRequest request, HttpServletResponse response, Integer count,
+			String empLoginName) {
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+		
+		count = service.getMesInboxCount(empLoginName);
+		
+		return count;
+	}
+	
+	/**
+	 * 获得发件箱个数
+	 * @param request
+	 * @param response
+	 * @param count
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("mes/getOutboxCount")
+	@ResponseBody
+	public Integer getOutboxCount(HttpServletRequest request, HttpServletResponse response, Integer count,
+			String empLoginName) {
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+		
+		count = service.getMesDraftCount("已发", empLoginName);
+		
+		return count;
+	}
+	
+	/**
+	 * 获得草稿箱个数
+	 * @param request
+	 * @param response
+	 * @param count
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("mes/getDraftCount")
+	@ResponseBody
+	public Integer getDraftCount(HttpServletRequest request, HttpServletResponse response, Integer count,
+			String empLoginName) {
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+		
+		count = service.getMesDraftCount("未发", empLoginName);
+		
+		return count;
+	}
+	
+	/**
+	 * 总数
+	 * @param request
+	 * @param response
+	 * @param count
+	 * @param empLoginName
+	 * @return
+	 */
+	@RequestMapping("mes/getCount")
+	@ResponseBody
+	public Integer getCount(HttpServletRequest request, HttpServletResponse response, Integer count,
+			String empLoginName) {
+		HttpSession session = request.getSession();
+
+		empLoginName = (String) session.getAttribute("empLoginName");
+		Employee emp = empService.queryEmpByLoginName(empLoginName);
+		session.setAttribute("empId", emp.getEmpId()); // 记录用户id
+		
+		count = service.getMesCountByEmpLoginName(empLoginName, null, null, null, null, null);
+		
+		return count;
+	}
+	
 
 }

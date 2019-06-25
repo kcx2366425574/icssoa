@@ -12,10 +12,7 @@
 			jdbcType="DATE" />
 		<result column="fol_create_date" property="folCreateDate"
 			jdbcType="DATE" />
-		<association property="folSuperFol" javaType="com.icss.oa.folder.pojo.Folder">
-			<id column="fol_id" property="folId" jdbcType="INTEGER" />
-			<result column="fol_name" property="folName" jdbcType="VARCHAR" />
-		</association>
+		<result column="fol_super_fol" property="folSuperFol" jdbcType="INTEGER"/>
 		<association property="folEmp" javaType="com.icss.oa.system.pojo.Employee">
 			<id column="emp_id" property="empId" jdbcType="INTEGER" />
 			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
@@ -34,7 +31,7 @@
 		(default,
 		#{folName,jdbcType=VARCHAR},
 		#{folSize,jdbcType=DOUBLE},
-		#{folSuperFol.folId,jdbcType=INTEGER},
+		#{folSuperFol,jdbcType=INTEGER},
 		#{folDescription,jdbcType=VARCHAR}, #{folState,jdbcType=VARCHAR},
 		#{folUpdateDate,jdbcType=DATE}, #{folCreateDate,jdbcType=DATE},
 		#{folEmp.empId,jdbcType=INTEGER}
@@ -52,7 +49,7 @@
 		set fol_name =
 		#{folName,jdbcType=VARCHAR},
 		fol_size = #{folSize,jdbcType=DOUBLE},
-		fol_super_fol = #{folSuperFol.folId,jdbcType=INTEGER},
+		fol_super_fol = #{folSuperFol,jdbcType=INTEGER},
 		fol_description
 		= #{folDescription,jdbcType=VARCHAR},
 		fol_state =
@@ -71,47 +68,47 @@
 		select count(*) from folder
 	</select>
 	<select id="query" resultMap="BaseResultMap">
-	    SELECT *
-	    from folder
-	</select>
-	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-		SELECT
-		f.*,fold.fol_id,e.emp_name,e.emp_id
+	    SELECT
+		f.*,e.emp_name,e.emp_id
 		FROM folder f
 		LEFT OUTER JOIN employee
 		e ON f.fol_emp_id=e.emp_id
-		LEFT OUTER JOIN
-		folder fold ON
-		f.fol_super_fol=fold.fol_id
+		where f.fol_emp_id=#{empId,jdbcType=INTEGER}
+	</select>
+		<select id="queryAll" resultMap="BaseResultMap">
+			SELECT
+		f.*,e.emp_name,e.emp_id
+		FROM folder f
+		LEFT OUTER JOIN employee
+		e ON f.fol_emp_id=e.emp_id
+		order by fol_id
+	</select>
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT
+		f.*,e.emp_name,e.emp_id
+		FROM folder f
+		LEFT OUTER JOIN employee
+		e ON f.fol_emp_id=e.emp_id
 		where f.fol_id = #{folId,jdbcType=INTEGER}
 	</select>
 	<select id="queryByPage" resultMap="BaseResultMap">
 		SELECT
-		f.*,fold.fol_id,e.emp_name,e.emp_id	
+		f.*,e.emp_name,e.emp_id	
 		FROM folder f
 		LEFT OUTER JOIN employee e ON
 		f.fol_emp_id=e.emp_id
-		LEFT OUTER JOIN
-		folder fold ON
-		f.fol_super_fol=fold.fol_id
 		LIMIT
 		#{start},#{pageSize}
 	</select>
 	<select id="queryByCondition" resultMap="BaseResultMap">
 		SELECT
-		f.*,fold.fol_id,e.emp_name,e.emp_id
+		f.*,e.emp_name,e.emp_id
 		FROM folder f
 		LEFT OUTER JOIN employee
 		e ON f.fol_emp_id=e.emp_id
-		LEFT OUTER JOIN
-		folder fold ON
-		f.fol_super_fol=fold.fol_id
 		<where>
 			<if test="empId!=null">
 				and f.fol_emp_id=#{empId,jdbcType=INTEGER}
-			</if>
-			<if test="folId!=null">
-				and f.fol_super_fol=#{folId,jdbcType=INTEGER}
 			</if>
 			<if test="folName!=null and folName!='' ">
 				and instr(f.fol_name,#{folName,jdbcType=VARCHAR})!=0
@@ -126,9 +123,6 @@
 			<if test="empId!=null">
 				and fo.fol_emp_id=#{empId,jdbcType=INTEGER}
 			</if>
-			<if test="folId!=null">
-				and fo.fol_super_fol=#{folId,jdbcType=INTEGER}
-			</if>
 			<if test="folName!=null and folName!='' ">
 				and instr(fo.fol_name,#{folName,jdbcType=VARCHAR})!=0
 			</if>
@@ -136,13 +130,10 @@
 	</select>
 	<select id="queryByIds" resultMap="BaseResultMap">
 		SELECT
-		f.*,fold.fol_id,e.emp_name,e.emp_id
+		f.*,e.emp_name,e.emp_id
 		FROM folder f
 		LEFT OUTER JOIN employee
 		e ON f.fol_emp_id=e.emp_id
-		LEFT OUTER JOIN
-		folder fold ON
-		f.fol_super_fol=fold.fol_id
 		<where>
 			<if test="ids.length>0">
 				f.fol_id in

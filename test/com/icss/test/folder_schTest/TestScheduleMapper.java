@@ -13,6 +13,7 @@ import com.icss.oa.schedule.pojo.Schedule;
 import com.icss.oa.system.pojo.Employee;
 
 public class TestScheduleMapper {
+	
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 	ScheduleMapper mapper = context.getBean(ScheduleMapper.class);
 
@@ -71,13 +72,12 @@ public class TestScheduleMapper {
 
 	@Test
 	public void testQueryByIds() {
-		Integer[] ids = { 4, 5 };
+		Integer[] ids = { 4, 5};
 		List<Schedule> list = mapper.queryByIds(ids);
 		for (Schedule sch : list) {
 			System.out.println(sch);
 		}
 	}
-
 	@Test
 	public void testGetCountByCondition() {
 

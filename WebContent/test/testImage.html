@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<a href="javascript:getVerifiCode()">
+	    <img id="yzm_img" style="cursor:pointer;width: 100px;height: 36px;margin: 5px 0 0 5px;border-radius: 3px;" title="点击刷新验证码" src="/OA/getVerifiCode"/>
+	</a>
+	
+</body>
+
+	<script src="../js/jquery.js"></script>
+	<script src="../js/global.js"></script>
+	<script>
+		function getVerifiCode() {
+		    $("#yzm_img").prop('src', '/OA/getVerifiCode?a='+new Date().getTime());
+		}
+		
+	</script>
+</html>

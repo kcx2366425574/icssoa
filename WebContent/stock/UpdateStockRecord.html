@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+
+	<body>
+		<div class="container">
+
+			<h3 class="page-header">
+				修改记录
+			</h3>
+
+			<form class="form-horizontal col-md-10" id="form1">
+
+				<div class="form-group">
+					<label for="" class="col-md-2">选择申请的部门</label>
+					<div class="col-md-10">
+						<select name="dept.deptId" id="deptId" class="form-control">
+							<option value="">请选择申请的部门</option>							
+						</select>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="" class="col-md-2">选择申请的库存物品</label>
+					<div class="col-md-10">
+						<select name="stock.stockId" id="stockId" class="form-control">
+							<option value="">请选择申请的库存物品</option>							
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-md-2">申请数量</label>
+					<div class="col-md-10">
+						<input type="text" id="srNum" name="srNum" placeholder="请输入申请数量" class="form-control" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">申请时间</label>
+					<div class="col-md-10">
+						<input type="text" id="srTime" name="srTime" placeholder="请输入申请时间" class="form-control" />
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="关闭" class="btn btn-warning" onclick="parent.layer.closeAll()"/>
+						<input type="button" value="修改" class="btn btn-primary" id="updateBtn"/>
+						<input type="hidden" id="srId" name="srId"/>
+					</div>									
+				</div>
+
+			</form>
+		</div>
+
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="../js/global.js"></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../js/layer/layer.js"></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js"></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+
+		<script>
+			 
+			// 给文本框绑定日历控件
+			$('#srTime').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:false
+			});
+			
+			//动态生成部门列表(同步请求)
+			$.ajax({
+				type:"get",
+				url:baseUrl + "/dept/query",
+				async:false,
+				dataType:'json',
+			})
+			.done(function(data,status,xhr){
+				//遍历数组集合
+				var list = data.list;
+				$.each(data, function(index, el) {
+					$('#deptId').append('<option value="' + el.deptId + '" >' + el.deptName + '</option>');
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll(); //关闭加载
+			});
+			
+			//动态生成库存物品列表(同步请求)
+			$.ajax({
+				type:"get",
+				url:baseUrl + "/stock/query",
+				async:false,
+				dataType:'json',
+			})
+			.done(function(data,status,xhr){
+				//遍历数组集合
+				var list = data.list;
+				$.each(list, function(index, el) {
+					$('#stockId').append('<option value="' + el.stockId + '" >' + el.stockName + '</option>');
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll(); //关闭加载
+			});
+
+			//获得id
+			var srId = getParam('srId');
+			//获得页码
+			var pageNum = getParam('pageNum');
+			
+			var url = baseUrl + '/srd/queryById?srId=' + srId;
+			
+			//根据id返回数据
+			$.getJSON(url, {srId: srId}, function(data) {
+				//表单回显
+				$('#srId').val(data.srId);
+				$('#deptId').val(data.dept.deptId);
+				$('#stockId').val(data.stock.stockId);
+				$('#srNum').val(data.srNum);
+				$('#srTime').val(data.srTime);
+			})
+			.error(function() {
+				alert('请求库存使用记录数据失败');
+			});
+
+			//单击修改按钮
+			$('#updateBtn').click(function() {
+
+				//表单验证函数
+				function checkForm() {
+
+					var r; //正则表达式	
+					
+					//验证部门
+					var deptId = $('#deptId');
+
+					if (deptId.val() == '') {
+						layer.msg('请选择部门');
+						deptId.focus();
+						return false;
+					}
+					
+					//验证库存物品
+					var stockId = $('#stockId');
+
+					if (stockId.val() == '') {
+						layer.msg('请选择库存物品');
+						stockId.focus();
+						return false;
+					}
+					
+					//数量验证
+					var srNum = $('#srNum');
+					
+					r = /^\d+$/
+					
+					if (!r.test(srNum.val())) {
+						layer.msg('物品数量必须为正整数');
+						srNum.focus();
+						return false;
+					}
+					
+					
+					
+					//时间验证
+					var srTime=$('#srTime');
+					if(srTime.val()==''){
+						layer.msg('时间不能为空');
+						srTime.focus();
+						return false;
+					}
+
+					return true;
+				}
+
+				//				调用表单验证
+				if (!checkForm())
+					return;
+
+				//加载层
+				layer.load(2);
+
+				//把表单的元素序列化为参数数据
+				var params = $('#form1').serialize();
+				
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type: "post", //请求类型get post
+					url: baseUrl + "/srd/update", //请求url地址
+					async: true, //true默认表示异步请求
+					dataType: 'text', //响应的数据类型
+					data: params //请求参数数据
+				})
+				.done(function(data, status, xhr) { //请求成功回调函数
+					layer.closeAll(); //关闭加载
+					layer.msg('修改记录成功');
+
+					setTimeout(function() {
+						window.parent.v.query(pageNum);  //刷新当前页的参数
+						window.parent.layer.closeAll();
+					}, 1000);
+				})
+				.fail(function(xhr, errorStatus, errorText) { //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll(); //关闭加载
+				});
+
+			});
+		</script>
+
+	</body>
+
+</html>

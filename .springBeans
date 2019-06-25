@@ -9,6 +9,9 @@
 	<configs>
 	</configs>
 	<autoconfigs>
+		<config>config/applicationContext.xml</config>
+		<config>config/application-quartz.xml</config>
+		<config>config/SpringMVC-servlet.xml</config>
 	</autoconfigs>
 	<configSets>
 	</configSets>

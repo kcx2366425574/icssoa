@@ -39,7 +39,7 @@
 				<div class="form-group">
 					<label for="" class="col-md-2">任务授予日期</label>
 					<div class="col-md-10">
-						<input type="text" id="schGrantDate" name="schGrantDate" class="form-control"/>
+						<input type="text" id="schGrantDate" name="schGrantDate" readonly="true" class="form-control"/>
 					</div>					
 				</div>
 				<div class="form-group">
@@ -90,7 +90,7 @@
 		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
 		
 		<script>
-		//动态生成员工列表
+		//动态生成授予人列表
 			$.ajax({
 				type:"get", //请求类型get post
 				url: baseUrl + "/employee/query", //请求url地址
@@ -108,7 +108,7 @@
 				layer.closeAll();//关闭加载
 			});		
 							
-			//动态生成职务列表（同步请求）
+			//动态生成被授予人列表
 			$.ajax({
 				type:"get", //请求类型get post
 				url: baseUrl + "/employee/query", //请求url地址
@@ -250,7 +250,7 @@
 					setTimeout(function(){
 						parent.location.reload();
 						parent.layer.closeAll();
-						//location.href = 'QuerySch.html';//重定向到查询画面
+						//location.href = 'Querysch.html';//重定向到查询画面
 					},1000);		
 				})
 				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数

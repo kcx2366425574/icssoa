@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>新建文件夹</title>
+<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet"
+	href="../js/datetimepicker/jquery.datetimepicker.css" />
+</head>
+<body>
+	<div class='container'>
+		<ol class="breadcrumb">
+			<li><a href="#">OA系统</a></li>
+			<li><a href="#">系统管理</a></li>
+			<li><a href="#">文件管理</a></li>
+			<li>新建文件夹</li>
+		</ol>
+
+		<h3 class="page-header">新建文件夹</h3>
+
+		<form class="form-horizontal col-md-10" id="form1">
+			<div class="form-group">
+				<label for="" class="col-md-2">文件夹名称</label>
+				<div class="col-md-10">
+					<input type="text" id="folName" name="folName"
+						placeholder="请输入文件夹名称" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">文件夹描述</label>
+				<div class="col-md-10">
+					<textarea name="folDescription" id="folDescription"
+						class="form-control"></textarea>
+			</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">文件夹大小</label>
+				<div class="col-md-10">
+					<input type="text" name="folSize" id="folSize"
+						class="form-control"/>
+			</div>
+			</div>
+			<div class="form-group">
+					<label for="" class="col-md-2">文件夹状态</label>
+					<div class="col-md-10">
+						<select name="folState" id="folState" class="form-control">
+							<option value="共享">共享</option>
+							<option value="私有">私有</option>
+						</select>
+					</div>
+			</div>
+	
+			<div class="form-group">
+				<label for="" class="col-md-2">文件夹修改日期</label>
+				<div class="col-md-10">
+					<input type="text" id="folUpdateDate" name="folUpdateDate"
+						class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-2">文件夹创建日期</label>
+				<div class="col-md-10">
+					<input type="text" id="folCreateDate" name="folCreateDate"
+						class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+					<label for="" class="col-xs-2">文件夹所有人</label>
+					<div class="col-xs-10">
+						<select name="folEmp.empId" id="folEmpId" class="form-control" disabled="disabled">
+							<option value="">员工编号</option>							
+						</select>
+					</div>					
+				</div>
+			<div class="form-group">
+
+					<div class= "col-offset-4 col-md-4">						
+						<input type="button" value="返回" class="btn btn-danger btn-block" onclick="parent.layer.closeAll();"/>
+					</div>
+					<div class="col-md-4">						
+						<input type="button" value="增加" class="btn btn-success btn-block" id="addBtn"/>
+					</div>				
+			</div>
+			</form>
+	</div>
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		<script >
+		$('#folUpdateDate').datetimepicker({
+			lang:'ch',
+			format:'Y-m-d',
+			formatDate:'Y-m-d',
+			timepicker:false
+		});	
+		$('#folCreateDate').datetimepicker({
+			lang:'ch',
+			format:'Y-m-d',
+			formatDate:'Y-m-d',
+			timepicker:false
+		});
+		//动态生成员工列表
+		$.ajax({
+			type:"get", //请求类型get post
+			url: baseUrl + "/employee/query", //请求url地址
+			async:false, //false默认表示同步请求
+			dataType:'json', //响应的数据类型				
+		})
+		.done(function(data,status,xhr){ //请求成功回调函数
+			//遍历数据集合
+			$.each(data.list, function(index,el) {				
+				$('#folEmpId').append('<option value="' + el.empId + '" >' + el.empId + '</option>');					
+			});
+		})
+		.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+			alert(errorStatus + ',' + errorText);
+			layer.closeAll();//关闭加载
+		});
+			var folEmpId=getParam('folEmpId');
+			document.getElementById("folEmpId").value=folEmpId;
+		//单击上传按钮事件
+		$('#addBtn').click(function(){
+			function checkForm()
+			{
+				var folName = $('#folName');
+				
+				if (folName.val() == '' || folName.val().length > 20) {
+					layer.msg('文件夹名称不能为空且最多20字符');
+					folName.focus();
+					return false;
+				}
+			var folUpdateDate=$('#folUpdateDate');
+			if(folUpdateDate.val()=='')
+			{
+				layer.msg('授予日期不能为空');
+				folUpdateDate.focus();
+				return false;
+			}
+			var folCreateDate=$('#folCreateDate');
+			if(folCreateDate.val()=='')
+			{
+				layer.msg('授予日期不能为空');
+				folCreateDate.focus();
+				return false;
+			}
+				return true;
+			}
+				if(!checkForm())
+				   return;
+			$("#folEmpId").removeAttr("disabled"); 
+			//添加表单数据
+			var params = $('#form1').serialize();
+			$.ajax({
+				url:baseUrl + '/fol/add',
+				type:'POST',
+				async:true, //true默认表示异步请求
+				dataType:'text', //响应的数据类型
+				data:params  //请求参数数据
+			})
+			.done(function(){
+				 
+				layer.msg('新建文件夹成功');
+				    
+				setTimeout(function() {
+					parent.location.reload();
+					parent.layer.closeAll();
+				}, 1000);
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				alert('请求失败,' + xhr.status + ',' + errorStatus + ',' + errorText);
+			});				
+			
+		});	
+		
+		
+		</script>
+</body>
+</html>

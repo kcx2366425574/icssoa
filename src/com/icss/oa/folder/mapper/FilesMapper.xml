@@ -36,6 +36,13 @@
 		where file_id
 		= #{fileId,jdbcType=INTEGER}
 	</delete>
+		<delete id="deleteMany">
+        delete from files where file_id in (
+        <foreach collection="ids" item="fileId" separator=",">
+            #{fileId,jdbcType=INTEGER}
+        </foreach>
+        )  
+        </delete>
 	<update id="update" parameterType="com.icss.oa.folder.pojo.Files">
 		update files
 		set
@@ -60,7 +67,7 @@
 	</select>
 	<select id="queryById" resultMap="ResultMapWithBLOBs"
 		parameterType="java.lang.Integer">
-		SELECT fi.*,fo.fol_id
+		SELECT fi.*,fo.fol_id,fo.fol_name
 		FROM files fi
 		LEFT OUTER JOIN folder fo ON fi.file_super_folder=fo.fol_id
 		where file_id
@@ -76,6 +83,14 @@
 		LIMIT
 		#{start},#{pageSize}
 	</select>
+	<select id="queryByFolder" resultMap="BaseResultMap">
+		SELECT fi.*,fo.fol_id
+		FROM files fi
+		LEFT OUTER JOIN
+		folder
+		fo ON fi.file_super_folder=fo.fol_id
+		where file_super_folder=#{folId,jdbcType=INTEGER}
+	</select>
 	<select id="queryByCondition" resultMap="BaseResultMap">
 		SELECT fi.*,fo.fol_id
 		FROM files fi
@@ -85,10 +100,6 @@
 		<where>
 			<if test="folId!=null">
 				and file_super_folder=#{folId,jdbcType=INTEGER}
-			</if>
-
-			<if test="fileName!=null and fileName!='' ">
-				and instr(file_name,#{fileName,jdbcType=VARCHAR})!=0
 			</if>
 		</where>
 		LIMIT #{start},#{pageSize}
@@ -118,10 +129,6 @@
 		<where>
 			<if test="folId!=null">
 				and file_super_folder=#{folId,jdbcType=INTEGER}
-			</if>
-
-			<if test="fileName!=null and fileName!='' ">
-				and instr(file_name,#{fileName,jdbcType=VARCHAR})!=0
 			</if>
 		</where>
 	</select>

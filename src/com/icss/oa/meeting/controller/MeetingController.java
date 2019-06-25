@@ -112,8 +112,7 @@ public class MeetingController {
 	@RequestMapping("/meeting/deleteMany")
 	public void delete(HttpServletRequest request, HttpServletResponse response, Integer[] meetingIds) {
 		for(Integer meetingId:meetingIds){
-			System.out.println(meetingId);
-		//service.deleteMeeting(meetingId);
+			service.deleteMeeting(meetingId);
 		}
 	}
 		

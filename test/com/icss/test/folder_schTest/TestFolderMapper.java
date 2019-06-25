@@ -21,9 +21,7 @@ public class TestFolderMapper {
 	    {
 	    	Employee emp=new Employee();
 	    	emp.setEmpId(4);
-	    	Folder f=new Folder();
-	    	f.setFolId(2);
-	    	Folder fol=new Folder("兵王", 500.00, f, "当兵的人", "军旅人生", Date.valueOf("2011-10-01"), Date.valueOf("2014-10-11"), emp);
+	    	Folder fol=new Folder("兵王", 500.00, 2, "当兵的人", "军旅人生", Date.valueOf("2011-10-01"), Date.valueOf("2014-10-11"), emp);
 	    	mapper.insert(fol);
 	    	
 	    }
@@ -37,9 +35,7 @@ public class TestFolderMapper {
 	    {
 	    	Employee employee=new Employee();
 	    	employee.setEmpId(5);
-	    	Folder f=new Folder();
-	    	f.setFolId(3);
-	    	Folder folder=new Folder(9, "哈哈", 800.00, f, "你猜不到的", "我艹，这里有惊天秘密", Date.valueOf("2012-12-21"), Date.valueOf("2013-02-14"), employee);
+	    	Folder folder=new Folder(9, "哈哈", 800.00, 3, "你猜不到的", "我艹，这里有惊天秘密", Date.valueOf("2012-12-21"), Date.valueOf("2013-02-14"), employee);
 	    	mapper.update(folder);
 	    }
 	    @Test
@@ -66,7 +62,7 @@ public class TestFolderMapper {
 	    @Test
 	    public void testQueryByCondition()
 	    {
-	    	List<Folder> list=mapper.queryByCondition(1, 6,3, 3, "html");
+	    	List<Folder> list=mapper.queryByCondition(1, 6,3, "html");
 	    	for(Folder folder:list)
 	    	{
 	    		System.out.println(folder);
@@ -76,7 +72,7 @@ public class TestFolderMapper {
 	    public void testGetCountByCondition()
 	    {
 	    	
-	    	System.out.println(mapper.getCountByCondition(2,3, "上海"));
+	    	System.out.println(mapper.getCountByCondition(3, "上海"));
 	    }
 	    @Test
 	    public void testQueryByIds() {		

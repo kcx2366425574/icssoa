@@ -2,21 +2,23 @@ package com.icss.oa.reb.pojo;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.icss.oa.system.pojo.Employee;
 
 public class Reb {
 	private int rebId;
 	private String rebReason;
 	private int rebAmount;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date rebTime;
 	private String rebApprovalStatus;
 	private Employee emp;
-	private Employee approver;
+
 	public Reb() {
 		super();
 	}
-	public Reb(int rebId, String rebReason, int rebAmount, Date rebTime, String rebApprovalStatus, Employee emp,
-			Employee approver) {
+	public Reb(int rebId, String rebReason, int rebAmount, Date rebTime, String rebApprovalStatus, Employee emp) {
 		super();
 		this.rebId = rebId;
 		this.rebReason = rebReason;
@@ -24,17 +26,16 @@ public class Reb {
 		this.rebTime = rebTime;
 		this.rebApprovalStatus = rebApprovalStatus;
 		this.emp = emp;
-		this.approver = approver;
+
 	}
-	public Reb(String rebReason, int rebAmount, Date rebTime, String rebApprovalStatus, Employee emp,
-			Employee approver) {
+	public Reb(String rebReason, int rebAmount, Date rebTime, String rebApprovalStatus, Employee emp) {
 		super();
 		this.rebReason = rebReason;
 		this.rebAmount = rebAmount;
 		this.rebTime = rebTime;
 		this.rebApprovalStatus = rebApprovalStatus;
 		this.emp = emp;
-		this.approver = approver;
+
 	}
 	public int getRebId() {
 		return rebId;
@@ -72,12 +73,7 @@ public class Reb {
 	public void setEmp(Employee emp) {
 		this.emp = emp;
 	}
-	public Employee getApprover() {
-		return approver;
-	}
-	public void setApprover(Employee approver) {
-		this.approver = approver;
-	}
+
 
 
 }
